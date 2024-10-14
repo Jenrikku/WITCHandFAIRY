@@ -145,22 +145,6 @@ if (name is not null)
     builder.Append("\r\n\r\n");
 }
 
-// Width and height:
-
-builder.Append($"{prefix}WIDTH     EQU     {image.Width / 16}");
-
-if (name is not null)
-    builder.Append($"                     ; {name} tileset width");
-
-builder.Append("\r\n");
-
-builder.Append($"{prefix}HEIGH     EQU     {image.Height / 16}");
-
-if (name is not null)
-    builder.Append($"                     ; {name} tileset height");
-
-builder.Append("\r\n\r\n");
-
 // Generate indexed color matrix:
 
 List<Rgba32> colors = new();

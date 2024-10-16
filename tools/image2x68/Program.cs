@@ -187,9 +187,43 @@ for (int i = 0; i < colors.Count; i++)
     builder.Append($"     DC.L     $00{rgb}\r\n");
 }
 
+builder.Append("\r\n");
+
 // Texture array:
 
-// TO-DO
+int width = image.Width / 16;
+int height = image.Height / 16;
+
+builder.Append($"{prefix}TABLE");
+
+for (int i = 0; i < width; i++)
+{
+    for (int j = 0; j < height; j++)
+    {
+        for (int k = 0; k < 16; k++)
+        {
+            if (k != 0 || i != 0 || j != 0)
+                builder.Append("        "); // Alignment: 8 whitespaces.
+
+            builder.Append($"     DC.B     ");
+
+            for (int m = 0; m < 16; m++)
+            {
+                int color = colors.IndexOf(image[i * 16 + m, j * 16 + k]);
+
+                if (color < 0)
+                    color = 99;
+
+                builder.Append(color.ToString("D2"));
+                builder.Append(' ');
+            }
+
+            builder.Append("\r\n");
+        }
+
+        builder.Append("\r\n");
+    }
+}
 
 #endregion
 
@@ -199,7 +233,7 @@ string result = builder.ToString();
 
 if (output is not null)
 {
-    File.WriteAllText(output, result, Encoding.GetEncoding("ISO-8859-15"));
+    File.WriteAllText(output, result, Encoding.Latin1);
     return;
 }
 

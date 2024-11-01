@@ -1,6 +1,8 @@
 using ImGuiNET;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
+using TilemapTool.Context;
+using TinyFileDialogsSharp;
 
 namespace TilemapTool.GUI;
 
@@ -38,6 +40,7 @@ internal class MainWindowContext : WindowContext
             }
 
             RenderMainMenuBar();
+            RenderEditors();
         };
     }
 
@@ -52,16 +55,53 @@ internal class MainWindowContext : WindowContext
 
             if (ImGui.MenuItem("Save")) { }
 
-            if (ImGui.MenuItem("Export to 68k")) { }
-
-            if (ImGui.MenuItem("Exit")) { }
-        }
-
-        if (ImGui.BeginMenu("Tiles"))
-        {
-            if (ImGui.MenuItem("Import image")) { }
+            if (ImGui.MenuItem("Save As")) { }
 
             if (ImGui.MenuItem("Properties")) { }
+
+            ImGui.Separator();
+
+            if (ImGui.MenuItem("Exit"))
+            {
+                if (!ContextHandler.IsSaved)
+                {
+                    MessageBoxButton result = TinyFileDialogs.MessageBox(
+                        title: "Warning",
+                        message: "The map has not been saved, do you want to save it first?",
+                        dialogType: DialogType.YesNoCancel,
+                        iconType: MessageIconType.Warning,
+                        defaultButton: MessageBoxButton.OkYes
+                    );
+
+                    if (result == MessageBoxButton.NoCancel)
+                    {
+                        ImGui.EndMenu();
+                        ImGui.EndMainMenuBar();
+                        return;
+                    }
+
+                    if (result == MessageBoxButton.OkYes)
+                    {
+                        // TODO: Save
+                    }
+                }
+
+                WindowManager.Stop();
+            }
+
+            ImGui.EndMenu();
         }
+
+        ImGui.EndMainMenuBar();
     }
+
+    private void RenderEditors()
+    {
+        RenderTileSetSelector();
+        RenderMapEditor();
+    }
+
+    private void RenderTileSetSelector() { }
+
+    private void RenderMapEditor() { }
 }

@@ -16,6 +16,10 @@
     <PackageReference Include="SixLabors.ImageSharp" Version="3.1.5" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\libraries\tinyfiledialogs\src\TinyFileDialogsSharp.csproj" />
+  </ItemGroup>
+
   <!-- TODO: Add imgui.ini as resource -->
 
 </Project>

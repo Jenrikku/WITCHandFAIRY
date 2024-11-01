@@ -6,9 +6,9 @@ It can be assumed that all values are unsigned.
 | Offset | Size |     Description     |
 |--------|------|---------------------|
 | 0x00   | 4    | Magic ('JkBM')      |
-| 0x08   | 4    | COL section offset  |
-| 0x0C   | 4    | IMG section offset  |
-| 0x04   | 4    | MAP section offset  |
+| 0x04   | 4    | COL section offset  |
+| 0x08   | 4    | IMG section offset  |
+| 0x0C   | 4    | MAP section offset  |
 
 All offsets are relative to file's beginning (absolute)
 

@@ -10,7 +10,8 @@ It can be assumed that all values are unsigned.
 | 0x08   | 4    | IMG section offset  |
 | 0x0C   | 4    | MAP section offset  |
 
-All offsets are relative to file's beginning (absolute)
+All offsets are relative to file's beginning (absolute)  
+The map section may not exist if the file is meant to only contain sprites. In this case, its offset will be set to 0.
 
 ## Color palette section
 
@@ -21,11 +22,12 @@ The colors are in the BGR format.
 |--------|------|---------------------|
 | 0x00   | 3    | Magic ('COL')       |
 | 0x03   | 1    | Amount of colors    |
-| 0x04   | N    | Colors in BGR       |
+| 0x04   | N    | Colors in BGR / RGB |
 
 With N = Amount of colors * 3
 
-Every color is composed of 3 bytes that contain the blue, green and red values in this order.
+Every color is composed of 3 bytes that contain the blue, green and red values.  
+The order depends on the endianess: BGR for Big Endian and RGB for Little Endian.
 
 ## Image section
 

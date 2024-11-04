@@ -1,7 +1,7 @@
 # Binary Tile Map file documentation (.btm)
 
 This file contains a binary tile map with an embedded tile set.  
-It can be assumed that all values are unsigned.
+It can be assumed that all values are unsigned and row-major.
 
 | Offset | Size |     Description     |
 |--------|------|---------------------|

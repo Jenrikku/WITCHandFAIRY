@@ -1,4 +1,4 @@
-namespace TilemapTool.Utils;
+namespace LibBTM.Utils;
 
 // This class was taken from a library I made:
 // https://github.com/Jenrikku/BYAMLSharp

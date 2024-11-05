@@ -59,9 +59,19 @@ public sealed class BTM
             return Read(start);
     }
 
-    public static unsafe void Write(BTM btm, string path) { }
+    public static unsafe void Write(BTM btm, string path)
+    {
+        int size = 31;
+        size += btm.Colors.Length * 3;
+        size += btm.Tiles.Length * btm.Tiles[0].Height * btm.Tiles[0].Width;
+        size += btm.Map.Length;
 
-    public static unsafe void Write(BTM btm, byte* ptr) { }
+        byte[] buffer = new byte[size];
+        fixed (byte* ptr = buffer)
+            Write(btm, ptr);
+
+        File.WriteAllBytes(path, buffer);
+    }
 
     public static unsafe BTM Read(byte* ptr)
     {
@@ -103,6 +113,29 @@ public sealed class BTM
         }
 
         return btm;
+    }
+
+    public static unsafe void Write(BTM btm, byte* ptr)
+    {
+        bool reverse = btm.IsBigEndian == BitConverter.IsLittleEndian;
+
+        WriteValue<uint>(ref ptr, 0x4A6B424D, reverse);
+        byte* offsetTableStart = ptr;
+
+        ptr += 4 * 3;
+
+        // COL section:
+
+        WriteValue<UInt24>(ref ptr, 0x434F4C, reverse);
+        *ptr++ = (byte)btm.Colors.Length;
+
+        foreach (Rgb24 color in btm.Colors)
+            WriteValue(ref ptr, color, reverse);
+
+        // IMG section:
+
+        WriteValue<UInt24>(ref ptr, 0x494D47, reverse);
+        // ...
     }
 
     private static unsafe void ReadCOL(BTM btm, byte* ptr, bool reverse)
@@ -163,14 +196,14 @@ public sealed class BTM
         if (magic != 0x4D4150)
             return;
 
-        byte tileWidth = *ptr++;
-        byte tileHeight = *ptr++;
+        byte mapWidth = *ptr++;
+        byte mapHeight = *ptr++;
 
-        byte[,] map = new byte[tileWidth, tileHeight];
+        byte[,] map = new byte[mapWidth, mapHeight];
 
-        for (int i = 0; i < tileHeight; i++)
+        for (int i = 0; i < mapHeight; i++)
         {
-            for (int j = 0; j < tileWidth; j++)
+            for (int j = 0; j < mapWidth; j++)
                 map[j, i] = *ptr++;
         }
 

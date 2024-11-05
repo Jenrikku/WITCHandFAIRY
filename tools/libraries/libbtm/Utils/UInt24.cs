@@ -35,4 +35,6 @@ internal struct UInt24
     public static bool operator ==(UInt24 uint24, uint uint32) => uint24.ToUInt32() == uint32;
 
     public static bool operator !=(UInt24 uint24, uint uint32) => uint24.ToUInt32() != uint32;
+
+    public static implicit operator UInt24(uint uint32) => new(uint32);
 }

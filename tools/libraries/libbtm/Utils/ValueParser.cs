@@ -69,4 +69,15 @@ internal static class ValueParser
         for (uint i = 0; i < values.Length; i++)
             WriteValue(ref ptr, values[i], reverse);
     }
+
+    public static unsafe void Align(ref byte* ptr, byte* start, uint amount)
+    {
+        long filePos = start - ptr;
+
+        if (filePos % amount == 0)
+            return;
+
+        filePos = amount * (filePos / amount + 1);
+        ptr = start + filePos;
+    }
 }

@@ -1,4 +1,3 @@
-using LibBTM.Utils;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 using static LibBTM.Utils.ValueParser;
@@ -101,15 +100,15 @@ public sealed class BTM
         uint mapOffset = ReadValue<uint>(ref ptr, reverse);
 
         ptr = start + colOffset;
-        ReadCOL(btm, ptr, reverse);
+        ReadCL(btm, ptr, reverse);
 
         ptr = start + imgOffset;
-        ReadIMG(btm, ptr, reverse);
+        ReadTS(btm, ptr, reverse);
 
         if (mapOffset != 0)
         {
             ptr = start + mapOffset;
-            ReadMAP(btm, ptr, reverse);
+            ReadMP(btm, ptr, reverse);
         }
 
         return btm;
@@ -117,43 +116,48 @@ public sealed class BTM
 
     public static unsafe void Write(BTM btm, byte* ptr)
     {
+        byte* start = ptr;
         bool reverse = btm.IsBigEndian == BitConverter.IsLittleEndian;
 
         WriteValue<uint>(ref ptr, 0x4A6B424D, reverse);
-        byte* offsetTableStart = ptr;
 
-        ptr += 4 * 3;
+        WriteValue<uint>(ref ptr, 16, reverse); // Write color palette offset
+        ptr += 4 * 2; // Skip two offsets, to be calculated later
 
-        // COL section:
+        // Color palette section:
 
-        WriteValue<UInt24>(ref ptr, 0x434F4C, reverse);
+        WriteValue<ushort>(ref ptr, 0x434C, reverse);
         *ptr++ = (byte)btm.Colors.Length;
 
         foreach (Rgb24 color in btm.Colors)
             WriteValue(ref ptr, color, reverse);
 
-        // IMG section:
+        // Tileset section:
 
-        WriteValue<UInt24>(ref ptr, 0x494D47, reverse);
+        Align(ref ptr, start, 16);
+        uint tsOffset = (uint)(start - ptr);
+
+        WriteValue<ushort>(ref ptr, 0x5453, reverse);
+        *ptr++ = (byte)btm.Tiles.Length;
         // ...
     }
 
-    private static unsafe void ReadCOL(BTM btm, byte* ptr, bool reverse)
+    private static unsafe void ReadCL(BTM btm, byte* ptr, bool reverse)
     {
-        UInt24 magic = ReadValue<UInt24>(ref ptr, reverse);
+        ushort magic = ReadValue<ushort>(ref ptr, reverse);
 
-        if (magic != 0x434F4C)
+        if (magic != 0x434C)
             return;
 
         byte colorCount = *ptr++;
         btm.Colors = ReadValues<Rgb24>(ref ptr, reverse, colorCount);
     }
 
-    private static unsafe void ReadIMG(BTM btm, byte* ptr, bool reverse)
+    private static unsafe void ReadTS(BTM btm, byte* ptr, bool reverse)
     {
-        UInt24 magic = ReadValue<UInt24>(ref ptr, reverse);
+        ushort magic = ReadValue<ushort>(ref ptr, reverse);
 
-        if (magic != 0x494D47)
+        if (magic != 0x5453)
             return;
 
         byte tileCount = *ptr++;
@@ -189,11 +193,11 @@ public sealed class BTM
         btm.Tiles = images;
     }
 
-    private static unsafe void ReadMAP(BTM btm, byte* ptr, bool reverse)
+    private static unsafe void ReadMP(BTM btm, byte* ptr, bool reverse)
     {
-        UInt24 magic = ReadValue<UInt24>(ref ptr, reverse);
+        ushort magic = ReadValue<ushort>(ref ptr, reverse);
 
-        if (magic != 0x4D4150)
+        if (magic != 0x4D50)
             return;
 
         byte mapWidth = *ptr++;

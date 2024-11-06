@@ -134,12 +134,15 @@ public sealed class BTM
 
         // Tileset section:
 
-        Align(ref ptr, start, 16);
+        Align(ref ptr, start, 16); // WARNING: Not enough memory for alignment.
         uint tsOffset = (uint)(start - ptr);
 
         WriteValue<ushort>(ref ptr, 0x5453, reverse);
         *ptr++ = (byte)btm.Tiles.Length;
-        // ...
+        *ptr++ = (byte)btm.Tiles[0].Width;
+        *ptr++ = (byte)btm.Tiles[0].Height;
+
+        foreach (Image<Rgba32> image in btm.Tiles) { }
     }
 
     private static unsafe void ReadCL(BTM btm, byte* ptr, bool reverse)

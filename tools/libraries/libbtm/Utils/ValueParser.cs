@@ -72,12 +72,12 @@ internal static class ValueParser
 
     public static unsafe void Align(ref byte* ptr, byte* start, uint amount)
     {
-        long filePos = start - ptr;
+        uint filePos = (uint)(start - ptr);
+        uint remainder = filePos % amount;
 
-        if (filePos % amount == 0)
+        if (remainder == 0)
             return;
 
-        filePos = amount * (filePos / amount + 1);
-        ptr = start + filePos;
+        ptr += amount - remainder;
     }
 }

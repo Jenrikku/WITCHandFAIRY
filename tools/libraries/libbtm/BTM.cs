@@ -62,7 +62,9 @@ public sealed class BTM
     {
         int size = 31;
         size += btm.Colors.Length * 3;
+        size += 16 - (size % 16 == 0 ? 16 : size % 16);
         size += btm.Tiles.Length * btm.Tiles[0].Height * btm.Tiles[0].Width;
+        size += 16 - (size % 16 == 0 ? 16 : size % 16);
         size += btm.Map.Length;
 
         byte[] buffer = new byte[size];
@@ -134,15 +136,43 @@ public sealed class BTM
 
         // Tileset section:
 
-        Align(ref ptr, start, 16); // WARNING: Not enough memory for alignment.
+        Align(ref ptr, start, 16);
         uint tsOffset = (uint)(start - ptr);
+
+        byte tileWidth = (byte)btm.Tiles[0].Width;
+        byte tileHeight = (byte)btm.Tiles[0].Height;
 
         WriteValue<ushort>(ref ptr, 0x5453, reverse);
         *ptr++ = (byte)btm.Tiles.Length;
-        *ptr++ = (byte)btm.Tiles[0].Width;
-        *ptr++ = (byte)btm.Tiles[0].Height;
+        *ptr++ = tileWidth;
+        *ptr++ = tileHeight;
 
-        foreach (Image<Rgba32> image in btm.Tiles) { }
+        foreach (Image<Rgba32> image in btm.Tiles)
+        {
+            for (int i = 0; i < tileHeight; i++)
+            {
+                for (int j = 0; j < tileWidth; j++)
+                {
+                    Rgba32 pixel = image[j, i];
+
+                    if (pixel.A != 0xFF)
+                    {
+                        *ptr++ = 0xFF;
+                        continue;
+                    }
+
+                    int index = Array.IndexOf(btm.Colors, new(pixel.R, pixel.G, pixel.B));
+
+                    if (index < 0)
+                    {
+                        *ptr++ = 0xFF;
+                        continue;
+                    }
+
+                    *ptr++ = (byte)index;
+                }
+            }
+        }
     }
 
     private static unsafe void ReadCL(BTM btm, byte* ptr, bool reverse)

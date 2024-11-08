@@ -17,6 +17,9 @@ public sealed class BTM
 
     public byte[,] Map { get; private set; } = { };
 
+    public byte MapWidth { get; private set; }
+    public byte MapHeight { get; private set; }
+
     private BTM() { }
 
     public BTM(Image<Rgba32>[] tiles, byte[,] map)
@@ -173,6 +176,24 @@ public sealed class BTM
                 }
             }
         }
+
+        // Map section:
+
+        Align(ref ptr, start, 16);
+        uint mapOffset = (uint)(start - ptr);
+
+        WriteValue<ushort>(ref ptr, 0x4D50, reverse);
+        *ptr++ = btm.MapWidth;
+        *ptr++ = btm.MapHeight;
+
+        foreach (byte tileIdx in btm.Map)
+            *ptr++ = tileIdx;
+
+        // Header offsets:
+
+        ptr = start + 8;
+        WriteValue(ref ptr, tsOffset, reverse);
+        WriteValue(ref ptr, mapOffset, reverse);
     }
 
     private static unsafe void ReadCL(BTM btm, byte* ptr, bool reverse)
@@ -245,5 +266,7 @@ public sealed class BTM
         }
 
         btm.Map = map;
+        btm.MapWidth = mapWidth;
+        btm.MapHeight = mapHeight;
     }
 }

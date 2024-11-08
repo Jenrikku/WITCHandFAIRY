@@ -18,6 +18,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\libraries\tinyfiledialogs\src\TinyFileDialogsSharp.csproj" />
+    <ProjectReference Include="..\libraries\libbtm\libbtm.csproj" />
   </ItemGroup>
 
   <!-- TODO: Add imgui.ini as resource -->

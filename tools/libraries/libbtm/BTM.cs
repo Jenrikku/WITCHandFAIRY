@@ -50,9 +50,35 @@ public sealed class BTM
     }
 
     /// <summary>
+    /// Checks if the file is a BTM by looking at the magic value.
+    /// </summary>
+    /// <param name="path">The path to the BTM file</param>
+    /// <returns>Whether the file has the proper BTM magic</returns>
+    public static unsafe bool Identify(string path)
+    {
+        if (!File.Exists(path))
+            return false;
+
+        using FileStream stream = File.OpenRead(path);
+
+        Span<byte> magic = stackalloc byte[4];
+        stream.ReadExactly(magic);
+
+        fixed (byte* ptr = magic)
+            return Identify(ptr);
+    }
+
+    public static unsafe bool Identify(byte* ptr)
+    {
+        uint magic = ReadValue<uint>(ref ptr, false);
+
+        return magic == 0x4A6B424D || magic == 0x4D426B4A;
+    }
+
+    /// <summary>
     /// Opens a binary tile map from a file in disk.
     /// </summary>
-    /// <param name="path">The path to the btm file</param>
+    /// <param name="path">The path to the BTM file</param>
     /// <returns>A BTM with the read data</returns>
     public static unsafe BTM Read(string path)
     {

@@ -6,11 +6,18 @@ namespace TilemapTool.Context;
 
 internal static class ContextHandler
 {
-    public static BTM? BTM { get; private set; }
+    public static BTM BTM { get; private set; } = new([], new byte[0, 0]);
 
     public static bool IsSaved { get; private set; } = true;
 
     public static string? SavePath { get; set; }
+
+    public static void Reset()
+    {
+        BTM = new([], new byte[0, 0]);
+        IsSaved = true;
+        SavePath = null;
+    }
 
     /// <summary>
     /// Creates a new BTM with the given arguments.

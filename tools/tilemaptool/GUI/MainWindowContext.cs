@@ -9,6 +9,8 @@ internal class MainWindowContext : WindowContext
 {
     private bool _isFirstFrame = true;
 
+    private bool _propertiesDialogOpened = false;
+
     public MainWindowContext()
         : base()
     {
@@ -38,6 +40,7 @@ internal class MainWindowContext : WindowContext
 
             RenderMainMenuBar();
             RenderEditors();
+            RenderPropertiesDialog();
 
             GL!.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
             GL!.Clear(ClearBufferMask.ColorBufferBit);
@@ -49,27 +52,7 @@ internal class MainWindowContext : WindowContext
     public override bool Close()
     {
         if (!ContextHandler.IsSaved)
-        {
-            MessageBoxButton result = TinyFileDialogs.MessageBox(
-                title: "Warning",
-                message: "The map has not been saved, do you want to save it first?",
-                dialogType: DialogType.YesNoCancel,
-                iconType: MessageIconType.Warning,
-                defaultButton: MessageBoxButton.OkYes
-            );
-
-            if (result == MessageBoxButton.NoCancel)
-            {
-                ImGui.EndMenu();
-                ImGui.EndMainMenuBar();
-                return false;
-            }
-
-            if (result == MessageBoxButton.OkYes)
-            {
-                // TODO: Save
-            }
-        }
+            return NotSavedDialog();
 
         return true;
     }
@@ -94,7 +77,7 @@ internal class MainWindowContext : WindowContext
                 SaveFile(); // No path so always ask the user.
 
             if (ImGui.MenuItem("Properties"))
-                ImGui.OpenPopupOnItemClick("Properties");
+                _propertiesDialogOpened = true;
 
             ImGui.Separator();
 
@@ -107,8 +90,12 @@ internal class MainWindowContext : WindowContext
         ImGui.EndMainMenuBar();
     }
 
-    private void New() {
-        ContextHandler.BTM
+    private void New()
+    {
+        if (!ContextHandler.IsSaved && !NotSavedDialog())
+            return;
+
+        _propertiesDialogOpened = true;
     }
 
     private bool OpenFile()
@@ -155,4 +142,40 @@ internal class MainWindowContext : WindowContext
     private void RenderTileSetSelector() { }
 
     private void RenderMapEditor() { }
+
+    private void RenderPropertiesDialog()
+    {
+        if (!_propertiesDialogOpened)
+            return;
+
+        ImGui.OpenPopup("Properties");
+
+        if (!ImGui.BeginPopupModal("Properties", ref _propertiesDialogOpened))
+            return;
+
+        ImGui.Text("TO-DO");
+    }
+
+    private bool NotSavedDialog()
+    {
+        MessageBoxButton result = TinyFileDialogs.MessageBox(
+            title: "Warning",
+            message: "The map has not been saved, do you want to save it first?",
+            dialogType: DialogType.YesNoCancel,
+            iconType: MessageIconType.Warning,
+            defaultButton: MessageBoxButton.OkYes
+        );
+
+        if (result == MessageBoxButton.NoCancel)
+        {
+            ImGui.EndMenu();
+            ImGui.EndMainMenuBar();
+            return false;
+        }
+
+        if (result == MessageBoxButton.OkYes)
+            return SaveFile();
+
+        return false;
+    }
 }

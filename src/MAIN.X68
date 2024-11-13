@@ -7,6 +7,7 @@
 
             ORG     $1000
             
+            INCLUDE "MACROS.X68"
             INCLUDE "CONST.X68"
             INCLUDE "SYSCONST.X68"
             INCLUDE "SYSTEM.X68"

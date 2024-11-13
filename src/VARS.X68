@@ -34,7 +34,7 @@ ENMHP       DS.B    ENMMAXNO                ; ENEMIES HEALTH POINTS
 
 ; --- LEVEL RELATED VARIABLES --------------------------------------------------
 
-LVLINDEX    DS.B    1                       ; CURRENT LEVEL
+LVLINDEX    DC.B    0                       ; CURRENT LEVEL
 
 ; --- STORY PANEL RELATED VARIABLES --------------------------------------------
 

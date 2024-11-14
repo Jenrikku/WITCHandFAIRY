@@ -20,9 +20,9 @@ LVLMPCNT    DC.W    0                       ; LEVEL MAP BUFFER COUNTER
 ; --- POINTERS -----------------------------------------------------------------
 ; POINTERS ARE USED TO KNOW WHAT DATA IS WHERE IN THE BUFFERS.
 
-PL1PTR      DS.W    1                       ; WITCH POINTER TO STATIC BUFFER
-PL2PTR      DS.W    1                       ; FAIRY POINTER TO STATIC BUFFER
-ENMPTR      DS.W    ENMMAXNO                ; ENEMIES POINTERS TO LEVEL BUFFER
+PL1BFPTR      DS.W    1                     ; WITCH POINTER TO STATIC BUFFER
+PL2BFPTR      DS.W    1                     ; FAIRY POINTER TO STATIC BUFFER
+ENMBFPTR      DS.W    ENMMAXTP              ; ENEMIES POINTERS TO LEVEL BUFFER
 
 ; --- BUFFERS ------------------------------------------------------------------
 
@@ -35,5 +35,4 @@ LVLTLBUF    DS.B    16384                   ; LEVEL TILE BUFFER (ALSO ENEMIES)
 LVLMPBUF    DS.B    100                     ; LEVEL MAP BUFFER
             DS.W    0
 
-FILERBUF    DS.B    16                      ; FILE READ TEMPORARY BUFFER
-            DS.W    0
+FILERBUF    DS.B    4                       ; FILE READ TEMPORARY BUFFER

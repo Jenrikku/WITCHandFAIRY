@@ -3,6 +3,23 @@
 ; ==============================================================================
 
 ; ------------------------------------------------------------------------------
+SIZE        MACRO
+; SETS \1.B TO THE SIZE OF \0.
+; ------------------------------------------------------------------------------
+
+            IFC     \0, B
+                MOVE.B  #1, \1
+            ENDC
+            IFC     \0, W
+                MOVE.B  #2, \1
+            ENDC
+            IFC     \0, L
+                MOVE.B  #4, \1
+            ENDC
+
+            ENDM
+
+; ------------------------------------------------------------------------------
 RDMGC       MACRO
 ; READS A MAGIC NUMBER FROM THE OPENED FILE AND COMPARES IT TO \1.
 ; JUMPS TO \2 TAG IF THEY ARE NOT EQUAL.
@@ -15,17 +32,7 @@ RDMGC       MACRO
             ENDC
 
             MOVE.B  #53, D0
-
-            IFC     \0, B
-                MOVE.B  #1, D2              ; SET HEADER SIZE TO .B
-            ENDC
-            IFC     \0, W
-                MOVE.B  #2, D2              ; SET HEADER SIZE TO .W
-            ENDC
-            IFC     \0, L
-                MOVE.B  #4, D2              ; SET HEADER SIZE TO .L
-            ENDC
-
+            SIZE.\0 D2
             TRAP    #15
 
             CMPI.\0 #'\1', (A1)             ; CHECK MAGIC IN \1
@@ -37,6 +44,7 @@ RDMGC       MACRO
 RDJMP       MACRO
 ; READS AN ABSOLUTE OFFSET FROM THE OPENED FILE AND JUMPS TO IT IN THE FILE.
 ; OPTIONALLY, JUMP TO TAG IN \1 IF PRESENT WHEN THE OFFSET IS 0.
+; MAKE SURE THAT D0 AND D2 ARE PROPERLY CLEARED.
 ; ------------------------------------------------------------------------------
 
             IFC     \0, ''
@@ -45,17 +53,7 @@ RDJMP       MACRO
             ENDC
 
             MOVE.B  #53, D0
-
-            IFC     \0, B
-                MOVE.B  #1, D2              ; SET OFFSET SIZE TO .B
-            ENDC
-            IFC     \0, W
-                MOVE.B  #2, D2              ; SET OFFSET SIZE TO .W
-            ENDC
-            IFC     \0, L
-                MOVE.B  #4, D2              ; SET OFFSET SIZE TO .L
-            ENDC
-
+            SIZE.\0 D2
             TRAP    #15
 
             MOVE.B  #55, D0
@@ -71,23 +69,34 @@ RDJMP       MACRO
 
 ; ------------------------------------------------------------------------------
 BUFCP       MACRO
-; COPIES THE CONTENTS OF \1.\0 TO A BUFFER IN \2 WITH AN OFFSET IN \3.
+; COPIES THE CONTENTS OF \1.\0 TO A BUFFER IN \2.
+; MODIFIES THE ADDRESS REGISTER SPECIFIED IN \3 WHERE THE DATA WAS WRITTEN.
+; AN ADDITIONAL AUXILIARY DATA REGISTER IS REQUIRED IN \4.
 ; THE BUFFER TO WRITE THE DATA TO WILL DEPEND ON THE BUFFER MODE.
 ; AVAILABLE BUFFERS: CL, TL, MP.
 ; MP IS ONLY AVAILABLE IN LEVEL MODE.
 ; ------------------------------------------------------------------------------
 
-            CMPI.B  #0, BUFFMODE
+            CMPI.B  #0, BUFFMODE            ; CHECK BUFFER MODE
             BEQ     STATIC\@
 
+            CLR.W   \4
+            SIZE.\0 \4
+
             IFC     \2, CL
-                MOVE.\0 \1, \3(LVLCLBUF)
+                LEA     LVLCLBUF, \3
+                ADDA    LVLCLCNT, \3
+                ADD.W   \4, LVLCLCNT
             ENDC
             IFC     \2, TL
-                MOVE.\0 \1, \3(LVLTLBUF)
+                LEA     LVLTLBUF, \3
+                ADDA    LVLTLCNT, \3
+                ADD.W   \4, LVLTLCNT
             ENDC
             IFC     \2, MP
-                MOVE.\0 \1, \3(LVLMPBUF)
+                LEA     LVLMPBUF, \3
+                ADDA    LVLMPCNT, \3
+                ADD.W   \4, LVLMPCNT
             ENDC
 
             BRA     END\@
@@ -95,12 +104,17 @@ BUFCP       MACRO
 STATIC\@
 
             IFC     \2, CL
-                MOVE.\0 \1, \3(STACLBUF)
+                LEA     STACLBUF, \3
+                ADDA    STACLCNT, \3
+                ADD.W   \4, STACLCNT
             ENDC
             IFC     \2, TL
-                MOVE.\0 \1, \3(STATLBUF)
+                LEA     STATLBUF, \3
+                ADDA    STATLCNT, \3
+                ADD.W   \4, STATLCNT
             ENDC
 
-END\@
+END\@       
+            MOVE.\0 \1, (\3)                ; COPIES THE CONTENTES TO THE BUFFER
 
             ENDM

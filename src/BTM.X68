@@ -6,11 +6,11 @@
 BTMREAD
 ; READS A BINARY TILE MAP AND STORES IT TO MEMORY.
 ; INPUT    : A1 = FILEPATH
-; OUTPUT   : NONE
+; OUTPUT   : A1 = POINTER TO BUFFER
 ; MODIFIES : NONE
 ; ------------------------------------------------------------------------------
     
-            MOVEM.L D0-D4/A1, -(SP)
+            MOVEM.L D0-D4/A2, -(SP)
 
             CLR.L   D0
             CLR.L   D1
@@ -34,14 +34,21 @@ BTMREAD
 
             RDMGC.W CL, .END                ; READ CL SECTION MAGIC
 
-            MOVE.B  3(A1), D3               ; AMOUNT OF COLORS
+            MOVE.B  #53, D0
+            MOVE.B  #1, D2
+            TRAP    #15
+
+            MOVE.B  A1, D3                  ; AMOUNT OF COLORS
             SUBQ.B  #1, D3                  ; ADJUST TO DBRA
 
 .CLLOOP
+            MOVE.B  #4, D2                  ; READ COLOR
+            TRAP    #15
 
+            BUFCP.L (A1), CL, A2, D4        ; WRITE COLOR TO BUFFER
 
             DBRA    D3, .CLLOOP
 .END
-            MOVEM.L (SP)+, D0-D4/A1
+            MOVEM.L (SP)+, D0-D4/A2
 
             RTS

@@ -24,10 +24,11 @@ The colors are in the BGR format.
 | 0x02   | 1    | Amount of colors    |
 | 0x03   | N    | Colors in BGR / RGB |
 
-With N = Amount of colors * 3
+With N = Amount of colors * 4
 
 Every color is composed of 3 bytes that contain the blue, green and red values.  
-The order depends on the endianess: BGR for Big Endian and RGB for Little Endian.
+The order depends on the endianess: BGR for Big Endian and RGB for Little Endian.  
+An extra byte is added so that the color may be read as a 32-bit integer.
 
 ## Tileset section
 

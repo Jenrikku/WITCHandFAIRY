@@ -11,7 +11,7 @@ public sealed class BTM
 {
     public bool IsBigEndian { get; set; } = true;
 
-    public Rgb24[] Colors { get; private set; } = [];
+    public Rgba32[] Colors { get; private set; } = [];
 
     public Image<Rgba32>[] Tiles { get; private set; } = [];
 
@@ -27,7 +27,7 @@ public sealed class BTM
         Tiles = tiles;
         Map = map;
 
-        HashSet<Rgb24> colors = new();
+        HashSet<Rgba32> colors = new();
 
         foreach (Image<Rgba32> image in tiles)
         {
@@ -41,7 +41,7 @@ public sealed class BTM
                         continue;
 
                     // Only add if not contained:
-                    colors.Add(new(color.R, color.G, color.B));
+                    colors.Add(color);
                 }
             }
         }
@@ -90,7 +90,7 @@ public sealed class BTM
     public static unsafe void Write(BTM btm, string path)
     {
         int size = 31;
-        size += btm.Colors.Length * 3;
+        size += btm.Colors.Length * 4;
         size += 16 - (size % 16 == 0 ? 16 : size % 16);
         size += btm.Tiles.Length * btm.Tiles[0].Height * btm.Tiles[0].Width;
         size += 16 - (size % 16 == 0 ? 16 : size % 16);
@@ -160,8 +160,8 @@ public sealed class BTM
         WriteValue<ushort>(ref ptr, 0x434C, reverse);
         *ptr++ = (byte)btm.Colors.Length;
 
-        foreach (Rgb24 color in btm.Colors)
-            WriteValue(ref ptr, color, reverse);
+        foreach (Rgba32 color in btm.Colors)
+            WriteValue(ref ptr, color with { A = 0 }, reverse);
 
         // Tileset section:
 
@@ -230,7 +230,10 @@ public sealed class BTM
             return;
 
         byte colorCount = *ptr++;
-        btm.Colors = ReadValues<Rgb24>(ref ptr, reverse, colorCount);
+        btm.Colors = ReadValues<Rgba32>(ref ptr, reverse, colorCount);
+
+        for (int i = 0; i < colorCount; i++)
+            btm.Colors[i].A = 0xFF;
     }
 
     private static unsafe void ReadTS(BTM btm, byte* ptr, bool reverse)
@@ -259,11 +262,7 @@ public sealed class BTM
                     if (colorIdx == 0xFF)
                         continue;
 
-                    Rgb24 color = btm.Colors[colorIdx];
-                    Rgba32 rgbaColor = new();
-                    color.ToRgba32(ref rgbaColor);
-
-                    image[k, j] = rgbaColor;
+                    image[k, j] = btm.Colors[colorIdx];
                 }
             }
 

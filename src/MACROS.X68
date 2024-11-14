@@ -4,17 +4,17 @@
 
 ; ------------------------------------------------------------------------------
 SIZE        MACRO
-; SETS \1.B TO THE SIZE OF \0.
+; SETS \1 TO THE SIZE OF \0.
 ; ------------------------------------------------------------------------------
 
             IFC     \0, B
-                MOVE.B  #1, \1
+                MOVEQ   #1, \1
             ENDC
             IFC     \0, W
-                MOVE.B  #2, \1
+                MOVEQ   #2, \1
             ENDC
             IFC     \0, L
-                MOVE.B  #4, \1
+                MOVEQ   #4, \1
             ENDC
 
             ENDM
@@ -31,7 +31,7 @@ RDMGC       MACRO
                 MEXIT
             ENDC
 
-            MOVE.B  #53, D0
+            MOVEQ   #53, D0
             SIZE.\0 D2
             TRAP    #15
 
@@ -52,12 +52,12 @@ RDJMP       MACRO
                 MEXIT
             ENDC
 
-            MOVE.B  #53, D0
+            MOVEQ   #53, D0
             SIZE.\0 D2
             TRAP    #15
 
-            MOVE.B  #55, D0
-            MOVE.\1 (A1), D2
+            MOVEQ   #55, D0
+            MOVE.\0 (A1), D2
 
             IFNC    \1, ''
                 BEQ     \1                  ; JUMP TO \1 IF OFFSET IS 0

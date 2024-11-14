@@ -18,7 +18,7 @@ BTMREAD
             CLR.L   D3
             CLR.L   D4
 
-            MOVE.B  #51, D0                 ; OPEN FILE (WITH A1=FILEPATH)
+            MOVEQ   #51, D0                 ; OPEN FILE (WITH A1=FILEPATH)
             TRAP    #15
 
             CMPI    #0, D0                  ; CHECKS IF FILE OPENED CORRECTLY
@@ -34,20 +34,35 @@ BTMREAD
 
             RDMGC.W CL, .END                ; READ CL SECTION MAGIC
 
-            MOVE.B  #53, D0
-            MOVE.B  #1, D2
+            MOVEQ   #53, D0
+            MOVEQ   #1, D2
             TRAP    #15
 
             MOVE.B  A1, D3                  ; AMOUNT OF COLORS
             SUBQ.B  #1, D3                  ; ADJUST TO DBRA
 
 .CLLOOP
-            MOVE.B  #4, D2                  ; READ COLOR
+            MOVEQ   #4, D2                  ; READ COLOR
             TRAP    #15
 
-            BUFCP.L (A1), CL, A2, D4        ; WRITE COLOR TO BUFFER
+            BUFCP.L (A1), CL, A2, D2        ; WRITE COLOR TO BUFFER
 
             DBRA    D3, .CLLOOP
+
+            ; TL SECTION:
+
+            MOVEQ   #55, D0
+            MOVEQ   #8, D2                  ; GO TO TL SECTION OFFSET
+            TRAP    #15
+
+            RDJMP.L .END                    ; GO TO TL SECTION, END IF OFFSET=0
+
+            RDMGC.W TL, .END                ; READ TL SECTION MAGIC
+
+            MOVEQ   #53, D0
+            MOVEQ   #3, D2                  ; READ AMOUNT, WIDTH AND HEIGHT
+            TRAP    #15
+
 .END
             MOVEM.L (SP)+, D0-D4/A2
 

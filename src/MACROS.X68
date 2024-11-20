@@ -118,3 +118,13 @@ END\@
             MOVE.\0 \1, (\3)                ; COPIES THE CONTENTES TO THE BUFFER
 
             ENDM
+
+; ------------------------------------------------------------------------------
+GFXCL       MACRO
+; SETS GRAPHICS DRAW COLOR TO \1. (PEN COLOR)
+; ------------------------------------------------------------------------------
+
+            MOVEQ   #80, D0
+            MOVE.L  #$\1, D2
+            TRAP    #15
+            

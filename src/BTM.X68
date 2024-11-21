@@ -34,12 +34,21 @@ BTMREAD
 
             RDMGC.W CL, .END                ; READ CL SECTION MAGIC
 
+            MOVE.W  CL
+
             MOVEQ   #53, D0
             MOVEQ   #1, D2
             TRAP    #15
 
-            MOVE.B  A1, D3                  ; AMOUNT OF COLORS
+            MOVE.B  (A1), D3                ; AMOUNT OF COLORS
             SUBQ.B  #1, D3                  ; ADJUST TO DBRA
+
+            CMPI.B  #0, BUFFMODE
+            BEQ     .STATIC
+            MOVE.W  LVLCLCNT, D4            ; GET LEVEL COLOR COUNTER
+            BRA     .CLLOOP
+
+.STATIC     MOVE.W  STACLCNT, D4            ; GET STATIC COLOR COUNTER
 
 .CLLOOP
             MOVEQ   #4, D2                  ; READ COLOR
@@ -62,6 +71,11 @@ BTMREAD
             MOVEQ   #53, D0
             MOVEQ   #3, D2                  ; READ AMOUNT, WIDTH AND HEIGHT
             TRAP    #15
+
+            MOVE.B  (A1), D3
+            MOVE.B  1(A1), D0
+
+            MULU    D0, D3
 
 .END
             MOVEM.L (SP)+, D0-D4/A2

@@ -12,10 +12,12 @@ BUFFMODE    DC.B    0
 
 STACLCNT    DC.W    0                       ; STATIC COLOR BUFFER COUNTER
 STATLCNT    DC.W    0                       ; STATIC TILE BUFFER COUNTER
+STAEICNT    DC.W    0                       ; STATIC ENTITY INFO BUFFER COUNTER
 
 LVLCLCNT    DC.W    0                       ; LEVEL COLOR BUFFER COUNTER
 LVLTLCNT    DC.W    0                       ; LELEL TILE BUFFER COUNTER
 LVLMPCNT    DC.W    0                       ; LEVEL MAP BUFFER COUNTER
+LVLEICNT    DC.W    0                       ; LEVEL ENTITY INFO BUFFER COUNTER
 
 ; --- POINTERS -----------------------------------------------------------------
 ; POINTERS ARE USED TO KNOW WHAT DATA IS WHERE IN THE BUFFERS.

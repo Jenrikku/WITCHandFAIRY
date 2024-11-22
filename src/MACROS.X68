@@ -70,17 +70,16 @@ RDJMP       MACRO
 ; ------------------------------------------------------------------------------
 BUFCP       MACRO
 ; COPIES THE CONTENTS OF \1.\0 TO A BUFFER IN \2.
-; MODIFIES THE ADDRESS REGISTER SPECIFIED IN \3 WHERE THE DATA WAS WRITTEN.
+; SETS THE ADDRESS REGISTER SPECIFIED IN \3 TO WHERE THE DATA WAS WRITTEN.
 ; AN ADDITIONAL AUXILIARY DATA REGISTER IS REQUIRED IN \4.
 ; THE BUFFER TO WRITE THE DATA TO WILL DEPEND ON THE BUFFER MODE.
-; AVAILABLE BUFFERS: CL, TL, MP.
+; AVAILABLE BUFFERS: CL, TL, MP, EI.
 ; MP IS ONLY AVAILABLE IN LEVEL MODE.
 ; ------------------------------------------------------------------------------
 
             CMPI.B  #0, BUFFMODE            ; CHECK BUFFER MODE
             BEQ     STATIC\@
 
-            CLR.W   \4
             SIZE.\0 \4
 
             IFC     \2, CL
@@ -98,6 +97,11 @@ BUFCP       MACRO
                 ADDA    LVLMPCNT, \3
                 ADD.W   \4, LVLMPCNT
             ENDC
+            IFC     \2, EI
+                LEA     LVLEIBUF, \3
+                ADDA    LVLEICNT, \3
+                ADD.W   \4, LVLEICNT
+            ENDC
 
             BRA     END\@
 
@@ -113,6 +117,54 @@ STATIC\@
                 ADDA    STATLCNT, \3
                 ADD.W   \4, STATLCNT
             ENDC
+            IFC     \2, EI
+                LEA     STAEIBUF, \3
+                ADDA    STAEICNT, \3
+                ADD.W   \4, STAEICNT
+            ENDC
+
+END\@       
+            MOVE.\0 \1, (\3)                ; COPIES THE CONTENTES TO THE BUFFER
+
+            ENDM
+
+; ------------------------------------------------------------------------------
+BUFCNT      MACRO
+; GETS THE COUNTER OF THE BUFFER SPECIFIED IN \1 AND PUTS THEM INTO \2.W
+; THE RESULTING VALUE WILL DEPEND ON THE BUFFER MODE.
+; AVAILABLE BUFFERS: CL, TL, MP, EI.
+; MP IS ONLY AVAILABLE IN LEVEL MODE.
+; ------------------------------------------------------------------------------
+
+            CMPI.B  #0, BUFFMODE            ; CHECK BUFFER MODE
+            BEQ     STATIC\@
+
+            IFC     \1, CL
+                MOVE.W  LVLCLCNT, \2
+            ENDC
+            IFC     \1, TL
+                MOVE.W  LVLTLCNT, \2
+            ENDC
+            IFC     \1, MP
+                MOVE.W  LVLMPCNT, \2
+            ENDC
+            IFC     \1, EI
+                MOVE.W  LVLEICNT, \2
+            ENDC
+
+            BRA     END\@
+
+STATIC\@
+
+            IFC     \1, CL
+                MOVE.W  STACLCNT, \2
+            ENDC
+            IFC     \1, TL
+                MOVE.W  STATLCNT, \2
+            ENDC
+            IFC     \1, EI
+                MOVE.W  STAEICNT, \2
+            ENDC
 
 END\@       
             MOVE.\0 \1, (\3)                ; COPIES THE CONTENTES TO THE BUFFER
@@ -127,4 +179,6 @@ GFXCL       MACRO
             MOVEQ   #80, D0
             MOVE.L  #$\1, D2
             TRAP    #15
+
+            ENDM
             

@@ -10,9 +10,8 @@ BTMREAD
 ; MODIFIES : NONE
 ; ------------------------------------------------------------------------------
     
-            MOVEM.L D0-D4/A2, -(SP)
+            MOVEM.L D0-D5/A2, -(SP)
 
-            CLR.L   D0
             CLR.L   D1
             CLR.L   D2
             CLR.L   D3
@@ -37,24 +36,19 @@ BTMREAD
             MOVE.W  CL
 
             MOVEQ   #53, D0
-            MOVEQ   #1, D2
+            MOVEQ   #1, D2                  ; READ AMOUNT OF COLORS
             TRAP    #15
 
-            MOVE.B  (A1), D3                ; AMOUNT OF COLORS
-            SUBQ.B  #1, D3                  ; ADJUST TO DBRA
+            MOVE.B  (A1), D3                ; PUT AMOUNT OF COLORS IN D3
+            SUBQ.B  #1, D3                  ; ADJUST FOR DBRA
 
-            CMPI.B  #0, BUFFMODE
-            BEQ     .STATIC
-            MOVE.W  LVLCLCNT, D4            ; GET LEVEL COLOR COUNTER
-            BRA     .CLLOOP
+            BUFCNT  CL, D4                  ; GET COLOR COUNTER (USED ON TL)
 
-.STATIC     MOVE.W  STACLCNT, D4            ; GET STATIC COLOR COUNTER
+            MOVEQ   #4, D2                  ; EACH COLOR IS 4 BYTES LONG
 
 .CLLOOP
-            MOVEQ   #4, D2                  ; READ COLOR
-            TRAP    #15
-
-            BUFCP.L (A1), CL, A2, D2        ; WRITE COLOR TO BUFFER
+            TRAP    #15                     ; READ COLOR
+            BUFCP.L (A1), CL, A2, D5        ; WRITE COLOR TO BUFFER
 
             DBRA    D3, .CLLOOP
 
@@ -72,12 +66,30 @@ BTMREAD
             MOVEQ   #3, D2                  ; READ AMOUNT, WIDTH AND HEIGHT
             TRAP    #15
 
+            CLR.B   3(A1)
+
+            BUFCP.L (A1), EI, A2, D5        ; COPY DATA TO ENTITY INFO
+
+            BUFCNT  TL, D3
+            BUFCP.W D3, EI, A2, D5          ; WRITE POINTER TO TILE BUFFER
+
             MOVE.B  (A1), D3
             MOVE.B  1(A1), D0
 
             MULU    D0, D3
 
+            MOVE.B 2(A1), D0
+
+            MULU    D0, D3                  ; D3 NOW IS TOTAL BYTES TO READ
+
+            MOVEQ   #1, D2                  ; EACH PIXEL IS 1 BYTE LONG
+
+.TLLOOP
+            TRAP    #15
+            CLR.W   D5
+            ; TO-DO: SUM D4 WITH PIXEL AND THAT'S THE RESULTING COLOR
+
 .END
-            MOVEM.L (SP)+, D0-D4/A2
+            MOVEM.L (SP)+, D0-D5/A2
 
             RTS

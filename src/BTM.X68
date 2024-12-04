@@ -10,12 +10,14 @@ BTMREAD
 ; MODIFIES : NONE
 ; ------------------------------------------------------------------------------
     
-            MOVEM.L D0-D5/A2, -(SP)
+            MOVEM.L D0-D6/A2, -(SP)
 
             CLR.L   D1
             CLR.L   D2
             CLR.L   D3
             CLR.L   D4
+            CLR.L   D5
+            CLR.L   D6
 
             MOVEQ   #51, D0                 ; OPEN FILE (WITH A1=FILEPATH)
             TRAP    #15
@@ -48,7 +50,7 @@ BTMREAD
 
 .CLLOOP
             TRAP    #15                     ; READ COLOR
-            BUFCP.L (A1), CL, A2, D5        ; WRITE COLOR TO BUFFER
+            BUFCP.L (A1), CL, A2, D6        ; WRITE COLOR TO BUFFER
 
             DBRA    D3, .CLLOOP
 
@@ -68,10 +70,10 @@ BTMREAD
 
             CLR.B   3(A1)
 
-            BUFCP.L (A1), EI, A2, D5        ; COPY DATA TO ENTITY INFO
+            BUFCP.L (A1), EI, A2, D6        ; COPY DATA TO ENTITY INFO
 
             BUFCNT  TL, D3
-            BUFCP.W D3, EI, A2, D5          ; WRITE POINTER TO TILE BUFFER
+            BUFCP.W D3, EI, A2, D6          ; WRITE POINTER TO TILE BUFFER
 
             MOVE.B  (A1), D3
             MOVE.B  1(A1), D0
@@ -81,15 +83,20 @@ BTMREAD
             MOVE.B 2(A1), D0
 
             MULU    D0, D3                  ; D3 NOW IS TOTAL BYTES TO READ
+            SUBQ.W  #1, D3                  ; ADJUST FOR DBRA
 
             MOVEQ   #1, D2                  ; EACH PIXEL IS 1 BYTE LONG
 
 .TLLOOP
             TRAP    #15
-            CLR.W   D5
-            ; TO-DO: SUM D4 WITH PIXEL AND THAT'S THE RESULTING COLOR
+            MOVE.B  (A1), D5
+            ADD.B   D4, D5                  ; CALCULATE ABSOLUTE COLOR INDEX
+
+            BUFCP.W D5, TL, A2, D6
+
+            DBRA    D3, .TLLOOP
 
 .END
-            MOVEM.L (SP)+, D0-D5/A2
+            MOVEM.L (SP)+, D0-D6/A2
 
             RTS

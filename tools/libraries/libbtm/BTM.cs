@@ -90,18 +90,18 @@ public sealed class BTM
             return Read(start);
     }
 
-    public static unsafe void Write(BTM btm, string path)
+    public unsafe void Write(string path)
     {
         int size = 31;
-        size += btm.Colors.Length * 4;
+        size += Colors.Length * 4;
         size += 16 - (size % 16 == 0 ? 16 : size % 16);
-        size += btm.Tiles.Length * btm.Tiles[0].Height * btm.Tiles[0].Width;
+        size += Tiles.Length * Tiles[0].Height * Tiles[0].Width;
         size += 16 - (size % 16 == 0 ? 16 : size % 16);
-        size += btm.Map.Length;
+        size += Map.Length;
 
         byte[] buffer = new byte[size];
         fixed (byte* ptr = buffer)
-            Write(btm, ptr);
+            Write(ptr);
 
         File.WriteAllBytes(path, buffer);
     }
@@ -148,10 +148,10 @@ public sealed class BTM
         return btm;
     }
 
-    public static unsafe void Write(BTM btm, byte* ptr)
+    public unsafe void Write(byte* ptr)
     {
         byte* start = ptr;
-        bool reverse = btm.IsBigEndian == BitConverter.IsLittleEndian;
+        bool reverse = IsBigEndian == BitConverter.IsLittleEndian;
 
         WriteValue<uint>(ref ptr, 0x4A6B424D, reverse);
 
@@ -161,9 +161,9 @@ public sealed class BTM
         // Color palette section:
 
         WriteValue<ushort>(ref ptr, 0x434C, reverse);
-        *ptr++ = (byte)btm.Colors.Length;
+        *ptr++ = (byte)Colors.Length;
 
-        foreach (Rgba32 color in btm.Colors)
+        foreach (Rgba32 color in Colors)
             WriteValue(ref ptr, color with { A = 0 }, reverse);
 
         // Tileset section:
@@ -171,15 +171,15 @@ public sealed class BTM
         Align(ref ptr, start, 16);
         uint tsOffset = (uint)(start - ptr);
 
-        byte tileWidth = (byte)btm.Tiles[0].Width;
-        byte tileHeight = (byte)btm.Tiles[0].Height;
+        byte tileWidth = (byte)Tiles[0].Width;
+        byte tileHeight = (byte)Tiles[0].Height;
 
         WriteValue<ushort>(ref ptr, 0x5453, reverse);
-        *ptr++ = (byte)btm.Tiles.Length;
+        *ptr++ = (byte)Tiles.Length;
         *ptr++ = tileWidth;
         *ptr++ = tileHeight;
 
-        foreach (Image<Rgba32> image in btm.Tiles)
+        foreach (Image<Rgba32> image in Tiles)
         {
             for (int i = 0; i < tileHeight; i++)
             {
@@ -193,7 +193,7 @@ public sealed class BTM
                         continue;
                     }
 
-                    int index = Array.IndexOf(btm.Colors, new(pixel.R, pixel.G, pixel.B));
+                    int index = Array.IndexOf(Colors, new(pixel.R, pixel.G, pixel.B));
 
                     if (index < 0)
                     {
@@ -212,10 +212,10 @@ public sealed class BTM
         uint mapOffset = (uint)(start - ptr);
 
         WriteValue<ushort>(ref ptr, 0x4D50, reverse);
-        *ptr++ = btm.MapWidth;
-        *ptr++ = btm.MapHeight;
+        *ptr++ = MapWidth;
+        *ptr++ = MapHeight;
 
-        foreach (byte tileIdx in btm.Map)
+        foreach (byte tileIdx in Map)
             *ptr++ = tileIdx;
 
         // Header offsets:

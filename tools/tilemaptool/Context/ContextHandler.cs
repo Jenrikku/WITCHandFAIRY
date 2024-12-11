@@ -54,7 +54,7 @@ internal static class ContextHandler
         if (BTM is null)
             return;
 
-        BTM.Write(BTM, path);
+        btm.Write(path);
         IsSaved = false;
     }
 }

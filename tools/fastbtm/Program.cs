@@ -51,4 +51,4 @@ image.ProcessPixelRows(accessor =>
 
 BTM btm = new(images.ToArray(), map, mapWidth, mapHeight);
 
-BTM.Write(btm, output);
+btm.Write(output);

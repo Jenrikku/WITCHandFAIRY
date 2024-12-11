@@ -2,13 +2,19 @@
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 
-const byte tileHeight = 16;
 const byte tileWidth = 16;
+const byte tileHeight = 16;
+
+const byte mapWidth = 10;
+const byte mapHeight = 10;
 
 const string tiles = "in.png";
 const string output = "out.btm";
 
-byte[,] map = new byte[,] { };
+byte[,] map = new byte[,]
+{
+    { 1 }
+};
 
 Image<Rgba32> image = Image.Load<Rgba32>(tiles);
 
@@ -43,6 +49,6 @@ image.ProcessPixelRows(accessor =>
     }
 });
 
-BTM btm = new(images.ToArray(), map);
+BTM btm = new(images.ToArray(), map, mapWidth, mapHeight);
 
 BTM.Write(btm, output);

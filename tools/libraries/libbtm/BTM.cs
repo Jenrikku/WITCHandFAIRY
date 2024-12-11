@@ -22,10 +22,13 @@ public sealed class BTM
 
     private BTM() { }
 
-    public BTM(Image<Rgba32>[] tiles, byte[,] map)
+    public BTM(Image<Rgba32>[] tiles, byte[,] map, byte mapWidth, byte mapHeight)
     {
         Tiles = tiles;
         Map = map;
+
+        MapWidth = mapWidth;
+        MapHeight = mapHeight;
 
         HashSet<Rgba32> colors = new();
 

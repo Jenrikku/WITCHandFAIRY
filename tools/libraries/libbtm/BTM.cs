@@ -211,18 +211,22 @@ public sealed class BTM
         Align(ref ptr, start, 16);
         uint mapOffset = (uint)(start - ptr);
 
-        WriteValue<ushort>(ref ptr, 0x4D50, reverse);
-        *ptr++ = MapWidth;
-        *ptr++ = MapHeight;
+        if (Map.Length > 0)
+        {
+            WriteValue<ushort>(ref ptr, 0x4D50, reverse);
+            *ptr++ = MapWidth;
+            *ptr++ = MapHeight;
 
-        foreach (byte tileIdx in Map)
-            *ptr++ = tileIdx;
-
+            foreach (byte tileIdx in Map)
+                *ptr++ = tileIdx;
+        }
         // Header offsets:
 
         ptr = start + 8;
         WriteValue(ref ptr, tsOffset, reverse);
-        WriteValue(ref ptr, mapOffset, reverse);
+
+        if (Map.Length > 0)
+            WriteValue(ref ptr, mapOffset, reverse);
     }
 
     private static unsafe void ReadCL(BTM btm, byte* ptr, bool reverse)

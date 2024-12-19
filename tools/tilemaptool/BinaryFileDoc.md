@@ -22,7 +22,7 @@ The colors are in the BGR format.
 |--------|------|---------------------|
 | 0x00   | 2    | Magic ('CL')        |
 | 0x02   | 1    | Amount of colors    |
-| 0x03   | N    | Colors in BGR / RGB |
+| 0x04   | N    | Colors in BGR / RGB |
 
 With N = Amount of colors * 4
 

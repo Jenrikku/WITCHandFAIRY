@@ -92,12 +92,20 @@ public sealed class BTM
 
     public unsafe void Write(string path)
     {
-        int size = 31;
+        int size = 16;
+        size += 4;
         size += Colors.Length * 4;
         size += 16 - (size % 16 == 0 ? 16 : size % 16);
+        size += 5;
         size += Tiles.Length * Tiles[0].Height * Tiles[0].Width;
         size += 16 - (size % 16 == 0 ? 16 : size % 16);
-        size += Map.Length;
+
+        if (Map.Length > 0)
+        {
+            size += 4;
+            size += Map.Length;
+            size += 16 - (size % 16 == 0 ? 16 : size % 16);
+        }
 
         byte[] buffer = new byte[size];
         fixed (byte* ptr = buffer)
@@ -169,7 +177,7 @@ public sealed class BTM
         // Tileset section:
 
         Align(ref ptr, start, 16);
-        uint tsOffset = (uint)(start - ptr);
+        uint tsOffset = (uint)(ptr - start);
 
         byte tileWidth = (byte)Tiles[0].Width;
         byte tileHeight = (byte)Tiles[0].Height;
@@ -209,7 +217,7 @@ public sealed class BTM
         // Map section:
 
         Align(ref ptr, start, 16);
-        uint mapOffset = (uint)(start - ptr);
+        uint mapOffset = (uint)(ptr - start);
 
         if (Map.Length > 0)
         {

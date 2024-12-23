@@ -35,7 +35,7 @@ RDMGC       MACRO
             SIZE.\0 D2
             TRAP    #15
 
-            CMPI.\0 #'\1', (A1)             ; CHECK MAGIC IN \1
+            CMPI.\0 #\1, (A1)               ; CHECK MAGIC IN \1
             BNE     \2                      ; JUMP TO \2 IF INCORRECT
 
             ENDM
@@ -77,10 +77,10 @@ BUFCP       MACRO
 ; MP IS ONLY AVAILABLE IN LEVEL MODE.
 ; ------------------------------------------------------------------------------
 
+            SIZE.\0 \4
+
             CMPI.B  #0, BUFFMODE            ; CHECK BUFFER MODE
             BEQ     .STATIC\@
-
-            SIZE.\0 \4
 
             IFC     \2, CL
                 LEA     LVLCLBUF, \3

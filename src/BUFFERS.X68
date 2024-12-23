@@ -30,17 +30,17 @@ ENMBFPTR      DS.W    ENMMAXTP              ; ENEMIES POINTERS TO LEVEL EI
 
 ; STATIC BUFFERS (ONE-TIME READ)
 STACLBUF    DS.L    16                      ; COLORS
-STATLBUF    DS.B    256                     ; TILES (SPRITES)
+STATLBUF    DS.B    256*6*2                 ; TILES (SPRITES)
 
             DS.W    0
 STAEIBUF    DS.B    6*2                     ; ENTITY INFO
 
 ; LEVEL BUFFERS (RESET EVERY NEW LEVEL)
 LVLCLBUF    DS.L    255                     ; MAP AND ENEMIES COLORS
-LVLTLBUF    DS.B    16384                   ; MAP AND ENEMIES TILES (SPRITES)
+LVLTLBUF    DS.B    256*10+1024*2*ENMMAXTP  ; MAP AND ENEMIES TILES (SPRITES)
 LVLMPBUF    DS.B    100                     ; MAP DATA
 
             DS.W    0
-LVLEIBUF    DS.B    6*ENMMAXTP              ; ENEMIES' ENTITY INFO
+LVLEIBUF    DS.B    6*(ENMMAXTP+1)          ; ENEMIES' ENTITY INFO
 
 FILERBUF    DS.B    4                       ; FILE READ TEMPORARY BUFFER

@@ -25,6 +25,11 @@ START
             JSR     PL2INIT
             JSR     SCOINIT
 
+; --- TESTING --------------------------
+
+            LEA     LVL1MAP, A1
+            JSR     BTMREAD
+
 .LOOP
 
 ; --- UPDATE -------------------------------------------------------------------
@@ -50,6 +55,7 @@ START
 
 ; --- VARIABLES ---------------------------------------------------------------
             
+            INCLUDE "FILEDEF.X68"
             INCLUDE "VARS.X68"
             INCLUDE "SYSVARS.X68"
             INCLUDE "BUFFERS.X68"

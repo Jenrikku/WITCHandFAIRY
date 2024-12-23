@@ -25,11 +25,6 @@ START
             JSR     PL2INIT
             JSR     SCOINIT
 
-; --- TESTING --------------------------
-
-            LEA     LVL1MAP, A1
-            JSR     BTMREAD
-
 .LOOP
 
 ; --- UPDATE -------------------------------------------------------------------

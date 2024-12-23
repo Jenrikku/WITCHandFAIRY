@@ -26,16 +26,11 @@ RDMGC       MACRO
 ; MAKE SURE THAT D0 AND D2 ARE PROPERLY CLEARED.
 ; ------------------------------------------------------------------------------
 
-            IFC     \0, ''
-                FAIL ERROR: RDMGC needs .B, .W or .L
-                MEXIT
-            ENDC
-
             MOVEQ   #53, D0
             SIZE.\0 D2
             TRAP    #15
 
-            CMPI.\0 #\1, (A1)               ; CHECK MAGIC IN \1
+            CMPI.\0 #\1, (A1)               ; CHECK IF MAGIC IS \1
             BNE     \2                      ; JUMP TO \2 IF INCORRECT
 
             ENDM
@@ -43,14 +38,9 @@ RDMGC       MACRO
 ; ------------------------------------------------------------------------------
 RDJMP       MACRO
 ; READS AN ABSOLUTE OFFSET FROM THE OPENED FILE AND JUMPS TO IT IN THE FILE.
-; OPTIONALLY, JUMP TO TAG IN \1 IF PRESENT WHEN THE OFFSET IS 0.
+; OPTIONALLY, JUMP TO \1 IF PRESENT WHEN THE OFFSET IS 0.
 ; MAKE SURE THAT D0 AND D2 ARE PROPERLY CLEARED.
 ; ------------------------------------------------------------------------------
-
-            IFC     \0, ''
-                FAIL ERROR: RDJMP needs .B, .W or .L
-                MEXIT
-            ENDC
 
             MOVEQ   #53, D0
             SIZE.\0 D2
@@ -59,7 +49,7 @@ RDJMP       MACRO
             MOVEQ   #55, D0
             MOVE.\0 (A1), D2
 
-            IFNC    \1, ''
+            IFARG   1
                 BEQ     \1                  ; JUMP TO \1 IF OFFSET IS 0
             ENDC
 
@@ -73,7 +63,7 @@ BUFCP       MACRO
 ; SETS THE ADDRESS REGISTER SPECIFIED IN \3 TO WHERE THE DATA WAS WRITTEN.
 ; AN ADDITIONAL AUXILIARY DATA REGISTER IS REQUIRED IN \4.
 ; THE BUFFER TO WRITE THE DATA TO WILL DEPEND ON THE BUFFER MODE.
-; AVAILABLE BUFFERS: CL, TL, MP, EI.
+; AVAILABLE BUFFERS: CL, TS, MP, EI.
 ; MP IS ONLY AVAILABLE IN LEVEL MODE.
 ; ------------------------------------------------------------------------------
 
@@ -87,10 +77,10 @@ BUFCP       MACRO
                 ADDA    LVLCLCNT, \3
                 ADD.W   \4, LVLCLCNT
             ENDC
-            IFC     \2, TL
-                LEA     LVLTLBUF, \3
-                ADDA    LVLTLCNT, \3
-                ADD.W   \4, LVLTLCNT
+            IFC     \2, TS
+                LEA     LVLTSBUF, \3
+                ADDA    LVLTSCNT, \3
+                ADD.W   \4, LVLTSCNT
             ENDC
             IFC     \2, MP
                 LEA     LVLMPBUF, \3
@@ -112,10 +102,10 @@ BUFCP       MACRO
                 ADDA    STACLCNT, \3
                 ADD.W   \4, STACLCNT
             ENDC
-            IFC     \2, TL
-                LEA     STATLBUF, \3
-                ADDA    STATLCNT, \3
-                ADD.W   \4, STATLCNT
+            IFC     \2, TS
+                LEA     STATSBUF, \3
+                ADDA    STATSCNT, \3
+                ADD.W   \4, STATSCNT
             ENDC
             IFC     \2, EI
                 LEA     STAEIBUF, \3
@@ -124,7 +114,7 @@ BUFCP       MACRO
             ENDC
 
 .END\@       
-            MOVE.\0 \1, (\3)                ; COPIES THE CONTENTES TO THE BUFFER
+            MOVE.\0 \1, (\3)                ; COPIES THE CONTENTS TO THE BUFFER
 
             ENDM
 
@@ -132,7 +122,7 @@ BUFCP       MACRO
 BUFCNT      MACRO
 ; GETS THE COUNTER OF THE BUFFER SPECIFIED IN \1 AND PUTS THEM INTO \2.W
 ; THE RESULTING VALUE WILL DEPEND ON THE BUFFER MODE.
-; AVAILABLE BUFFERS: CL, TL, MP, EI.
+; AVAILABLE BUFFERS: CL, TS, MP, EI.
 ; MP IS ONLY AVAILABLE IN LEVEL MODE.
 ; ------------------------------------------------------------------------------
 
@@ -142,8 +132,8 @@ BUFCNT      MACRO
             IFC     \1, CL
                 MOVE.W  LVLCLCNT, \2
             ENDC
-            IFC     \1, TL
-                MOVE.W  LVLTLCNT, \2
+            IFC     \1, TS
+                MOVE.W  LVLTSCNT, \2
             ENDC
             IFC     \1, MP
                 MOVE.W  LVLMPCNT, \2
@@ -159,8 +149,8 @@ BUFCNT      MACRO
             IFC     \1, CL
                 MOVE.W  STACLCNT, \2
             ENDC
-            IFC     \1, TL
-                MOVE.W  STATLCNT, \2
+            IFC     \1, TS
+                MOVE.W  STATSCNT, \2
             ENDC
             IFC     \1, EI
                 MOVE.W  STAEICNT, \2

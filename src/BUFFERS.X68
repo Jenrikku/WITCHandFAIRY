@@ -11,11 +11,11 @@ BUFFMODE    DC.B    0
 ; COUNTERS POINT TO THE LAST FREE INDEX OF THE RELATED BUFFER.
 
 STACLCNT    DC.W    0                       ; STATIC COLOR BUFFER COUNTER
-STATLCNT    DC.W    0                       ; STATIC TILE BUFFER COUNTER
+STATSCNT    DC.W    0                       ; STATIC TILE SET BUFFER COUNTER
 STAEICNT    DC.W    0                       ; STATIC ENTITY INFO BUFFER COUNTER
 
 LVLCLCNT    DC.W    0                       ; LEVEL COLOR BUFFER COUNTER
-LVLTLCNT    DC.W    0                       ; LELEL TILE BUFFER COUNTER
+LVLTSCNT    DC.W    0                       ; LELEL TILE SET BUFFER COUNTER
 LVLMPCNT    DC.W    0                       ; LEVEL MAP BUFFER COUNTER
 LVLEICNT    DC.W    0                       ; LEVEL ENTITY INFO BUFFER COUNTER
 
@@ -30,14 +30,14 @@ ENMBFPTR      DS.W    ENMMAXTP              ; ENEMIES POINTERS TO LEVEL EI
 
 ; STATIC BUFFERS (ONE-TIME READ)
 STACLBUF    DS.L    16                      ; COLORS
-STATLBUF    DS.B    256*6*2                 ; TILES (SPRITES)
+STATSBUF    DS.B    256*6*2                 ; TILE SET (SPRITES)
 
             DS.W    0
 STAEIBUF    DS.B    6*2                     ; ENTITY INFO
 
 ; LEVEL BUFFERS (RESET EVERY NEW LEVEL)
 LVLCLBUF    DS.L    255                     ; MAP AND ENEMIES COLORS
-LVLTLBUF    DS.B    256*10+1024*2*ENMMAXTP  ; MAP AND ENEMIES TILES (SPRITES)
+LVLTSBUF    DS.B    256*10+1024*2*ENMMAXTP  ; MAP AND ENEMIES TILES (SPRITES)
 LVLMPBUF    DS.B    100                     ; MAP DATA
 
             DS.W    0

@@ -2,6 +2,8 @@
 ; BINARY TILE MAP FILE MANAGEMENT
 ; ==============================================================================
 
+            OPT     MEX
+
 ; ------------------------------------------------------------------------------
 BTMREAD
 ; READS A BINARY TILE MAP AND STORES IT TO MEMORY.
@@ -42,7 +44,7 @@ BTMREAD
             MOVE.B  (A1), D3                ; PUT AMOUNT OF COLORS IN D3
             SUBQ.B  #1, D3                  ; ADJUST FOR DBRA
 
-            BUFCNT  CL, D4                  ; GET COLOR COUNTER (USED ON TL)
+            BUFCNT  CL, D4                  ; GET COLOR COUNTER (USED ON TS)
 
             MOVEQ   #4, D2                  ; EACH COLOR IS 4 BYTES LONG
 
@@ -54,15 +56,15 @@ BTMREAD
 
             DBRA    D3, .CLLOOP
 
-            ; TL SECTION:
+            ; TS SECTION:
 
             MOVEQ   #55, D0
-            MOVEQ   #8, D2                  ; GO TO TL SECTION OFFSET
+            MOVEQ   #8, D2                  ; GO TO TS SECTION OFFSET
             TRAP    #15
 
-            RDJMP.L .END                    ; GO TO TL SECTION, END IF OFFSET=0
+            RDJMP.L .END                    ; GO TO TS SECTION, END IF OFFSET=0
 
-            RDMGC.W 'TL', .END              ; READ TL SECTION MAGIC
+            RDMGC.W 'TS', .END              ; READ TS SECTION MAGIC
 
             MOVEQ   #53, D0
             MOVEQ   #3, D2                  ; READ AMOUNT, WIDTH AND HEIGHT
@@ -72,7 +74,7 @@ BTMREAD
 
             BUFCP.L (A1), EI, A3, D6        ; COPY DATA TO ENTITY INFO
 
-            BUFCNT  TL, D3
+            BUFCNT  TS, D3
             BUFCP.W D3, EI, A2, D6          ; WRITE POINTER TO TILE BUFFER
 
             MOVE.B  (A1), D3
@@ -87,16 +89,16 @@ BTMREAD
 
             MOVEQ   #1, D2                  ; EACH PIXEL IS 1 BYTE LONG
 
-.TLLOOP
+.TSLOOP
             MOVEQ   #53, D0
             TRAP    #15
 
             MOVE.B  (A1), D5
             ADD.B   D4, D5                  ; CALCULATE ABSOLUTE COLOR INDEX
 
-            BUFCP.W D5, TL, A2, D6
+            BUFCP.B D5, TS, A2, D6
 
-            DBRA    D3, .TLLOOP
+            DBRA    D3, .TSLOOP
 
             ; MP SECTION:
 

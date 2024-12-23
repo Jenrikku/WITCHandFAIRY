@@ -78,7 +78,7 @@ BUFCP       MACRO
 ; ------------------------------------------------------------------------------
 
             CMPI.B  #0, BUFFMODE            ; CHECK BUFFER MODE
-            BEQ     STATIC\@
+            BEQ     .STATIC\@
 
             SIZE.\0 \4
 
@@ -103,9 +103,9 @@ BUFCP       MACRO
                 ADD.W   \4, LVLEICNT
             ENDC
 
-            BRA     END\@
+            BRA     .END\@
 
-STATIC\@
+.STATIC\@
 
             IFC     \2, CL
                 LEA     STACLBUF, \3
@@ -123,7 +123,7 @@ STATIC\@
                 ADD.W   \4, STAEICNT
             ENDC
 
-END\@       
+.END\@       
             MOVE.\0 \1, (\3)                ; COPIES THE CONTENTES TO THE BUFFER
 
             ENDM
@@ -137,7 +137,7 @@ BUFCNT      MACRO
 ; ------------------------------------------------------------------------------
 
             CMPI.B  #0, BUFFMODE            ; CHECK BUFFER MODE
-            BEQ     STATIC\@
+            BEQ     .STATIC\@
 
             IFC     \1, CL
                 MOVE.W  LVLCLCNT, \2
@@ -152,9 +152,9 @@ BUFCNT      MACRO
                 MOVE.W  LVLEICNT, \2
             ENDC
 
-            BRA     END\@
+            BRA     .END\@
 
-STATIC\@
+.STATIC\@
 
             IFC     \1, CL
                 MOVE.W  STACLCNT, \2
@@ -166,9 +166,7 @@ STATIC\@
                 MOVE.W  STAEICNT, \2
             ENDC
 
-END\@       
-            MOVE.\0 \1, (\3)                ; COPIES THE CONTENTES TO THE BUFFER
-
+.END\@       
             ENDM
 
 ; ------------------------------------------------------------------------------

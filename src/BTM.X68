@@ -35,8 +35,6 @@ BTMREAD
 
             RDMGC.W CL, .END                ; READ CL SECTION MAGIC
 
-            MOVE.W  CL
-
             MOVEQ   #53, D0
             MOVEQ   #1, D2                  ; READ AMOUNT OF COLORS
             TRAP    #15

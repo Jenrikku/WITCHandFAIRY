@@ -8,6 +8,8 @@ Entity informations are generated when the BTM file is read and are stored in th
 | 0x00   | 1    | Frame count         |
 | 0x01   | 1    | Width of tiles      |
 | 0x02   | 1    | Height of tiles     |
-| 0x04   | 2    | Pointer in buffer   |
+| 0x04   | 2    | Tile length (w*h)   |
+| 0x05   | 2    | Pointer in buffer   |
 
+The tile length is precalculated to avoid having a multiplication every frame.
 The pointer is to the tiles buffer of the same buffer mode this entity info is in.

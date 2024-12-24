@@ -33,7 +33,7 @@ STACLBUF    DS.L    16                      ; COLORS
 STATSBUF    DS.B    256*6*2                 ; TILE SET (SPRITES)
 
             DS.W    0
-STAEIBUF    DS.B    6*2                     ; ENTITY INFO
+STAEIBUF    DS.B    8*2                     ; ENTITY INFO
 
 ; LEVEL BUFFERS (RESET EVERY NEW LEVEL)
 LVLCLBUF    DS.L    255                     ; MAP AND ENEMIES COLORS
@@ -41,6 +41,6 @@ LVLTSBUF    DS.B    256*22+1024*2*ENMMAXTP  ; MAP AND ENEMIES TILES (SPRITES)
 LVLMPBUF    DS.B    100                     ; MAP DATA
 
             DS.W    0
-LVLEIBUF    DS.B    6*(ENMMAXTP+1)          ; ENEMIES' ENTITY INFO
+LVLEIBUF    DS.B    8*(ENMMAXTP+1)          ; ENEMIES' ENTITY INFO
 
 FILERBUF    DS.B    4                       ; FILE READ TEMPORARY BUFFER

@@ -45,6 +45,7 @@ BTMREAD
             SUBQ.B  #1, D3                  ; ADJUST FOR DBRA
 
             BUFCNT  CL, D4                  ; GET COLOR COUNTER (USED ON TS)
+            LSR.W   #2, D4                  ; DIVIDE BY 4 (LONG SIZE)
 
             MOVEQ   #4, D2                  ; EACH COLOR IS 4 BYTES LONG
 
@@ -97,10 +98,14 @@ BTMREAD
             MOVEQ   #53, D0
             TRAP    #15
 
-            MOVE.B  (A1), D5
+            MOVE.B  (A1), D5                ; GET COLOR
+
+            CMPI.B  #$FF, D5                ; CHECK IF IT'S FF (ALPHA)
+            BEQ     .ALPHA
+
             ADD.B   D4, D5                  ; CALCULATE ABSOLUTE COLOR INDEX
 
-            BUFCP.B D5, TS, A2, D6
+.ALPHA      BUFCP.B D5, TS, A2, D6
 
             DBRA    D3, .TSLOOP
 

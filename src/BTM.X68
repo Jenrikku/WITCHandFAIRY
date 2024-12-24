@@ -80,17 +80,22 @@ BTMREAD
             MOVE.B  1(A1), D0
             MOVE.B  2(A1), D3
 
-            MULU.W  D0, D3                  ; D3 NOW IS TILE LENGTH
-
-            BUFCP.W D3, EI, A2, D6          ; COPY TILE LENGTH TO ENTITY INFO
-
-            BUFCNT  TS, D5
-            BUFCP.W D5, EI, A2, D6          ; WRITE POSITION WITHIN TILE BUFFER
+            MULU.W  D0, D3                  
+            MOVE.W  D3, D2                  ; D2 NOW IS TILE LENGTH
 
             MOVE.B (A1), D0
 
             MULU.W  D0, D3                  ; D3 NOW IS TOTAL BYTES TO READ
             SUBQ.W  #1, D3                  ; ADJUST FOR DBRA
+
+            SUBQ.W  #1, D0                  ; D0 IS TILE COUNT - 1 (FOR DBRA)
+            BUFCNT  TS, D5
+
+.EILOOP            
+            BUFCP.W D5, EI, A2, D6          ; WRITE POSITION WITHIN TILE BUFFER
+            ADD.W   D2, D5
+
+            DBRA    D0, .EILOOP
 
             MOVEQ   #1, D2                  ; EACH PIXEL IS 1 BYTE LONG
 

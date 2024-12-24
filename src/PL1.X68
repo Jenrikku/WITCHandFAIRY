@@ -7,13 +7,15 @@ PL1INIT
 ; INITIALIZE WITCH.
 ; INPUT    : NONE 
 ; OUTPUT   : NONE 
-; MODIFIES : A1
+; MODIFIES : A1, A3
 ; ------------------------------------------------------------------------------
-            
+
         ; READ BTM FILE:
 
             LEA     BTMPL1, A1
             JSR     BTMREAD
+
+            MOVE.L  A3, PL1EIPOS
             
             RTS
             
@@ -33,4 +35,13 @@ PL1PLOT
 ; OUTPUT   : NONE
 ; MODIFIES : NONE
 ; ------------------------------------------------------------------------------
+            
+            CLR.W   D3
+            MOVE.B  PL1TILE, D3
+            MOVE.W  PL1POSX, D6
+            MOVE.W  PL1POSY, D7
+            MOVEA.L PL1EIPOS, A3
+
+            JSR     GFXEIPLT
+
             RTS

@@ -160,13 +160,50 @@ BUFCNT      MACRO
             ENDM
 
 ; ------------------------------------------------------------------------------
-GFXCL       MACRO
-; SETS GRAPHICS DRAW COLOR TO \1. (PEN COLOR)
+BUFAT       MACRO
+; GETS THE ADDRESS OF A POSITION WITHIN THE BUFFER WHERE THE BUFFER IS \1 AND
+; THE POSITION IS \2. THE RESULT IS WRITTEN INTO \3, WHICH MUST BE An.
+; AVAILABLE BUFFERS: CL, TS, MP, EI.
+; MP IS ONLY AVAILABLE IN LEVEL MODE.
 ; ------------------------------------------------------------------------------
+            
+            CMPI.B  #0, BUFFMODE            ; CHECK BUFFER MODE
+            BEQ     .STATIC\@
 
-            MOVEQ   #80, D0
-            MOVE.L  #$\1, D2
-            TRAP    #15
+            IFC     \1, CL
+                LEA     LVLCLBUF, \3
+                ADDA    \2, \3
+            ENDC
+            IFC     \1, TS
+                LEA     LVLTSBUF, \3
+                ADDA    \2, \3
+            ENDC
+            IFC     \1, MP
+                LEA     LVLMPBUF, \3
+                ADDA    \2, \3
+            ENDC
+            IFC     \1, EI
+                LEA     LVLEIBUF, \3
+                ADDA    \2, \3
+            ENDC
 
+            BRA     .END\@
+
+.STATIC\@
+
+            IFC     \1, CL
+                LEA     STACLBUF, \3
+                ADDA    \2, \3
+            ENDC
+            IFC     \1, TS
+                LEA     STATSBUF, \3
+                ADDA    \2, \3
+            ENDC
+            IFC     \1, EI
+                LEA     STAEIBUF, \3
+                ADDA    \2, \3
+            ENDC
+
+.END\@       
             ENDM
             

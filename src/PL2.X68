@@ -7,13 +7,15 @@ PL2INIT
 ; INITIALIZE FAIRY.
 ; INPUT    : NONE 
 ; OUTPUT   : NONE
-; MODIFIES : A1
+; MODIFIES : A1, A3
 ; ------------------------------------------------------------------------------
             
         ; READ BTM FILE:
 
             LEA     BTMPL2, A1
             JSR     BTMREAD
+
+            MOVE.L  A3, PL2EIPOS
             
             RTS
             
@@ -33,4 +35,13 @@ PL2PLOT
 ; OUTPUT   : NONE
 ; MODIFIES : NONE
 ; ------------------------------------------------------------------------------
+
+            CLR.W   D3
+            MOVE.B  PL2TILE, D3
+            MOVE.W  PL2POSX, D6
+            MOVE.W  PL2POSY, D7
+            MOVEA.L PL2EIPOS, A3
+
+            JSR     GFXEIPLT
+
             RTS

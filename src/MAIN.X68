@@ -15,6 +15,7 @@
             INCLUDE "PL2.X68"
             INCLUDE "SCORE.X68"
             INCLUDE "BTM.X68"
+            INCLUDE "GFX.X68"
            
 START
 
@@ -26,6 +27,8 @@ START
             JSR     SCOINIT
 
             MOVE.B  #1, BUFFMODE            ; SET BUFFER MODE TO LEVEL
+
+            ; LVL STUFF INIT
 
 .LOOP
 
@@ -43,8 +46,15 @@ START
 ; --- PLOT ---------------------------------------------------------------------
 
             JSR     SCOPLOT
+
+            ; LVL STUFF PLOT
+
+            MOVE.B  #0, BUFFMODE            ; SET BUFFER MODE TO STATIC
+
             JSR     PL1PLOT
             JSR     PL2PLOT
+
+            MOVE.B  #1, BUFFMODE            ; SET BUFFER MODE TO LEVEL
 
             BRA     .LOOP
 

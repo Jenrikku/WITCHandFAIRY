@@ -25,6 +25,8 @@ START
             JSR     PL2INIT
             JSR     SCOINIT
 
+            MOVE.B  #1, BUFFMODE            ; SET BUFFER MODE TO LEVEL
+
 .LOOP
 
 ; --- UPDATE -------------------------------------------------------------------

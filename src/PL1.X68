@@ -7,8 +7,14 @@ PL1INIT
 ; INITIALIZE WITCH.
 ; INPUT    : NONE 
 ; OUTPUT   : NONE 
-; MODIFIES : NONE
+; MODIFIES : A1
 ; ------------------------------------------------------------------------------
+            
+        ; READ BTM FILE:
+
+            LEA     BTMPL1, A1
+            JSR     BTMREAD
+            
             RTS
             
 ; ------------------------------------------------------------------------------

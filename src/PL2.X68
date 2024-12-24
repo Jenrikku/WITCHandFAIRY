@@ -7,8 +7,14 @@ PL2INIT
 ; INITIALIZE FAIRY.
 ; INPUT    : NONE 
 ; OUTPUT   : NONE
-; MODIFIES : NONE
+; MODIFIES : A1
 ; ------------------------------------------------------------------------------
+            
+        ; READ BTM FILE:
+
+            LEA     BTMPL2, A1
+            JSR     BTMREAD
+            
             RTS
             
 ; ------------------------------------------------------------------------------

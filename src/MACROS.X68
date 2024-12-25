@@ -69,7 +69,7 @@ BUFCP       MACRO
 
             SIZE.\0 \4
 
-            CMPI.B  #0, BUFFMODE            ; CHECK BUFFER MODE
+            TST.B   BUFFMODE                ; CHECK BUFFER MODE
             BEQ     .STATIC\@
 
             IFC     \2, CL
@@ -126,7 +126,7 @@ BUFCNT      MACRO
 ; MP IS ONLY AVAILABLE IN LEVEL MODE.
 ; ------------------------------------------------------------------------------
 
-            CMPI.B  #0, BUFFMODE            ; CHECK BUFFER MODE
+            TST.B   BUFFMODE                ; CHECK BUFFER MODE
             BEQ     .STATIC\@
 
             IFC     \1, CL
@@ -167,7 +167,7 @@ BUFAT       MACRO
 ; MP IS ONLY AVAILABLE IN LEVEL MODE.
 ; ------------------------------------------------------------------------------
             
-            CMPI.B  #0, BUFFMODE            ; CHECK BUFFER MODE
+            TST.B   BUFFMODE                ; CHECK BUFFER MODE
             BEQ     .STATIC\@
 
             IFC     \1, CL

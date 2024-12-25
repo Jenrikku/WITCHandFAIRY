@@ -24,7 +24,7 @@ BTMREAD
             MOVEQ   #51, D0                 ; OPEN FILE (WITH A1=FILEPATH)
             TRAP    #15
 
-            CMPI    #0, D0                  ; CHECKS IF FILE OPENED CORRECTLY
+            TST.L   D0                      ; CHECKS IF FILE OPENED CORRECTLY
             BNE     .END                    ; ABORT IF UNSUCCESSFUL
           
             LEA     FILERBUF, A1            ; GET ADDRESS OF FILE BUFFER

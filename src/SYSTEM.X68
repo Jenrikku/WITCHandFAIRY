@@ -20,4 +20,5 @@ SYSINIT
             MOVE.L  #SCRMODE, D1                    ; SET WINDOW MODE
             TRAP    #15
 
+            ANDI.W  #$D8FF, SR          ; SET USER MODE, ENABLE INTERRUPTIONS
             RTS

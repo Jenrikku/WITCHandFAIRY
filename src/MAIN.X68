@@ -21,6 +21,8 @@ START
 
 ; --- INITIALIZATION -----------------------------------------------------------
 
+            ORI.W   #$0700, SR              ; DISABLE INTERRUPTIONS
+
             JSR     SYSINIT
             JSR     PL1INIT
             JSR     PL2INIT

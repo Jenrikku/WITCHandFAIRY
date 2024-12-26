@@ -16,10 +16,10 @@ PL1HP       DS.B    1                       ; WITCH HEALTH POINTS
 ; --- FAIRY RELATED VARIABLES --------------------------------------------------
 
 PL2EIPOS    DS.L    1                       ; FAIRY ENTITY INFORMATION ADDRESS
-PL2POSX     DS.W    1                       ; FAIRY X COORDINATE
-PL2POSY     DS.W    1                       ; FAIRY Y COORDINATE
+PL2POSX     DC.W    60                      ; FAIRY X COORDINATE
+PL2POSY     DC.W    30                      ; FAIRY Y COORDINATE
 PL2VELXY    DS.W    1                       ; FAIRY VELOCITY
-PL2TILE     DS.B    1                       ; FAIRY CURRENT TILE (SPRITE)
+PL2TILE     DC.B    3                       ; FAIRY CURRENT TILE (SPRITE)
 PL2HP       DS.B    1                       ; FAIRY HEALTH POINTS
 
             DS.W    0

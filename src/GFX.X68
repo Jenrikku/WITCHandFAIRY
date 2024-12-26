@@ -9,8 +9,10 @@ GFXEIPLT
 ; PLOTS AN ENTITY BASED ON ITS ENTITY INFO.
 ; INPUT    : D3.W = TILENO, D6.W = X, D7.W = Y, A3 = &EI
 ; OUTPUT   : NONE
-; MODIFIES : D0-D7, A1, A3
+; MODIFIES : NONE
 ; ------------------------------------------------------------------------------
+
+            MOVEM.L D0-A1/A3, -(SR)
 
             CLR.W   D0
             CLR.W   D4
@@ -82,6 +84,7 @@ GFXEIPLT
             MOVE.W  D3, D6              ; MOVE BACK TO START
             SWAP    D3
 
-            DBRA    D5, .LOOP            
+            DBRA    D5, .LOOP
 
+            MOVEM.L (SR)+, D0-A1/A3            
             RTS

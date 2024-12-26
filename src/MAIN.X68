@@ -38,6 +38,8 @@ START
 
 ; READ INPUT DEVICES
 
+        TRAP    #1
+
 ; UPDATE GAME LOGIC
 
             JSR     PL1UPD

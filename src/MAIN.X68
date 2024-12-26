@@ -42,7 +42,8 @@ START
 
 ; UPDATE GAME LOGIC
 
-            JSR     PL1UPD
+            JSR     PL1UPDY
+            JSR     PL1UPDX
             JSR     PL2UPD            
 
 ; --- SYNC ---------------------------------------------------------------------

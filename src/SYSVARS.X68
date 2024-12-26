@@ -5,4 +5,4 @@
 ; --- KEYBOARD RELATED VARIABLES -----------------------------------------------
 
 KBDVAL  DS.B    1               ; KEY STATE
-KBDEDGE DS.B    1               ; KEY EDGE NO SE SI LO NECESITAREMOS !!!!!
+KBDEDGE DS.B    1               ; KEY EDGE 

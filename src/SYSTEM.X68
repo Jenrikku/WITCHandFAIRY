@@ -9,11 +9,26 @@ SYSINIT
 ; OUTPUT   : NONE
 ; MODIFIES : D0, D1
 ; ------------------------------------------------------------------------------
-           
-        ; SET OUTPUT WINDOW:
+            JSR     SCRINIT 
             JSR     KBDINIT
-
+            
             MOVE.L  #KBDUPD,($84)
+            
+            MOVE.W  SR,-(A7)
+            
+            ANDI.W  #$D8FF, (A7)          ; SET USER MODE, ENABLE INTERRUPTIONS
+            RTE
+  
+
+; ------------------------------------------------------------------------------
+SCRINIT
+; INITIALIZE SCREEN.
+; INPUT    : NONE
+; OUTPUT   : NONE
+; MODIFIES : D0, D1
+; ------------------------------------------------------------------------------
+
+        ; SET OUTPUT WINDOW:
 
             MOVEQ   #33, D0
             MOVE.L  #SCRWIDTH*$10000+SCRHEIGH, D1   ; SET RESOLUTION
@@ -23,7 +38,6 @@ SYSINIT
             MOVE.L  #SCRMODE, D1                    ; SET WINDOW MODE
             TRAP    #15
 
-            ANDI.W  #$D8FF, SR          ; SET USER MODE, ENABLE INTERRUPTIONS
             RTS
 
 ; ------------------------------------------------------------------------------
@@ -84,7 +98,7 @@ KBDUPD
             RTE
 
 .PACK       
-            ; SUBRUTINA CONVERT TO DESIRED FORMAT
+            ; SUBROUTINE CONVERT TO DESIRED FORMAT
             MOVE.W  #3,D3
 .LOOP       LSL.L   #8,D1
             ROXL.B  #1,D2

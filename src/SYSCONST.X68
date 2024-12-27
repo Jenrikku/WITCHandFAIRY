@@ -9,6 +9,14 @@ SCRHEIGH    EQU     480                     ; SCREEN HEIGHT
 
 SCRMODE     EQU     1                       ; 1 = WINDOWED, 2 = FULLSCREEN.
 
+; --- WITCH RELATED CONSTANTS --------------------------------------------------
+
+PL1SPEED    EQU     7   
+
+; --- FAIRY RELATED CONSTANTS --------------------------------------------------
+
+PL2SPEED    EQU     7    
+
 
 ; --- KEYCODES -----------------------------------------------------------------
 

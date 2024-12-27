@@ -14,7 +14,7 @@ const string output = "out.btm";
 
 const bool generateMap = true; // Disable for only tilesets.
 
-byte[,] map;
+byte[,] map = new byte[0, 0];
 
 if (generateMap)
     map = new byte[mapWidth, mapHeight];
@@ -58,7 +58,7 @@ image.ProcessPixelRows(accessor =>
 
                 Debug.Assert(index != -1);
 
-                map[l / tileWidth, k / tileHeight] = (byte)index;
+                map[k / tileHeight, l / tileWidth] = (byte)index;
             }
         }
     }

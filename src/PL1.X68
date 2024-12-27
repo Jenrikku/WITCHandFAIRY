@@ -33,22 +33,22 @@ PL1UPD
             MOVE.W  PL1POSX, D0
             MOVE.W  PL1POSY, D1
 
-            BTST.B  #KBTPL1UP, KBDVAL
+            BTST.B  #KBTPL1UP, KBDVAL       ; CHECK UP
             BNE     .NOUP
 
             ADD.W   #PL1SPEED, D1
 
-.NOUP       BTST.B  #KBTPL1DW, KBDVAL
+.NOUP       BTST.B  #KBTPL1DW, KBDVAL       ; CHECK DOWN
             BNE     .NODOWN
             
             SUB.W   #PL1SPEED, D1
 
-.NODOWN     BTST.B  #KBTPL1LF, KBDVAL
+.NODOWN     BTST.B  #KBTPL1LF, KBDVAL       ; CHECK LEFT
             BNE     .NOLEFT
             
             ADD.W   #PL1SPEED, D0
 
-.NOLEFT     BTST.B  #KBTPL1RG, KBDVAL
+.NOLEFT     BTST.B  #KBTPL1RG, KBDVAL       ; CHECK RIGHT
             BNE     .NORIGHT
             
             SUB.W   #PL1SPEED, D0

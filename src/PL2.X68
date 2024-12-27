@@ -26,6 +26,38 @@ PL2UPD
 ; OUTPUT   : NONE
 ; MODIFIES : NONE
 ; ------------------------------------------------------------------------------
+
+            MOVEM.W D0/D1, -(SP)
+
+            ; UPDATE COORDINATE
+            MOVE.W  PL2POSX, D0
+            MOVE.W  PL2POSY, D1
+
+            BTST.B  #KBTPL2UP, KBDVAL       ; CHECK UP
+            BNE     .NOUP
+
+            ADD.W   #PL2SPEED, D1
+
+.NOUP       BTST.B  #KBTPL2DW, KBDVAL       ; CHECK DOWN
+            BNE     .NODOWN
+            
+            SUB.W   #PL2SPEED, D1
+
+.NODOWN     BTST.B  #KBTPL2LF, KBDVAL       ; CHECK LEFT
+            BNE     .NOLEFT
+            
+            ADD.W   #PL2SPEED, D0
+
+.NOLEFT     BTST.B  #KBTPL2RG, KBDVAL       ; CHECK RIGHT
+            BNE     .NORIGHT
+            
+            SUB.W   #PL2SPEED, D0
+
+.NORIGHT    MOVE.W  D0, PL2POSX             ; UPDATE VARIABLE X
+            MOVE.W  D1, PL2POSY             ; UPDATE VARIABLE Y
+
+            MOVEM.W (SP)+, D0/D1
+
             RTS
             
 ; ------------------------------------------------------------------------------

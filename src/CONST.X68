@@ -11,6 +11,8 @@ ENMMAXTP    EQU     2                       ; MAXIMUM ENEMY TYPES IN A LEVEL
 
 PXLX        EQU     3                       ; AMOUNT OF DRAWS PER PIXEL IN X
 PXLY        EQU     3                       ; AMOUNT OF DRAWS PER PIXEL IN Y
+LVLWIDTH    EQU     10                      ; WIDTH IN TILES OF THE LEVEL
+LVLHEIGH    EQU     10                      ; HEIGHT IN TILES OF THE LEVEL
 
 ; --- WITCH RELATED CONSTANTS --------------------------------------------------
 

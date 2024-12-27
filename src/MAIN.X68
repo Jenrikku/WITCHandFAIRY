@@ -57,6 +57,8 @@ START
 
             ; LVL STUFF PLOT
 
+            JSR     LVLPLOT
+
             MOVE.B  #0, BUFFMODE            ; SET BUFFER MODE TO STATIC
 
             JSR     PL1PLOT

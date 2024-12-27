@@ -14,6 +14,7 @@
             INCLUDE "PL1.X68"
             INCLUDE "PL2.X68"
             INCLUDE "SCORE.X68"
+            INCLUDE "LEVEL.X68"
             INCLUDE "BTM.X68"
             INCLUDE "GFX.X68"
            
@@ -31,6 +32,9 @@ START
             MOVE.B  #1, BUFFMODE            ; SET BUFFER MODE TO LEVEL
 
             ; LVL STUFF INIT
+
+            MOVEQ   #1, D0
+            JSR     LVLSWTCH
 
 .LOOP
 

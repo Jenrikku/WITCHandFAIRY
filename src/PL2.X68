@@ -33,7 +33,7 @@ PL2PLOT
 ; PLOT FAIRY.
 ; INPUT    : NONE 
 ; OUTPUT   : NONE
-; MODIFIES : NONE
+; MODIFIES : D3, D6, D7, A3
 ; ------------------------------------------------------------------------------
 
             CLR.W   D3

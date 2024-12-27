@@ -36,6 +36,7 @@ ENMHP       DS.B    ENMMAXNO                ; ENEMIES HEALTH POINTS
 
 ; --- LEVEL RELATED VARIABLES --------------------------------------------------
 
+LVLEIPOS    DS.L    1                       ; MAP ENTITY INFORMATION ADDRESS
 LVLINDEX    DC.B    0                       ; CURRENT LEVEL
 
 ; --- STORY PANEL RELATED VARIABLES --------------------------------------------

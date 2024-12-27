@@ -7,7 +7,7 @@ LVLSWTCH
 ; SWITCHES TO ANOTHER LEVEL.
 ; INPUT    : D0 = LVLNO 
 ; OUTPUT   : NONE
-; MODIFIES : D0
+; MODIFIES : D0, A1, A3
 ; ------------------------------------------------------------------------------
 
             MOVE.B  D0, LVLINDEX

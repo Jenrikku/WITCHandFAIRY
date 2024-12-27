@@ -7,7 +7,9 @@
 SCRWIDTH    EQU     640                     ; SCREEN WIDTH
 SCRHEIGH    EQU     480                     ; SCREEN HEIGHT
 
-SCRMODE     EQU     1                       ; 1 = WINDOWED, 2 = FULLSCREEN.
+SCRMODE     EQU     1                       ; 1 = WINDOWED, 2 = FULLSCREEN
+
+SCRDELTA    EQU     40                      ; MAX MILISECONDS BETWEEN FRAMES
 
 ; --- KEYCODES -----------------------------------------------------------------
 

@@ -7,13 +7,17 @@ SYSINIT
 ; INITIALIZE SYSTEM.
 ; INPUT    : NONE
 ; OUTPUT   : NONE
-; MODIFIES : D0, D1
+; MODIFIES : D0-D3
 ; ------------------------------------------------------------------------------
             
-            JSR     SCRINIT 
-            JSR     KBDINIT            
+            ORI.W   #$0700, SR          ; DISABLE INTERRUPTIONS
 
-            MOVE.L  #KBDUPD, $84        ; INSTALL TRAP
+            JSR     SCRINIT
+            JSR     KBDINIT
+            JSR     TIMINIT
+
+            MOVE.L  #KBDUPD, $84        ; INSTALL TO TRAP 1
+            MOVE.L  #TIMIRQ, $64        ; INSTALL TO IRQ 1
 
             MOVE.W  SR, -(SP)            
             ANDI.W  #$D8FF, (SP)        ; SET USER MODE, ENABLE INTERRUPTIONS
@@ -114,3 +118,42 @@ KBDUPD
             DBRA    D3, .LOOP
 
             RTS
+
+; ------------------------------------------------------------------------------
+TIMINIT
+; INITIALIZES THE TIMED INTERRUPTION.
+; INPUT    : NONE
+; OUTPUT   : NONE
+; MODIFIES : D0-D3
+; ------------------------------------------------------------------------------
+
+            CLR.B   FRMSTATE
+            MOVE.B  #3, FRMSTATE            ; SET BITS 0 AND 1
+
+            MOVEQ   #32, D0
+            MOVEQ   #6, D1
+            MOVEQ   #$81, D2                ; ENABLE IRQ 1
+            MOVEQ   #SCRDELTA, D3
+            TRAP    #15
+
+            RTS
+
+; ------------------------------------------------------------------------------
+TIMIRQ
+; TIMED IRQ THAT IS TRIGGERED BY THE SIMULATED CLOCK.
+; USED TO CONTROL FRAME SYNCRONIZATION AS WELL AS FRAME SKIPPING. 
+; INPUT    : NONE
+; OUTPUT   : NONE
+; MODIFIES : NONE
+; ------------------------------------------------------------------------------
+
+            ADDQ.B  #1, FRMCNT
+
+            BTST.B  #0, FRMSTATE            ; CHECK IF FRAME IS READY
+            BNE     .READY
+    
+            ADDQ.W  #1, FRMSKIP             ; SKIP NEXT FRAME
+            RTE
+
+.READY      BSET.B  #1, FRMSTATE            ; ALLOW NEXT FRAME TO BE DRAWN
+            RTE

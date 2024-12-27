@@ -22,8 +22,6 @@ START
 
 ; --- INITIALIZATION -----------------------------------------------------------
 
-            ORI.W   #$0700, SR              ; DISABLE INTERRUPTIONS
-
             JSR     SYSINIT
             JSR     PL1INIT
             JSR     PL2INIT
@@ -51,6 +49,17 @@ START
 
 ; --- SYNC ---------------------------------------------------------------------
 
+.SKIP       TST.W   FRMSKIP
+            BEQ     .NOSKIP                 ; DO NOT SKIP NEXT FRAME
+
+            SUBQ.W  #1, FRMSKIP             ; TELL THAT IT HAS BEEN SKIPPED
+            BRA     .LOOP                   ; SKIP NEXT FRAME
+
+.NOSKIP     BTST.B  #1, FRMSTATE
+            BEQ     .SKIP                   ; WAIT FOR NEXT FRAME
+            
+            CLR.B   FRMSTATE                ; NEXT FRAME IS NOT READY
+
 ; --- PLOT ---------------------------------------------------------------------
 
             JSR     SCOPLOT
@@ -69,6 +78,7 @@ START
             MOVEQ   #94, D0
             TRAP    #15                     ; REPAINT SCREEN (DOUBLE BUFFER)
 
+            MOVE.B  #1, FRMSTATE            ; TELL THAT FRAME IS READY
 
             BRA     .LOOP
 

@@ -12,7 +12,7 @@ GFXEIPLT
 ; MODIFIES : NONE
 ; ------------------------------------------------------------------------------
 
-            MOVEM.L D0-A1/A3, -(SR)
+            MOVEM.L D0-A1/A3, -(SP)
 
             CLR.W   D0
             CLR.W   D4
@@ -86,5 +86,5 @@ GFXEIPLT
 
             DBRA    D5, .LOOP
 
-            MOVEM.L (SR)+, D0-A1/A3            
+            MOVEM.L (SP)+, D0-A1/A3            
             RTS

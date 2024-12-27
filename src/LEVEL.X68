@@ -22,7 +22,8 @@ LVLSWTCH
         ; READ BTM FILE:
         
             LSL.W   #2, D0                  ; MULTIPLY BY 4 (LONG TO BYTE)
-            LEA     (LVLLIST, D0), A1
+            LEA     LVLLIST, A1
+            ADDA.W  D0, A1
 
             MOVE.L  A3, LVLEIPOS
             

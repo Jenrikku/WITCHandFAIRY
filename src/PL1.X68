@@ -20,58 +20,45 @@ PL1INIT
             RTS
             
 ; ------------------------------------------------------------------------------
-PL1UPDY
+PL1UPD
 ; UPDATE WITCH.
 ; INPUT    : NONE 
 ; OUTPUT   : NONE
 ; MODIFIES : NONE
 ; ------------------------------------------------------------------------------
 
-            MOVE.W  D0,-(A7)
+            MOVEM.W D0/D1, -(SP)
 
             ; UPDATE COORDINATE
-            MOVE.W  (PL1POSY),D0
-            BTST.B  #1,(KBDVAL)
-            BEQ     .CHKDWN
-            SUB.W   #PL1SPEED, D0
+            MOVE.W  PL1POSX, D0
+            MOVE.W  PL1POSY, D1
 
-.CHKDWN     
-            BTST.B  #3,(KBDVAL)     
-            ADD.W   #PL1SPEED,D0
+            BTST.B  #KBTPL1UP, KBDVAL
+            BNE     .NOUP
 
-            ; UPDATE VARIABLE 
-.DONE       MOVE.W  D0,(PL1POSY)
+            ADD.W   #PL1SPEED, D1
 
-            MOVE.W  (A7)+,D0
-
-            RTS 
-
-; ------------------------------------------------------------------------------
-PL1UPDX
-; UPDATE WITCH.
-; INPUT    : NONE 
-; OUTPUT   : NONE
-; MODIFIES : NONE
-; ------------------------------------------------------------------------------
-
-            MOVE.W  D1,-(A7)
-
-            ; UPDATE COORDINATE
-            MOVE.W  (PL1POSX),D1
-            BTST.B  #1,(KBDVAL)
-            BEQ     .CHKRGH
+.NOUP       BTST.B  #KBTPL1DW, KBDVAL
+            BNE     .NODOWN
+            
             SUB.W   #PL1SPEED, D1
 
-.CHKRGH     
-            BTST.B  #2,(KBDVAL)     
-            ADD.W   #PL1SPEED,D1
+.NODOWN     BTST.B  #KBTPL1LF, KBDVAL
+            BNE     .NOLEFT
+            
+            ADD.W   #PL1SPEED, D0
 
-            ; UPDATE VARIABLE 
-.DONE       MOVE.W  D1,(PL1POSX)
+.NOLEFT     BTST.B  #KBTPL1RG, KBDVAL
+            BNE     .NORIGHT
+            
+            SUB.W   #PL1SPEED, D0
 
-            MOVE.W  (A7)+,D1
+.NORIGHT    MOVE.W  D0, PL1POSX             ; UPDATE VARIABLE X
+            MOVE.W  D1, PL1POSY             ; UPDATE VARIABLE Y
 
-            RTS 
+            MOVEM.W (SP)+, D0/D1
+
+            RTS
 
 ; ------------------------------------------------------------------------------
 PL1PLOT

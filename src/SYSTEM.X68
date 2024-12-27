@@ -9,14 +9,14 @@ SYSINIT
 ; OUTPUT   : NONE
 ; MODIFIES : D0, D1
 ; ------------------------------------------------------------------------------
+            
             JSR     SCRINIT 
-            JSR     KBDINIT
-            
-            MOVE.L  #KBDUPD,($84)
-            
-            MOVE.W  SR,-(A7)
-            
-            ANDI.W  #$D8FF, (A7)          ; SET USER MODE, ENABLE INTERRUPTIONS
+            JSR     KBDINIT            
+
+            MOVE.L  #KBDUPD, $84        ; INSTALL TRAP
+
+            MOVE.W  SR, -(SP)            
+            ANDI.W  #$D8FF, (SP)        ; SET USER MODE, ENABLE INTERRUPTIONS
             RTE
   
 
@@ -48,59 +48,63 @@ KBDINIT
 ; MODIFIES : NONE
 ; ------------------------------------------------------------------------------
 
-            CLR.B   (KBDVAL)
-            CLR.B   (KBDEDGE)
+            CLR.B   KBDVAL
+            CLR.B   KBDEDGE
             RTS
+
 ; ------------------------------------------------------------------------------
 KBDUPD 
 ; UPDATE KEYBOARD INFORMATION.
-; 7 -> FIRE 4 (S)
-; 6 -> FIRE 3 (A)
-; 5 -> FIRE 2 (W)
-; 4 -> FIRE 1 (D)
-; 3 -> DOWN
-; 2 -> RIGHT
-; 1 -> UP
-; 0 -> LEFT
+; 7 -> PL1 UP
+; 6 -> PL1 DOWN
+; 5 -> PL1 LEFT
+; 4 -> PL1 RIGHT
+; 3 -> PL2 UP
+; 2 -> PL2 DOWN
+; 1 -> PL2 LEFT
+; 0 -> PL2 RIGHT
 ; INPUT    : NONE
 ; OUTPUT   : NONE
 ; MODIFIES : NONE
 ; ------------------------------------------------------------------------------
             
-            MOVEM.L D0-D3,-(A7)
+            MOVEM.L D0-D3, -(SP)
             
-            ; READ FIRST PART
-            MOVE.B  #19,D0
-            MOVE.L  #KBDFIRE4<<24|KBDFIRE3<<16|KBDFIRE2<<8|KBDFIRE1,D1
+            ; READ FIRST PART (PL1 MOVEMENT)
+            MOVEQ   #19, D0
+            MOVE.L  #KBDPL1UP<<24|KBDPL1DW<<16|KBDPL1LF<<8|KBDPL1RG, D1
             TRAP    #15
 
             ; CONVERT TO DESIRED FORMAT
-            JSR .PACK
+            JSR     .PACK
 
-             ; READ SECOND PART
-            MOVE.L  #KBDDOWN<<24|KBDRIGHT<<16|KBDUP<<8|KBDLEFT,D1
+            ; READ SECOND PART (PL2 MOVEMENT)
+            MOVEQ   #19, D0
+            MOVE.L  #KBDPL2UP<<24|KBDPL2DW<<16|KBDPL2LF<<8|KBDPL2RG, D1
             TRAP    #15
  
             ; CONVERT TO DESIRED FORMAT
-            JSR .PACK
+            JSR     .PACK
 
-            ;COMPUTER KBDEDGE
-            MOVE.B  (KBDVAL),D0
+            ; COMPUTER KBDEDGE
+            MOVE.B  KBDVAL, D0
             NOT.B   D0
-            AND.B   D2,D0
-            MOVE.B  D0,(KBDEDGE)
+            AND.B   D2, D0
+            MOVE.B  D0, KBDEDGE
 
-            ;STORE KBDVAL
-            MOVE.B  D2,(KBDVAL)
+            ; STORE KBDVAL
+            MOVE.B  D2, KBDVAL
 
-            MOVEM.L (A7)+,D0-D3
+            MOVEM.L (SP)+, D0-D3
 
             RTE
 
-.PACK       
-            ; SUBROUTINE CONVERT TO DESIRED FORMAT
-            MOVE.W  #3,D3
-.LOOP       LSL.L   #8,D1
-            ROXL.B  #1,D2
-            DBRA.W  D3,.LOOP
-            RTS 
+.PACK       ; SUBROUTINE CONVERT TO DESIRED FORMAT
+            
+            MOVE.W  #3, D3
+
+.LOOP       LSL.L   #8, D1
+            ROXL.B  #1, D2
+            DBRA    D3, .LOOP
+
+            RTS

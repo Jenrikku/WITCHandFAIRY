@@ -42,12 +42,11 @@ START
 
 ; READ INPUT DEVICES
 
-        TRAP    #1
+            TRAP    #1
 
 ; UPDATE GAME LOGIC
 
-            JSR     PL1UPDY
-            JSR     PL1UPDX
+            JSR     PL1UPD
             JSR     PL2UPD            
 
 ; --- SYNC ---------------------------------------------------------------------

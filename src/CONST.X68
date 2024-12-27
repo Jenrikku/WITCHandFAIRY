@@ -12,8 +12,12 @@ ENMMAXTP    EQU     2                       ; MAXIMUM ENEMY TYPES IN A LEVEL
 PXLX        EQU     3                       ; AMOUNT OF DRAWS PER PIXEL IN X
 PXLY        EQU     3                       ; AMOUNT OF DRAWS PER PIXEL IN Y
 
-; --- WITCH RELATED CONTANTS ---------------------------------------------------
+; --- WITCH RELATED CONSTANTS --------------------------------------------------
 
-; --- FAIRY RELATED CONTANTS ---------------------------------------------------
+PL1SPEED    EQU     7   
+
+; --- FAIRY RELATED CONSTANTS --------------------------------------------------
+
+PL2SPEED    EQU     7    
 
 ; --- STORY PANEL RELATED CONSTANTS --------------------------------------------

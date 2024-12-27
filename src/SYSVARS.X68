@@ -4,5 +4,5 @@
 
 ; --- KEYBOARD RELATED VARIABLES -----------------------------------------------
 
-KBDVAL  DS.B    1               ; KEY STATE
-KBDEDGE DS.B    1               ; KEY EDGE 
+KBDVAL      DS.B    1                       ; KEY STATE
+KBDEDGE     DS.B    1                       ; KEY EDGE 

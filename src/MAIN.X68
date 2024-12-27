@@ -66,6 +66,10 @@ START
 
             MOVE.B  #1, BUFFMODE            ; SET BUFFER MODE TO LEVEL
 
+            MOVEQ   #94, D0
+            TRAP    #15                     ; REPAINT SCREEN (DOUBLE BUFFER)
+
+
             BRA     .LOOP
 
             SIMHALT

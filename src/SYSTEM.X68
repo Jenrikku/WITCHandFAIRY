@@ -38,6 +38,12 @@ SCRINIT
             MOVE.L  #SCRMODE, D1                    ; SET WINDOW MODE
             TRAP    #15
 
+        ; SET DOUBLE BUFFERING:
+
+            MOVEQ   #92, D0
+            MOVEQ   #17, D1
+            TRAP    #15
+
             RTS
 
 ; ------------------------------------------------------------------------------

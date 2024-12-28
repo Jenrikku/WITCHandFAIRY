@@ -127,7 +127,7 @@ TIMINIT
 ; MODIFIES : D0-D3
 ; ------------------------------------------------------------------------------
 
-            CLR.B   FRMSTATE
+            CLR.B   FRMSKIP
             MOVE.B  #3, FRMSTATE            ; SET BITS 0 AND 1
 
             MOVEQ   #32, D0

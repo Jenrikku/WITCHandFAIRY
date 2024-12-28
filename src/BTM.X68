@@ -77,13 +77,13 @@ BTMREAD
 
             CLR.W   D3
 
-            MOVE.B  1(A1), D0
-            MOVE.B  2(A1), D3
+            MOVE.B  1(A1), D0               ; WIDTH
+            MOVE.B  2(A1), D3               ; HEIGHT
 
-            MULU.W  D0, D3                  
+            MULU.W  D0, D3                  ; WIDTH * HEIGHT 
             MOVE.W  D3, D2                  ; D2 NOW IS TILE LENGTH
 
-            MOVE.B (A1), D0
+            MOVE.B (A1), D0                 ; AMOUNT OF TILES
 
             MULU.W  D0, D3                  ; D3 NOW IS TOTAL BYTES TO READ
             SUBQ.W  #1, D3                  ; ADJUST FOR DBRA
@@ -97,7 +97,7 @@ BTMREAD
 
             DBRA    D0, .EILOOP
 
-            MOVEQ   #1, D2                  ; EACH PIXEL IS 1 BYTE LONG
+            MOVEQ   #1, D2                  ; EACH PIXEL IS 1 BYTE LONG (TRAP)
 
 .TSLOOP
             MOVEQ   #53, D0

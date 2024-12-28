@@ -12,32 +12,69 @@ GFXEIPLT
 ; MODIFIES : NONE
 ; ------------------------------------------------------------------------------
 
-            MOVEM.L D0-A1/A3, -(SP)
+            MOVEM.L D0-A3, -(SP)
 
             CLR.W   D0
-            CLR.W   D4
-            CLR.W   D5
 
-            MOVE.B  1(A3), D4           ; TILE WIDTH - 1 (DBRA)
-            SUBQ.B  #1, D4
-            MOVE.B  2(A3), D5           ; TILE HEIGHT - 1 (DBRA)
-            SUBQ.B  #1, D5
+            MOVE.L  A3, A0              ; SAVE ADDRESS OF EI FOR LATER
 
             LSL.W   #1, D3              ; MULTIPLY BY 2 (WORD TO BYTE)
 
             MOVEA.W 4(A3, D3), A1       ; RELATIVE POSITION OF TILE TO BUFFER
 
-            BUFAT   TS, A1, A3          ; GET ADDRESS OF TILE
+            BUFAT   TS, A1, A3          ; A3 NOW IS ADDRESS TO FIRST COLOR INDEX
+            MOVE.B  (A3), D0            ; D0 NOW IS BACKGROUND COLOR INDEX
+
+            MOVEA.W  D0, A2             ; STORE BACK COLOR IN A2 FOR LATER
+            
+            CMPI.B  #$FF, D0
+            BEQ     .NOBACK             ; SKIP DRAWING BACKGROUND IF TRANSPARENT
+
+            LSL.W   #2, D0              ; MULTIPLY BY 4 (LONG TO BYTE)
+            BUFAT   CL, D0, A1
+            MOVE.L  (A1), D1            ; D1 NOW IS BACKGROUND COLOR
+
+            MOVEQ   #80, D0
+            TRAP    #15                 ; SET PEN COLOR
+
+            MOVEQ   #81, D0
+            TRAP    #15                 ; SET FILL COLOR
+
+            MOVE.W  D6, D1              ; X0 = D6
+            MOVE.W  D7, D2              ; Y0 = D7
+            CLR.W   D3
+            MOVE.B  1(A0), D3
+            ADD.W   D6, D3              
+            MULU.W  #3, D3              ; X1 = (D6 + TILE WIDTH) * 3
+            CLR.W   D4
+            MOVE.B  2(A0), D4
+            ADD.W   D7, D4              
+            MULU.W  #3, D4              ; Y1 = (D7 + TILE HEIGHT) * 3
+
+            MOVEQ   #87, D0
+            TRAP    #15                 ; DRAW BACKGROUND COLOR RECTANGLE
+
+.NOBACK     CLR.W   D4
+            CLR.W   D5
+
+            MOVE.B  1(A0), D4           ; TILE WIDTH - 1 (DBRA)
+            SUBQ.B  #1, D4
+            MOVE.B  2(A0), D5           ; TILE HEIGHT - 1 (DBRA)
+            SUBQ.B  #1, D5
 
             MOVE.W  D6, D3              ; STORE X FOR SAFEKEEPING
             SWAP    D3
             MOVE.W  D4, D3              ; STORE WIDTH FOR SAFEKEEPING
 
 .LOOP
+            CLR.W   D0
             MOVE.B  (A3)+, D0           ; D0 NOW IS COLOR INDEX
 
             CMPI.B  #$FF, D0
             BEQ     .ENDX               ; SKIP COLOR IF TRANSPARENT
+
+            CMPA.W  D0, A2              ; COMPARE BACK COLOR TO CURRENT
+            BEQ     .ENDX               ; SKIP IF SAME
 
             LSL.W   #2, D0              ; MULTIPLY BY 4 (LONG TO BYTE)
 
@@ -86,5 +123,5 @@ GFXEIPLT
 
             DBRA    D5, .LOOP
 
-            MOVEM.L (SP)+, D0-A1/A3            
+            MOVEM.L (SP)+, D0-A3            
             RTS

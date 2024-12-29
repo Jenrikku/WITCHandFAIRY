@@ -2,6 +2,8 @@
 ; GAME VARIABLES
 ; ==============================================================================
 
+PLHEALTH    DS.B    1                       ; WITCH AND FAIRY SHARED HEALTH
+
 ; --- WITCH RELATED VARIABLES --------------------------------------------------
 
 PL1EIPOS    DS.L    1                       ; WITCH ENTITY INFORMATION ADDRESS
@@ -9,7 +11,6 @@ PL1POSX     DC.W    30                      ; WITCH X COORDINATE
 PL1POSY     DC.W    30                      ; WITCH Y COORDINATE
 PL1VELXY    DS.W    1                       ; WITCH VELOCITY
 PL1TILE     DC.B    3                       ; WITCH CURRENT TILE (SPRITE)
-PL1HP       DS.B    1                       ; WITCH HEALTH POINTS
 
             DS.W    0
 
@@ -20,16 +21,17 @@ PL2POSX     DC.W    60                      ; FAIRY X COORDINATE
 PL2POSY     DC.W    30                      ; FAIRY Y COORDINATE
 PL2VELXY    DS.W    1                       ; FAIRY VELOCITY
 PL2TILE     DC.B    3                       ; FAIRY CURRENT TILE (SPRITE)
-PL2HP       DS.B    1                       ; FAIRY HEALTH POINTS
 
             DS.W    0
 
 ; --- ENEMY RELATED VARIABLES --------------------------------------------------
 
+ENMEIPOS    DS.L    ENMMAXTP                ; ENEMIES ENTITY INFORMATION ADDRESS
 ENMPOSX     DS.W    ENMMAXNO                ; ENEMIES X COORDINATES
 ENMPOSY     DS.W    ENMMAXNO                ; ENEMIES Y COORDINATES
 ENMVELXY    DS.W    ENMMAXNO                ; ENEMIES VELOCITIES
 ENMTILE     DS.B    ENMMAXNO                ; ENEMIES CURRENT TILES (SPRITES)
+ENMTYPE     DS.B    ENMMAXNO                ; ENEMIES TYPES (WHAT EI TO USE)
 ENMHP       DS.B    ENMMAXNO                ; ENEMIES HEALTH POINTS
 
             DS.W    0

@@ -7,7 +7,7 @@ LVLSWTCH
 ; SWITCHES TO ANOTHER LEVEL.
 ; INPUT    : D0 = LVLNO 
 ; OUTPUT   : NONE
-; MODIFIES : D0, A1, A3
+; MODIFIES : D0, A1, A2, A3
 ; ------------------------------------------------------------------------------
 
             MOVE.B  D0, LVLINDEX
@@ -19,17 +19,35 @@ LVLSWTCH
             CLR.W   LVLMPCNT
             CLR.W   LVLEICNT
 
-        ; READ BTM FILE:
+        ; READ MAP BTM FILE:
         
             LSL.W   #2, D0                  ; MULTIPLY BY 4 (LONG TO BYTE)
             LEA     LVLLIST, A1
-            ADDA.W  D0, A1
-            MOVE.L  (A1), A1                ; READ ADDRESS FROM MEMORY
+            MOVE.L  (A1, D0), A1            ; GET STRING ADDRESS FROM MEMORY
 
             JSR     BTMREAD
-
             MOVE.L  A3, LVLEIPOS
+
+            TST.W   D0
+            BNE     .ENEMIES
+
+            RTS
+
+        ; READ ENEMY BTM FILES:
             
+.ENEMIES    SUBQ    #4, D0                  ; ENEMY TABLE STARTS WITH LVL #1
+            LSL.W   #1, D0                  ; EVERY LEVEL HAS 2 ENEMIES: 2 LONGS
+            LEA     ENMLIST, A2
+            MOVE.L  (A2, D0), A1            ; GET ENEMY 1 ADDRESS FROM MEMORY
+
+            JSR     BTMREAD
+            MOVE.L  A3, ENMEIPOS
+
+            MOVE.L  4(A2, D0), A1           ; GET ENEMY 2 ADDRESS FROM MEMORY
+
+            JSR     BTMREAD
+            MOVE.L  A3, ENMEIPOS+2
+                        
             RTS
 
 ; ------------------------------------------------------------------------------

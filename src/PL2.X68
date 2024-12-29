@@ -18,7 +18,29 @@ PL2INIT
             MOVE.L  A3, PL2EIPOS
             
             RTS
-            
+
+; ------------------------------------------------------------------------------
+PL2RESET
+; RESETS FAIRY VARIABLES.
+; INPUT    : NONE 
+; OUTPUT   : NONE
+; MODIFIES : NONE
+; ------------------------------------------------------------------------------
+
+            ; RESET COORDENATE X
+            MOVE.W  #60, PL2POSX
+
+            ; RESET COORDENATE Y
+            MOVE.W  #30, PL2POSY
+
+            ; RESET SPEED
+            CLR.W   PL2VELXY
+
+            ; RESET SPRITE NUMBER
+            MOVE.B  #3, PL2TILE
+
+            RTS
+
 ; ------------------------------------------------------------------------------
 PL2UPD
 ; UPDATES FAIRY.

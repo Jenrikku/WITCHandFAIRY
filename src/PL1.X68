@@ -18,6 +18,28 @@ PL1INIT
             MOVE.L  A3, PL1EIPOS
             
             RTS
+
+; ------------------------------------------------------------------------------
+PL1RESET
+; RESETS WITCH VARIABLES.
+; INPUT    : NONE 
+; OUTPUT   : NONE
+; MODIFIES : NONE
+; ------------------------------------------------------------------------------
+
+            ; RESET COORDENATE X
+            MOVE.W  #30, PL1POSX
+
+            ; RESET COORDENATE Y
+            MOVE.W  #30, PL1POSY
+
+            ; RESET SPEED
+            CLR.W   PL1VELXY
+
+            ; RESET SPRITE NUMBER
+            MOVE.B  #3, PL1TILE
+
+            RTS
             
 ; ------------------------------------------------------------------------------
 PL1UPD

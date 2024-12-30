@@ -46,7 +46,7 @@ LVLSWTCH
             MOVE.L  4(A2, D0), A1           ; GET ENEMY 2 ADDRESS FROM MEMORY
 
             JSR     BTMREAD
-            MOVE.L  A3, ENMEIPOS+2
+            MOVE.L  A3, ENMEIPOS+4
                         
             RTS
 

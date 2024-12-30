@@ -44,12 +44,12 @@ GFXEIPLT
             MOVE.W  D7, D2              ; Y0 = D7
             CLR.W   D3
             MOVE.B  1(A0), D3
-            ADD.W   D6, D3              
-            MULU.W  #3, D3              ; X1 = (D6 + TILE WIDTH) * 3
+            MULU.W  #3, D3              ; X1 = D6 + TILE WIDTH * 3
+            ADD.W   D6, D3
             CLR.W   D4
             MOVE.B  2(A0), D4
-            ADD.W   D7, D4              
-            MULU.W  #3, D4              ; Y1 = (D7 + TILE HEIGHT) * 3
+            MULU.W  #3, D4
+            ADD.W   D7, D4              ; Y1 = D7 + TILE HEIGHT * 3
 
             MOVEQ   #87, D0
             TRAP    #15                 ; DRAW BACKGROUND COLOR RECTANGLE

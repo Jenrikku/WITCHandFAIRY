@@ -13,8 +13,9 @@
             INCLUDE "SYSTEM.X68"
             INCLUDE "PL1.X68"
             INCLUDE "PL2.X68"
-            INCLUDE "SCORE.X68"
+            INCLUDE "SIDEPANEL.X68"
             INCLUDE "LEVEL.X68"
+            INCLUDE "ENEMY.X68"
             INCLUDE "BTM.X68"
             INCLUDE "GFX.X68"
            
@@ -25,7 +26,7 @@ START
             JSR     SYSINIT
             JSR     PL1INIT
             JSR     PL2INIT
-            JSR     SCOINIT
+            JSR     SPNINIT
 
             MOVE.B  #1, BUFFMODE            ; SET BUFFER MODE TO LEVEL
 
@@ -60,18 +61,18 @@ START
 
 ; --- PLOT ---------------------------------------------------------------------
 
-            JSR     SCOPLOT
-
-            ; LVL STUFF PLOT
-
-            JSR     LVLPLOT
+            JSR     LVLPLOT                 ; DRAW MAP
 
             MOVE.B  #0, BUFFMODE            ; SET BUFFER MODE TO STATIC
+
+; DRAW ENTITIES
 
             JSR     PL1PLOT
             JSR     PL2PLOT
 
             MOVE.B  #1, BUFFMODE            ; SET BUFFER MODE TO LEVEL
+            
+            JSR     SPNPLOT                 ; DRAW SIDE PANEL
 
             MOVEQ   #94, D0
             TRAP    #15                     ; REPAINT SCREEN (DOUBLE BUFFER)

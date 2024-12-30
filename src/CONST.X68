@@ -16,10 +16,13 @@ LVLHEIGH    EQU     10                      ; HEIGHT IN TILES OF THE LEVEL
 
 ; --- WITCH RELATED CONSTANTS --------------------------------------------------
 
-PL1SPEED    EQU     7   
+PL1SPEED    EQU     7                       ; WITCH SPEED WHEN MOVING
 
 ; --- FAIRY RELATED CONSTANTS --------------------------------------------------
 
-PL2SPEED    EQU     7    
+PL2SPEED    EQU     7                       ; FAIRY SPEED WHEN MOVING
 
-; --- STORY PANEL RELATED CONSTANTS --------------------------------------------
+; --- SIDE PANEL RELATED CONSTANTS ---------------------------------------------
+
+SPNSTART    EQU     480                     ; START X POSITION OF SIDE PANEL
+SPNMARGN    EQU     6*3                     ; SIDE PANEL OUTER MARGIN

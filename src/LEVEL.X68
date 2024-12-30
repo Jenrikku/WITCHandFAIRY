@@ -61,6 +61,7 @@ LVLPLOT
             MOVE.L  LVLEIPOS, A3
 
             CLR.W   D2                      ; CURRENT TILE INDEX
+            CLR.W   D3                      ; TILENO
             CLR.W   D6                      ; X
             CLR.W   D7                      ; Y
 

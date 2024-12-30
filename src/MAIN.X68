@@ -29,10 +29,8 @@ START
 
             MOVE.B  #1, BUFFMODE            ; SET BUFFER MODE TO LEVEL
 
-            ; LVL STUFF INIT
-
-            MOVEQ   #1, D0
-            JSR     LVLSWTCH
+            MOVEQ   #0, D0                  ; SET LEVEL INDEX
+            JSR     LVLSWTCH                ; SWITCH TO LEVEL IN D0
 
 .LOOP
 

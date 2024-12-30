@@ -5,7 +5,7 @@
 ; ------------------------------------------------------------------------------
 LVLSWTCH
 ; SWITCHES TO ANOTHER LEVEL.
-; INPUT    : D0 = LVLNO 
+; INPUT    : D0.W = LVLNO 
 ; OUTPUT   : NONE
 ; MODIFIES : D0, A1, A2, A3
 ; ------------------------------------------------------------------------------
@@ -28,14 +28,11 @@ LVLSWTCH
             JSR     BTMREAD
             MOVE.L  A3, LVLEIPOS
 
-            TST.W   D0
-            BNE     .ENEMIES
-
-            RTS
+            CMPI.W  #5, D0
+            BGE     .NOENEMY
 
         ; READ ENEMY BTM FILES:
             
-.ENEMIES    SUBQ    #4, D0                  ; ENEMY TABLE STARTS WITH LVL #1
             LSL.W   #1, D0                  ; EVERY LEVEL HAS 2 ENEMIES: 2 LONGS
             LEA     ENMLIST, A2
             MOVE.L  (A2, D0), A1            ; GET ENEMY 1 ADDRESS FROM MEMORY
@@ -48,7 +45,7 @@ LVLSWTCH
             JSR     BTMREAD
             MOVE.L  A3, ENMEIPOS+4
                         
-            RTS
+.NOENEMY    RTS
 
 ; ------------------------------------------------------------------------------
 LVLPLOT

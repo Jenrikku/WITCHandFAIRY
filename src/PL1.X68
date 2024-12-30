@@ -27,11 +27,11 @@ PL1RESET
 ; MODIFIES : NONE
 ; ------------------------------------------------------------------------------
 
-            ; RESET COORDENATE X
-            MOVE.W  #30, PL1POSX
+            ; RESET COORDINATE X     
+            MOVE.W  #PL1CONSX, PL1POSX      
 
-            ; RESET COORDENATE Y
-            MOVE.W  #30, PL1POSY
+            ; RESET COORDINATE Y
+            MOVE.W  #PLYCONSY, PL1POSY
 
             ; RESET SPEED
             CLR.W   PL1VELXY
@@ -99,3 +99,8 @@ PL1PLOT
             JSR     GFXEIPLT
 
             RTS
+
+*~Font name~Courier New~
+*~Font size~10~
+*~Tab type~0~
+*~Tab size~4~

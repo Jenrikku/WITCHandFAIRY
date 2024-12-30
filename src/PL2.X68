@@ -27,11 +27,11 @@ PL2RESET
 ; MODIFIES : NONE
 ; ------------------------------------------------------------------------------
 
-            ; RESET COORDENATE X
-            MOVE.W  #60, PL2POSX
+            ; RESET COORDINATE X
+            MOVE.W  #PL2CONSX, PL2POSX
 
-            ; RESET COORDENATE Y
-            MOVE.W  #30, PL2POSY
+            ; RESET COORDINATE Y
+            MOVE.W  #PLYCONSY, PL2POSY
 
             ; RESET SPEED
             CLR.W   PL2VELXY

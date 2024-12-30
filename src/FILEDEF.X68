@@ -10,7 +10,7 @@ BTMPL2      DC.B    'BTM/PL2.BTM', 0
 BTMLVL1     DC.B    'BTM/LVL1MAP.BTM', 0    ; MEADOW
 BTMLVL2     DC.B    'BTM/LVL2MAP.BTM', 0    ; LAKE
 BTMLVL3     DC.B    'BTM/LVL3MAP.BTM', 0    ; SNOWY FOREST
-BTMLVL4     DC.B    'BTM/', 0               ; VOLCANO
+BTMLVL4     DC.B    'BTM/LVL4MAP.BTM', 0    ; VOLCANO
 BTMLVL5     DC.B    'BTM/', 0               ; DESERT
 BTMLVLS1    DC.B    'BTM/', 0               ; SPECIAL 1 : END
 BTMLVLS2    DC.B    'BTM/', 0               ; SPECIAL 2 : TITLE

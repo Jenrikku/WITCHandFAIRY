@@ -33,6 +33,9 @@ START
             MOVEQ   #0, D0                  ; SET LEVEL INDEX
             JSR     LVLSWTCH                ; SWITCH TO LEVEL IN D0
 
+            JSR     PL1RESET
+            JSR     PL2RESET
+
 .LOOP
 
 ; --- UPDATE -------------------------------------------------------------------

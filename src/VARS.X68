@@ -7,20 +7,20 @@ PLHEALTH    DS.B    1                       ; WITCH AND FAIRY SHARED HEALTH
 ; --- WITCH RELATED VARIABLES --------------------------------------------------
 
 PL1EIPOS    DS.L    1                       ; WITCH ENTITY INFORMATION ADDRESS
-PL1POSX     DC.W    30                      ; WITCH X COORDINATE
-PL1POSY     DC.W    30                      ; WITCH Y COORDINATE
+PL1POSX     DS.W    1                       ; WITCH X COORDINATE
+PL1POSY     DS.W    1                       ; WITCH Y COORDINATE
 PL1VELXY    DS.W    1                       ; WITCH VELOCITY
-PL1TILE     DC.B    3                       ; WITCH CURRENT TILE (SPRITE)
+PL1TILE     DS.B    1                       ; WITCH CURRENT TILE (SPRITE)
 
             DS.W    0
 
 ; --- FAIRY RELATED VARIABLES --------------------------------------------------
 
 PL2EIPOS    DS.L    1                       ; FAIRY ENTITY INFORMATION ADDRESS
-PL2POSX     DC.W    60                      ; FAIRY X COORDINATE
-PL2POSY     DC.W    30                      ; FAIRY Y COORDINATE
+PL2POSX     DS.W    1                       ; FAIRY X COORDINATE
+PL2POSY     DS.W    1                       ; FAIRY Y COORDINATE
 PL2VELXY    DS.W    1                       ; FAIRY VELOCITY
-PL2TILE     DC.B    3                       ; FAIRY CURRENT TILE (SPRITE)
+PL2TILE     DS.B    1                       ; FAIRY CURRENT TILE (SPRITE)
 
             DS.W    0
 

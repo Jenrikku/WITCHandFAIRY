@@ -28,8 +28,8 @@ LVLSWTCH
             JSR     BTMREAD
             MOVE.L  A3, LVLEIPOS
 
-            CMPI.W  #5, D0
-            BGE     .NOENEMY
+            CMPI.W  #4*4, D0
+            BGT     .NOENEMY
 
         ; READ ENEMY BTM FILES:
             

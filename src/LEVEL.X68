@@ -28,8 +28,12 @@ LVLSWTCH
             JSR     BTMREAD
             MOVE.L  A3, LVLEIPOS
 
+            CLR.B   PLYMOVE                 ; FORBID PLAYER FROM MOVING
+
             CMPI.W  #4*4, D0
-            BGT     .NOENEMY
+            BGT     .SPECIAL                ; CHECK IF IT'S A SPECIAL LEVEL
+
+            MOVE.B  #1, PLYMOVE             ; ALLOW PLAYER TO MOVE
 
         ; READ ENEMY BTM FILES:
             
@@ -45,12 +49,12 @@ LVLSWTCH
             JSR     BTMREAD
             MOVE.L  A3, ENMEIPOS+4
                         
-.NOENEMY    RTS
+.SPECIAL    RTS
 
 ; ------------------------------------------------------------------------------
 LVLPLOT
 ; PLOTS THE CURRENT LEVEL MAP.
-; INPUT    : NONE
+; INPUT    : D6 = X DISPLACEMENT, D7 = Y DISPLACEMENT
 ; OUTPUT   : NONE
 ; MODIFIES : D0, D1, D2, D3, D6, D7, A1, A3
 ; ------------------------------------------------------------------------------
@@ -62,8 +66,6 @@ LVLPLOT
 
             CLR.W   D2                      ; CURRENT TILE INDEX
             CLR.W   D3                      ; TILENO
-            CLR.W   D6                      ; X
-            CLR.W   D7                      ; Y
 
 .LOOP
             BUFAT   MP, D2, A1
@@ -76,7 +78,7 @@ LVLPLOT
             DBRA    D0, .LOOP
 
             MOVEQ   #LVLWIDTH-1, D0         ; RESTORE WIDTH
-            CLR.W   D6                      ; GO BACK TO START (X = 0)
+            SUB.W   #$10*10*3, D6           ; GO BACK TO START (X = 0)
             ADD.W   #$10*3, D7              ; GO DOWN (+Y)
             DBRA    D1, .LOOP
             

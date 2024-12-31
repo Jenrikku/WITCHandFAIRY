@@ -7,7 +7,7 @@
 ; ------------------------------------------------------------------------------
 GFXEIPLT
 ; PLOTS AN ENTITY BASED ON ITS ENTITY INFO.
-; INPUT    : D3.W = TILENO, D6.W = X, D7.W = Y, A3 = &EI
+; INPUT    : D3.W = TILENO, D4.B = NOBACK, D6.W = X, D7.W = Y, A3 = &EI
 ; OUTPUT   : NONE
 ; MODIFIES : NONE
 ; ------------------------------------------------------------------------------
@@ -15,6 +15,7 @@ GFXEIPLT
             MOVEM.L D0-A3, -(SP)
 
             CLR.W   D0
+            MOVEA.W #$FF, A2            ; DEFAULT: NO BACK COLOR
 
             MOVE.L  A3, A0              ; SAVE ADDRESS OF EI FOR LATER
 
@@ -23,8 +24,11 @@ GFXEIPLT
             MOVEA.W 4(A3, D3), A1       ; RELATIVE POSITION OF TILE TO BUFFER
 
             BUFAT   TS, A1, A3          ; A3 NOW IS ADDRESS TO FIRST COLOR INDEX
-            MOVE.B  (A3), D0            ; D0 NOW IS BACKGROUND COLOR INDEX
 
+            TST.B   D4
+            BNE     .NOBACK             ; IF D4 IS SET, THEN FORCE NO BACK
+
+            MOVE.B  (A3), D0            ; D0 NOW IS BACKGROUND COLOR INDEX
             MOVEA.W  D0, A2             ; STORE BACK COLOR IN A2 FOR LATER
             
             CMPI.B  #$FF, D0

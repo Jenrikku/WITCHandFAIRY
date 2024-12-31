@@ -2,8 +2,6 @@
 ; GAME VARIABLES
 ; ==============================================================================
 
-PLHEALTH    DS.B    1                       ; WITCH AND FAIRY SHARED HEALTH
-
 ; --- WITCH RELATED VARIABLES --------------------------------------------------
 
 PL1EIPOS    DS.L    1                       ; WITCH ENTITY INFORMATION ADDRESS
@@ -21,6 +19,11 @@ PL2POSX     DS.W    1                       ; FAIRY X COORDINATE
 PL2POSY     DS.W    1                       ; FAIRY Y COORDINATE
 PL2VELXY    DS.W    1                       ; FAIRY VELOCITY
 PL2TILE     DS.B    1                       ; FAIRY CURRENT TILE (SPRITE)
+
+; --- SHARED PLAYER VARIABLES --------------------------------------------------
+
+PLYHP       DS.B    1                       ; WITCH AND FAIRY SHARED HEALTH
+PLYMOVE     DS.B    1                       ; WHETHER THE PLAYER CAN MOVE
 
             DS.W    0
 

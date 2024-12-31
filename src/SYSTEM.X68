@@ -51,6 +51,29 @@ SCRINIT
             RTS
 
 ; ------------------------------------------------------------------------------
+SCRCLEAR
+; CLEARS THE SCREEN WITH THE COLOR DEFINED IN SCRBACK CONSTANT.
+; INPUT    : NONE
+; OUTPUT   : NONE
+; MODIFIES : D0-D4
+; ------------------------------------------------------------------------------
+            
+            MOVEQ   #11, D0
+            MOVE.W  #$FF00, D1              ; CLEAR THE SCREEN
+            TRAP    #15
+
+            MOVEQ   #81, D0
+            MOVE.L  #SCRBACK, D1
+            TRAP    #15                     ; SET FILL COLOR
+
+            MOVEQ   #89, D0
+            CLR.W   D1
+            CLR.W   D2
+            TRAP    #15                     ; FILL SCREEN WITH COLOR
+            
+            RTS
+
+; ------------------------------------------------------------------------------
 KBDINIT 
 ; INITIALIZE KEYBOARD.
 ; INPUT    : NONE

@@ -8,8 +8,8 @@
             ORG     $1000
             
             INCLUDE "MACROS.X68"
-            INCLUDE "CONST.X68"
             INCLUDE "SYSCONST.X68"
+            INCLUDE "CONST.X68"
             INCLUDE "SYSTEM.X68"
             INCLUDE "PL1.X68"
             INCLUDE "PL2.X68"
@@ -30,7 +30,7 @@ START
 
             MOVE.B  #1, BUFFMODE            ; SET BUFFER MODE TO LEVEL
 
-            MOVEQ   #0, D0                  ; SET LEVEL INDEX
+            MOVEQ   #6, D0                  ; SET LEVEL INDEX TO TITLE SCREEN
             JSR     LVLSWTCH                ; SWITCH TO LEVEL IN D0
 
             JSR     PL1RESET
@@ -64,6 +64,19 @@ START
 
 ; --- PLOT ---------------------------------------------------------------------
 
+            JSR     SCRCLEAR                ; CLEAR THE SCREEN WITH COLOR
+
+            MOVEQ   #1, D4                  ; ENABLE OPTIMIZED GFX
+            MOVE.W  #SPNWIDTH/2, D6         ; MAP X DISPLACEMENT
+
+            CMPI.B  #4, LVLINDEX
+            BGT     .SPECIAL
+
+            JSR     SPNPLOT                 ; DRAW SIDE PANEL
+            CLR.W   D4                      ; DISABLE OPTIMIZED GFX
+            CLR.W   D6                      ; SET MAP X DISPLACEMENT TO 0
+
+.SPECIAL    CLR.W   D7                      ; SET MAP Y DISPLACEMENT TO 0
             JSR     LVLPLOT                 ; DRAW MAP
 
             MOVE.B  #0, BUFFMODE            ; SET BUFFER MODE TO STATIC
@@ -75,8 +88,6 @@ START
 
             MOVE.B  #1, BUFFMODE            ; SET BUFFER MODE TO LEVEL
             
-            JSR     SPNPLOT                 ; DRAW SIDE PANEL
-
             MOVEQ   #94, D0
             TRAP    #15                     ; REPAINT SCREEN (DOUBLE BUFFER)
 

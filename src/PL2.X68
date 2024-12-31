@@ -27,17 +27,20 @@ PL2RESET
 ; MODIFIES : NONE
 ; ------------------------------------------------------------------------------
 
-            ; RESET COORDINATE X
-            MOVE.W  #PL2CONSX, PL2POSX
+            CMPI.B  #6, LVLINDEX
+            BEQ     .TITLE
+            
+            MOVE.W  #PL2REGX, PL2POSX       ; RESET COORDINATE X (REGULAR)
+            MOVE.W  #PLYREGY, PL2POSY       ; RESET COORDINATE Y (REGULAR)
+            MOVE.B  #3, PL2TILE             ; RESET SPRITE NUMBER
+            BRA     .COMMON
 
-            ; RESET COORDINATE Y
-            MOVE.W  #PLYCONSY, PL2POSY
+.TITLE      MOVE.W  #PL2TITX, PL2POSX       ; RESET COORDINATE X (TITLE)
+            MOVE.W  #PLYTITY, PL2POSY       ; RESET COORDINATE Y (TITLE)
+            CLR.B   PL2TILE                 ; RESET SPRITE NUMBER
+            BRA     .COMMON
 
-            ; RESET SPEED
-            CLR.W   PL2VELXY
-
-            ; RESET SPRITE NUMBER
-            MOVE.B  #3, PL2TILE
+.COMMON     CLR.W   PL2VELXY                ; RESET SPEED
 
             RTS
 
@@ -48,6 +51,9 @@ PL2UPD
 ; OUTPUT   : NONE
 ; MODIFIES : NONE
 ; ------------------------------------------------------------------------------
+
+            TST.B   PLYMOVE                 ; CHECK IF PLAYER CAN MOVE
+            BEQ     .NOMOVE                 ; PREVENTS PLAYER MOVEMENT
 
             MOVEM.W D0/D1, -(SP)
 
@@ -80,7 +86,7 @@ PL2UPD
 
             MOVEM.W (SP)+, D0/D1
 
-            RTS
+.NOMOVE     RTS
             
 ; ------------------------------------------------------------------------------
 PL2PLOT

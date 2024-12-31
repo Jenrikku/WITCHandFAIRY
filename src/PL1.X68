@@ -27,17 +27,20 @@ PL1RESET
 ; MODIFIES : NONE
 ; ------------------------------------------------------------------------------
 
-            ; RESET COORDINATE X     
-            MOVE.W  #PL1CONSX, PL1POSX      
+            CMPI.B  #6, LVLINDEX
+            BEQ     .TITLE
+            
+            MOVE.W  #PL1REGX, PL1POSX       ; RESET COORDINATE X (REGULAR)
+            MOVE.W  #PLYREGY, PL1POSY       ; RESET COORDINATE Y (REGULAR)
+            MOVE.B  #3, PL1TILE             ; RESET SPRITE NUMBER
+            BRA     .COMMON
 
-            ; RESET COORDINATE Y
-            MOVE.W  #PLYCONSY, PL1POSY
+.TITLE      MOVE.W  #PL1TITX, PL1POSX       ; RESET COORDINATE X (TITLE)
+            MOVE.W  #PLYTITY, PL1POSY       ; RESET COORDINATE Y (TITLE)
+            CLR.B   PL1TILE                 ; RESET SPRITE NUMBER
+            BRA     .COMMON
 
-            ; RESET SPEED
-            CLR.W   PL1VELXY
-
-            ; RESET SPRITE NUMBER
-            MOVE.B  #3, PL1TILE
+.COMMON     CLR.W   PL1VELXY                ; RESET SPEED
 
             RTS
             
@@ -48,6 +51,9 @@ PL1UPD
 ; OUTPUT   : NONE
 ; MODIFIES : NONE
 ; ------------------------------------------------------------------------------
+
+            TST.B   PLYMOVE                 ; CHECK IF PLAYER CAN MOVE
+            BEQ     .NOMOVE                 ; PREVENTS PLAYER MOVEMENT
 
             MOVEM.W D0/D1, -(SP)
 
@@ -80,7 +86,7 @@ PL1UPD
 
             MOVEM.W (SP)+, D0/D1
 
-            RTS
+.NOMOVE     RTS
 
 ; ------------------------------------------------------------------------------
 PL1PLOT
@@ -99,8 +105,3 @@ PL1PLOT
             JSR     GFXEIPLT
 
             RTS
-
-*~Font name~Courier New~
-*~Font size~10~
-*~Tab type~0~
-*~Tab size~4~

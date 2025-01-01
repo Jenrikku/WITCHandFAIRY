@@ -64,6 +64,9 @@ START
 
             JSR     SCRCLEAR                ; CLEAR THE SCREEN WITH COLOR
 
+            MOVE.B  LVLINDEX, D0
+            JSR     LVLTEXT                 ; DRAW TEXT DEPENDING ON THE LEVEL
+
             MOVEQ   #1, D4                  ; ENABLE OPTIMIZED GFX
             MOVE.W  #SPNWIDTH/2, D6         ; MAP X DISPLACEMENT
 

@@ -19,6 +19,9 @@ LVLSWTCH
             CLR.W   LVLMPCNT
             CLR.W   LVLEICNT
 
+            CMPI.B  #7, D0                  ; IF THE INDEX OVERFLOWS
+            BGT     .END                    ; NO LEVEL IS READ
+
         ; READ MAP BTM FILE:
         
             LSL.W   #2, D0                  ; MULTIPLY BY 4 (LONG TO BYTE)
@@ -29,7 +32,7 @@ LVLSWTCH
             MOVE.L  A3, LVLEIPOS
 
             CMPI.W  #4*4, D0
-            BGT     .SPECIAL                ; CHECK IF IT'S A SPECIAL LEVEL
+            BGT     .END                    ; CHECK IF IT'S A SPECIAL LEVEL
 
         ; READ ENEMY BTM FILES:
             
@@ -45,7 +48,7 @@ LVLSWTCH
             JSR     BTMREAD
             MOVE.L  A3, ENMEIPOS+4
                         
-.SPECIAL    RTS
+.END        RTS
 
 ; ------------------------------------------------------------------------------
 LVLPLOT
@@ -80,3 +83,46 @@ LVLPLOT
             
             RTS
 
+; ------------------------------------------------------------------------------
+LVLTEXT
+; DISPLAYS SOME TEXT BASED ON THE LEVEL. (SPECIAL LEVELS ONLY)
+; 5 -> END
+; 6 -> TITLE
+; 7 -> GAME OVER
+; 8 -> TUTORIAL
+; INPUT    : D0.B = LVLINDEX
+; OUTPUT   : NONE
+; MODIFIES : D0, D1, A1
+; ------------------------------------------------------------------------------
+
+            CMPI.B  #5, D0
+            BEQ     .END
+            CMPI.B  #6, D0
+            BEQ     .TITLE
+            CMPI.B  #7, D0
+            BEQ     .GAMOVER
+            CMPI.B  #8, D0
+            BEQ     .TUT
+
+            RTS
+
+.END        ; FINAL SCREEN (GAME CLEARED)
+            RTS
+
+.TITLE      ; TITLE SCREEN
+
+            MOVEQ   #11, D0
+            MOVE.W  #TXTANYKP, D1
+            TRAP    #15
+
+            MOVEQ   #14, D0
+            LEA     TXTANYK, A1
+            TRAP    #15
+
+            RTS
+
+.GAMOVER    ; GAME OVER (HP DEPLEATED)
+            RTS
+
+.TUT        ; TUTORIAL
+            BRA     .TITLE                  ; THEY BOTH SHARE 'PRESS ANY KEY'

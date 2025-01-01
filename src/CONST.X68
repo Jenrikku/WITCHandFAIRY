@@ -14,6 +14,10 @@ PXLY        EQU     3                       ; AMOUNT OF DRAWS PER PIXEL IN Y
 LVLWIDTH    EQU     10                      ; WIDTH IN TILES OF THE LEVEL
 LVLHEIGH    EQU     10                      ; HEIGHT IN TILES OF THE LEVEL
 
+; --- TEXT RELATED CONSTANTS ---------------------------------------------------
+
+TXTANYKP    EQU     10*$100+15              ; PRESS ANY KEY TEXT POSITION
+
 ; --- SIDE PANEL RELATED CONSTANTS ---------------------------------------------
 
 SPNSTART    EQU     LVLWIDTH*16*3           ; SIDE PANEL START X POSITION

@@ -14,8 +14,7 @@ BTMLVL4     DC.B    'BTM/LVL4MAP.BTM', 0    ; VOLCANO
 BTMLVL5     DC.B    'BTM/LVL5MAP.BTM', 0    ; DESERT
 BTMLVLS1    DC.B    'BTM/', 0               ; SPECIAL 1 : END
 BTMLVLS2    DC.B    'BTM/LVLS2MAP.BTM', 0   ; SPECIAL 2 : TITLE
-BTMLVLS3    DC.B    'BTM/', 0               ; SPECIAL 3 : TUTORIAL
-BTMLVLS4    DC.B    'BTM/', 0               ; SPECIAL 4 : GAME OVER
+BTMLVLS3    DC.B    'BTM/', 0               ; SPECIAL 3 : GAME OVER
 
 BTMLV1E1    DC.B    'BTM/BUTTERFLY.BTM', 0  ; LVL 1, ENEMY 1: BUTTERFLY
 BTMLV1E2    DC.B    'BTM/RABBIT.BTM', 0     ; LVL 1, ENEMY 2: RABBIT
@@ -40,7 +39,6 @@ LVLLIST     DC.L    BTMLVL1
             DC.L    BTMLVLS1
             DC.L    BTMLVLS2
             DC.L    BTMLVLS3
-            DC.L    BTMLVLS4
 
 ; --- ENEMY JUMP TABLE ---------------------------------------------------------
 

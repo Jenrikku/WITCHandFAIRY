@@ -47,12 +47,13 @@ ENMHP       DS.B    ENMMAXNO                ; ENEMIES HEALTH POINTS
 LVLEIPOS    DS.L    1                       ; MAP ENTITY INFORMATION ADDRESS
 LVLINDEX    DS.B    1                       ; CURRENT LEVEL
 
-; --- STORY PANEL RELATED VARIABLES --------------------------------------------
+; --- TEXT VARIABLES -----------------------------------------------------------
 
-TXT1STRY    DC.B    'This is a temporary story for the witch.'
-            DC.B    'This is a second paragraph.',0
-
-TXT2STRY    DC.B    'This is a temporary story for the fairy.',0
-            DC.B    'This is a second paragraph.',0
+TXTANYK     DC.B    'PRESS ANY KEY TO CONTINUE', 0
+TXTTUT1     DC.B    'MOVE THE WITCH USING WASD', 0
+TXTTUT2     DC.B    'MOVE THE FAIRY USING THE ARROW KEYS', 0
+TXTTUT3     DC.B    'DODGE ENEMIES FOR SOME TIME AND YOU WILL BECOME INVINCIBLE'
+            DC.B    0
+TXTTUT4     DC.B    'CHASE THE ENEMIES ONCE THAT HAPPENS TO CLEAR THE LEVEL', 0
 
             DS.W    0

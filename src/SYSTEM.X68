@@ -12,9 +12,11 @@ SYSINIT
             
             ORI.W   #$0700, SR          ; DISABLE INTERRUPTIONS
 
-            JSR     SCRINIT
-            JSR     KBDINIT
-            JSR     TIMINIT
+            JSR     SCRINIT             ; SCREEN INITIALIZATION
+            JSR     KBDINIT             ; KEYBOARD INITIALIZATION
+            JSR     TIMINIT             ; TIMER INITIALIZATION
+
+            JSR     TXTRESET            ; SET DEFAULT FONT
 
             MOVE.L  #KBDUPD, $84        ; INSTALL TO TRAP 1
             MOVE.L  #TIMIRQ, $64        ; INSTALL TO IRQ 1
@@ -180,3 +182,29 @@ TIMIRQ
 
 .READY      BSET.B  #1, FRMSTATE            ; ALLOW NEXT FRAME TO BE DRAWN
             RTE
+
+; ------------------------------------------------------------------------------
+TXTRESET
+; RESETS DISPLAY TEXT FONT TO DEFAULTS. 
+; INPUT    : NONE
+; OUTPUT   : NONE
+; MODIFIES : D0-D2
+; ------------------------------------------------------------------------------
+
+            MOVEQ   #21, D0
+            MOVE.L  #$00FFFFFF, D1          ; WHITE
+            MOVE.L  #$03120001, D2          ; COURIER NEW, 12 POINTS, BOLD
+            TRAP    #15
+
+; ------------------------------------------------------------------------------
+TXTBIG
+; SETS DISPLAY TEXT FONT TO A BIG ONE. 
+; INPUT    : NONE
+; OUTPUT   : NONE
+; MODIFIES : D0-D2
+; ------------------------------------------------------------------------------
+
+            MOVEQ   #21, D0
+            MOVE.L  #$00FFFFFF, D1          ; WHITE
+            MOVE.L  #$03140001, D2          ; COURIER NEW, 14 POINTS, BOLD
+            TRAP    #15

@@ -59,8 +59,8 @@ PLYUPD
 .NOMOVE     RTS
 
 ; ------------------------------------------------------------------------------
-PLYINIT
-; INITIALIZES PLAYERS.
+PLYPLOT
+; PLOT PLAYERS.
 ; INPUT    : NONE
 ; OUTPUT   : NONE
 ; MODIFIES : D3, D6, D7, A3

@@ -39,5 +39,7 @@ PL1TUTY     EQU     0                       ; FAIRY STARTING Y (TUTORIAL)
 
 ; --- BOTH PLAYERS RELATED CONSTANTS -------------------------------------------
 
-PLYREGY      EQU    LVLHEIGH*16*3-100       ; BOTH PLAYERS STARTING Y (REGULAR)
-PLYTITY      EQU    4*16*3                  ; BOTH PLAYERS STARTING Y (TITLE)
+PLYREGY     EQU     LVLHEIGH*16*3-100       ; BOTH PLAYERS STARTING Y (REGULAR)
+PLYTITY     EQU     4*16*3                  ; BOTH PLAYERS STARTING Y (TITLE)
+PLYINIHP    EQU     7                       ; INITIAL PLAYERS HP
+PLYESYHP    EQU     255                     ; INITIAL PLAYERS HP (EASY MODE)

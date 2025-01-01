@@ -22,12 +22,12 @@ PL2INIT
 ; ------------------------------------------------------------------------------
 PL2RESET
 ; RESETS FAIRY VARIABLES.
-; INPUT    : NONE 
+; INPUT    : D0.B = LVLINDEX 
 ; OUTPUT   : NONE
 ; MODIFIES : NONE
 ; ------------------------------------------------------------------------------
 
-            CMPI.B  #6, LVLINDEX
+            CMPI.B  #6, D0
             BEQ     .TITLE
             
             MOVE.W  #PL2REGX, PL2POSX       ; RESET COORDINATE X (REGULAR)
@@ -49,17 +49,11 @@ PL2UPD
 ; UPDATES FAIRY.
 ; INPUT    : NONE 
 ; OUTPUT   : NONE
-; MODIFIES : NONE
+; MODIFIES : D0, D1
 ; ------------------------------------------------------------------------------
 
-            TST.B   PLYMOVE                 ; CHECK IF PLAYER CAN MOVE
-            BEQ     .NOMOVE                 ; PREVENTS PLAYER MOVEMENT
-
-            MOVEM.W D0/D1, -(SP)
-
-            ; UPDATE COORDINATE
-            MOVE.W  PL2POSX, D0
-            MOVE.W  PL2POSY, D1
+            MOVE.W  PL2POSX, D0             ; GET VALUE OF CURRENT X POS
+            MOVE.W  PL2POSY, D1             ; GET VALUE OF CURRENT Y POS
 
             BTST.B  #KBTPL2UP, KBDVAL       ; CHECK UP
             BNE     .NOUP
@@ -81,12 +75,10 @@ PL2UPD
             
             SUB.W   #PL2SPEED, D0
 
-.NORIGHT    MOVE.W  D0, PL2POSX             ; UPDATE VARIABLE X
-            MOVE.W  D1, PL2POSY             ; UPDATE VARIABLE Y
+.NORIGHT    MOVE.W  D0, PL2POSX             ; SET VALUE OF X POS
+            MOVE.W  D1, PL2POSY             ; SET VALUE OF Y POS
 
-            MOVEM.W (SP)+, D0/D1
-
-.NOMOVE     RTS
+            RTS
             
 ; ------------------------------------------------------------------------------
 PL2PLOT

@@ -5,7 +5,7 @@
 ; ------------------------------------------------------------------------------
 LVLSWTCH
 ; SWITCHES TO ANOTHER LEVEL.
-; INPUT    : D0.W = LVLNO 
+; INPUT    : D0.W = LVLNO
 ; OUTPUT   : NONE
 ; MODIFIES : D0, A1, A2, A3
 ; ------------------------------------------------------------------------------
@@ -28,12 +28,8 @@ LVLSWTCH
             JSR     BTMREAD
             MOVE.L  A3, LVLEIPOS
 
-            CLR.B   PLYMOVE                 ; FORBID PLAYER FROM MOVING
-
             CMPI.W  #4*4, D0
             BGT     .SPECIAL                ; CHECK IF IT'S A SPECIAL LEVEL
-
-            MOVE.B  #1, PLYMOVE             ; ALLOW PLAYER TO MOVE
 
         ; READ ENEMY BTM FILES:
             

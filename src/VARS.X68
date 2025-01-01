@@ -2,6 +2,9 @@
 ; GAME VARIABLES
 ; ==============================================================================
 
+MODEASY     DC.B    0                       ; SET TO ENABLE EASY MODE
+            DS.W    0
+
 ; --- WITCH RELATED VARIABLES --------------------------------------------------
 
 PL1EIPOS    DS.L    1                       ; WITCH ENTITY INFORMATION ADDRESS
@@ -42,7 +45,7 @@ ENMHP       DS.B    ENMMAXNO                ; ENEMIES HEALTH POINTS
 ; --- LEVEL RELATED VARIABLES --------------------------------------------------
 
 LVLEIPOS    DS.L    1                       ; MAP ENTITY INFORMATION ADDRESS
-LVLINDEX    DC.B    0                       ; CURRENT LEVEL
+LVLINDEX    DS.B    1                       ; CURRENT LEVEL
 
 ; --- STORY PANEL RELATED VARIABLES --------------------------------------------
 

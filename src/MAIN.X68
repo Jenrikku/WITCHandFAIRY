@@ -13,6 +13,7 @@
             INCLUDE "SYSTEM.X68"
             INCLUDE "PL1.X68"
             INCLUDE "PL2.X68"
+            INCLUDE "PLAYER.X68"
             INCLUDE "SIDEPANEL.X68"
             INCLUDE "LEVEL.X68"
             INCLUDE "ENEMY.X68"
@@ -23,18 +24,16 @@ START
 
 ; --- INITIALIZATION -----------------------------------------------------------
 
-            JSR     SYSINIT
-            JSR     PL1INIT
-            JSR     PL2INIT
-            JSR     SPNINIT
+            JSR     SYSINIT                 ; SYSTEM INIT
+            JSR     PLYINIT                 ; PLAYER INIT
+            JSR     SPNINIT                 ; SIDE PANEL INIT
 
             MOVE.B  #1, BUFFMODE            ; SET BUFFER MODE TO LEVEL
 
             MOVEQ   #6, D0                  ; SET LEVEL INDEX TO TITLE SCREEN
             JSR     LVLSWTCH                ; SWITCH TO LEVEL IN D0
 
-            JSR     PL1RESET
-            JSR     PL2RESET
+            JSR     PLYRESET                ; PLAYER RESET (LEVEL-DEPENDENT)
 
 .LOOP
 
@@ -42,12 +41,11 @@ START
 
 ; READ INPUT DEVICES
 
-            TRAP    #1
+            TRAP    #1                      ; KEYBOARD
 
 ; UPDATE GAME LOGIC
 
-            JSR     PL1UPD
-            JSR     PL2UPD            
+            JSR     PLYUPD                  ; PLAYER UPDATE
 
 ; --- SYNC ---------------------------------------------------------------------
 
@@ -70,7 +68,7 @@ START
             MOVE.W  #SPNWIDTH/2, D6         ; MAP X DISPLACEMENT
 
             CMPI.B  #4, LVLINDEX
-            BGT     .SPECIAL
+            BGT     .SPECIAL                ; CHECK IF LEVEL IS SPECIAL
 
             JSR     SPNPLOT                 ; DRAW SIDE PANEL
             CLR.W   D4                      ; DISABLE OPTIMIZED GFX
@@ -83,8 +81,7 @@ START
 
 ; DRAW ENTITIES
 
-            JSR     PL1PLOT
-            JSR     PL2PLOT
+            JSR     PLYPLOT                 ; DRAW PLAYERS
 
             MOVE.B  #1, BUFFMODE            ; SET BUFFER MODE TO LEVEL
             

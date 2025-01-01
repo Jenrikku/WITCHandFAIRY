@@ -24,8 +24,8 @@ PLYRESET
 
             MOVE.B  LVLINDEX, D0            ; GET CURRENT LEVEL INDEX
 
-            JSR     PL1INIT
-            JSR     PL2INIT
+            JSR     PL1RESET
+            JSR     PL2RESET
 
             CLR.B   PLYMOVE                 ; FORBID PLAYER FROM MOVING
 

@@ -206,4 +206,27 @@ BUFAT       MACRO
 
 .END\@       
             ENDM
-            
+
+; ------------------------------------------------------------------------------
+RANG        MACRO
+; CHECKS FOR THE VALUE OF \1 TO BE INSIDE THE RANGE OF \2 AND \3.
+; \4 SPECIFIES THE WIDTH OF THE VALUE TO CHECK.
+; SETS THE VALUE TO EITHER OF THEM IF OUT OF BOUNDS.
+; MAKE SURE THAT \1 IS A DATA REGISTER.
+; ------------------------------------------------------------------------------
+
+            CMP.\0  \2, \1                  ; CHECK LOWER BOUND
+            BGT     .CHCK1\@
+
+            MOVE.\0 \2, \1                  ; SET TO LOWER BOUND
+
+.CHCK1\@    ADD.\0  \4, \1                  ; ADD WIDTH
+
+            CMP.\0  \3, \1                  ; CHECK UPPER BOUND
+            BLT     .CHCK2\@
+
+            MOVE.W  \3, \1                  ; SET TO UPPER BOUND
+
+.CHCK2\@    SUB.\0  \4, \1                  ; REMOVE WIDTH
+
+            ENDM

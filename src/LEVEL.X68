@@ -142,12 +142,12 @@ LVLPLOT
             JSR     GFXEIPLT
 
             ADDQ.W  #1, D2                  ; NEXT TILE
-            ADD.W   #$10*3, D6              ; GO RIGHT (+X)
+            ADD.W   #$10*PXLX, D6           ; GO RIGHT (+X)
             DBRA    D0, .LOOP
 
             MOVEQ   #LVLWIDTH-1, D0         ; RESTORE WIDTH
-            SUB.W   #$10*10*3, D6           ; GO BACK TO START (X = 0)
-            ADD.W   #$10*3, D7              ; GO DOWN (+Y)
+            SUB.W   #$10*10*PXLX, D6        ; GO BACK TO START (X = 0)
+            ADD.W   #$10*PXLY, D7           ; GO DOWN (+Y)
             DBRA    D1, .LOOP
             
 .END        RTS

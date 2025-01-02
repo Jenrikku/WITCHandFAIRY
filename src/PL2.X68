@@ -1,7 +1,9 @@
 ; ==============================================================================
 ; PLAYER 2 (FAIRY) MANAGEMENT
 ; ==============================================================================
-            
+
+            OPT     MEX
+
 ; ------------------------------------------------------------------------------
 PL2INIT
 ; INITIALIZE FAIRY.
@@ -88,7 +90,14 @@ PL2UPD
             
             SUB.W   #PL2SPEED, D0
 
-.NORIGHT    MOVE.W  D0, PL2POSX             ; SET VALUE OF X POS
+.NORIGHT    
+
+        ; CHECK IF OUT OF BOUNDS AND CORRECT POSITION
+
+            RANG.W  D0, #0, #SPNSTART, #16*PXLX
+            RANG.W  D1, #0, #SCRHEIGH, #16*PXLY
+
+            MOVE.W  D0, PL2POSX             ; SET VALUE OF X POS
             MOVE.W  D1, PL2POSY             ; SET VALUE OF Y POS
 
             RTS

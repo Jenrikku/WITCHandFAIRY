@@ -10,6 +10,11 @@ SCRMODE     EQU     1                       ; 1 = WINDOWED, 2 = FULLSCREEN
 SCRDELTA    EQU     40                      ; MAX MILISECONDS BETWEEN FRAMES
 SCRBACK     EQU     $002A2A2A               ; CLEAR COLOR
 
+; --- GRAPHICS RELATED CONSTANS ------------------------------------------------
+
+PXLX        EQU     3                       ; AMOUNT OF DRAWS PER PIXEL IN X
+PXLY        EQU     3                       ; AMOUNT OF DRAWS PER PIXEL IN Y
+
 ; --- TEXT RELATED CONSTANTS ---------------------------------------------------
 
 TXTCOLOR    EQU     $00FFFFFF               ; WHITE FONT COLOR

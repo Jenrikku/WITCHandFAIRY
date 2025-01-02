@@ -1,7 +1,9 @@
 ; ==============================================================================
 ; PLAYER 1 (WITCH) MANAGEMENT
 ; ==============================================================================
-            
+
+            OPT     MEX
+
 ; ------------------------------------------------------------------------------
 PL1INIT
 ; INITIALIZE WITCH.
@@ -88,7 +90,14 @@ PL1UPD
             
             SUB.W   #PL1SPEED, D0
 
-.NORIGHT    MOVE.W  D0, PL1POSX             ; SET VALUE OF X POS
+.NORIGHT
+
+        ; CHECK IF OUT OF BOUNDS AND CORRECT POSITION
+
+            RANG.W  D0, #0, #SPNSTART, #16*PXLX
+            RANG.W  D1, #0, #SCRHEIGH, #16*PXLY
+
+            MOVE.W  D0, PL1POSX             ; SET VALUE OF X POS
             MOVE.W  D1, PL1POSY             ; SET VALUE OF Y POS
 
             RTS

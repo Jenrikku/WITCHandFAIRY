@@ -3,24 +3,6 @@
 ; ==============================================================================
 
 ; ------------------------------------------------------------------------------
-LVLINIT
-; INITS ALL VARIABLES RELATED TO LEVELS AND SWITCHES A THE LEVEL.
-; INPUT    : D0.W = LVLNO
-; OUTPUT   : NONE
-; MODIFIES : D0, A1, A2, A3
-; ------------------------------------------------------------------------------
-
-            CLR.B   LVLCHANG                ; USED TO TELL IF LEVEL IS CHANGING
-            MOVE.B  D0, LVLINDEX
-
-            CMPI.B  #LVLMAX, D0             ; IF THE INDEX OVERFLOWS
-            BHI     .END                    ; NO LEVEL IS READ
-
-            JSR     LVLREAD                 ; READ MAP AND ENEMIES
-
-.END        RTS
-
-; ------------------------------------------------------------------------------
 LVLSWTCH
 ; SWITCHES TO ANOTHER LEVEL. PLAYS AN ANIMATION FOR REGULAR LEVELS.
 ; INPUT    : D0.W = LVLNO
@@ -28,6 +10,7 @@ LVLSWTCH
 ; MODIFIES : D0, A1, A2, A3
 ; ------------------------------------------------------------------------------
 
+            CLR.B   LVLCHANG                ; USED TO TELL IF LEVEL IS CHANGING
             MOVE.B  D0, LVLINDEX
 
             CMPI.B  #LVLMAX, D0             ; IF THE INDEX OVERFLOWS

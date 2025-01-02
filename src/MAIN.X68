@@ -31,7 +31,7 @@ START
             MOVE.B  #1, BUFFMODE            ; SET BUFFER MODE TO LEVEL
 
             MOVEQ   #6, D0                  ; SET LEVEL INDEX TO TITLE SCREEN
-            JSR     LVLINIT                 ; SWITCH TO LEVEL IN D0
+            JSR     LVLSWTCH                ; SWITCH TO LEVEL IN D0
 
             JSR     PLYRESET                ; PLAYER RESET (LEVEL-DEPENDENT)
 

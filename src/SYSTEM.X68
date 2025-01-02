@@ -205,23 +205,8 @@ TXTRESET
 ; ------------------------------------------------------------------------------
 
             MOVEQ   #21, D0
-            MOVE.L  #$00FFFFFF, D1          ; WHITE
-            MOVE.L  #$03120001, D2          ; COURIER NEW, 12 POINTS, BOLD
-            TRAP    #15
-
-            RTS
-
-; ------------------------------------------------------------------------------
-TXTBIG
-; SETS DISPLAY TEXT FONT TO A BIG ONE. 
-; INPUT    : NONE
-; OUTPUT   : NONE
-; MODIFIES : D0-D2
-; ------------------------------------------------------------------------------
-
-            MOVEQ   #21, D0
-            MOVE.L  #$00FFFFFF, D1          ; WHITE
-            MOVE.L  #$03140001, D2          ; COURIER NEW, 14 POINTS, BOLD
+            MOVE.L  #TXTCOLOR, D1
+            MOVE.L  #TXTFONT, D2
             TRAP    #15
 
             RTS

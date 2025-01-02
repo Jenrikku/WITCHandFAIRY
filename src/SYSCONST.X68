@@ -10,6 +10,11 @@ SCRMODE     EQU     1                       ; 1 = WINDOWED, 2 = FULLSCREEN
 SCRDELTA    EQU     40                      ; MAX MILISECONDS BETWEEN FRAMES
 SCRBACK     EQU     $002A2A2A               ; CLEAR COLOR
 
+; --- TEXT RELATED CONSTANTS ---------------------------------------------------
+
+TXTCOLOR    EQU     $00FFFFFF               ; WHITE FONT COLOR
+TXTFONT     EQU     $03120001               ; COURIER NEW, 12 POINTS, BOLD
+
 ; --- KEYCODES -----------------------------------------------------------------
 
 KBDCONT     EQU     $0D                     ; KEY ENTER

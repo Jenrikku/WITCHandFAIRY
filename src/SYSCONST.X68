@@ -14,6 +14,7 @@ SCRBACK     EQU     $002A2A2A               ; CLEAR COLOR
 
 TXTCOLOR    EQU     $00FFFFFF               ; WHITE FONT COLOR
 TXTFONT     EQU     $03120001               ; COURIER NEW, 12 POINTS, BOLD
+TXTFONTB    EQU     $03180001               ; COURIER NEW, 18 POINTS, BOLD (BIG)
 
 ; --- KEYCODES -----------------------------------------------------------------
 

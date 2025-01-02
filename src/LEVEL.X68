@@ -3,8 +3,26 @@
 ; ==============================================================================
 
 ; ------------------------------------------------------------------------------
+LVLINIT
+; INITS ALL VARIABLES RELATED TO LEVELS AND SWITCHES A THE LEVEL.
+; INPUT    : D0.W = LVLNO
+; OUTPUT   : NONE
+; MODIFIES : D0, A1, A2, A3
+; ------------------------------------------------------------------------------
+
+            CLR.B   LVLCHANG                ; USED TO TELL IF LEVEL IS CHANGING
+            MOVE.B  D0, LVLINDEX
+
+            CMPI.B  #LVLMAX, D0             ; IF THE INDEX OVERFLOWS
+            BHI     .END                    ; NO LEVEL IS READ
+
+            JSR     LVLREAD                 ; READ MAP AND ENEMIES
+
+.END        RTS
+
+; ------------------------------------------------------------------------------
 LVLSWTCH
-; SWITCHES TO ANOTHER LEVEL.
+; SWITCHES TO ANOTHER LEVEL. PLAYS AN ANIMATION FOR REGULAR LEVELS.
 ; INPUT    : D0.W = LVLNO
 ; OUTPUT   : NONE
 ; MODIFIES : D0, A1, A2, A3
@@ -14,6 +32,24 @@ LVLSWTCH
 
             CMPI.B  #LVLMAX, D0             ; IF THE INDEX OVERFLOWS
             BHI     .END                    ; NO LEVEL IS READ
+
+            CMPI.B  #LVLLAST, D0            ; IF LEVEL IS SPECIAL
+            BHI     .NOANIM                 ; DO NOT PLAY NEXT LEVEL ANIMATION
+
+            MOVE.B  #1, LVLCHANG            ; TELL THAT LEVEL IS CHANGING
+
+.NOANIM     JSR     LVLREAD                 ; READ MAP AND ENEMIES
+
+.END        RTS
+
+
+; ------------------------------------------------------------------------------
+LVLREAD
+; READS THE LEVEL FROM THE BTM FILES. MEANT TO BE CALLED BY ANOTHER SUBROUTINE.
+; INPUT    : D0.W = LVLNO
+; OUTPUT   : NONE
+; MODIFIES : D0, A1, A2, A3
+; ------------------------------------------------------------------------------
 
         ; RESET COUNTERS:
 
@@ -28,25 +64,25 @@ LVLSWTCH
             LEA     LVLLIST, A1
             MOVE.L  (A1, D0), A1            ; GET STRING ADDRESS FROM MEMORY
 
-            JSR     BTMREAD
+            JSR     BTMREAD                 ; READ MAP
             MOVE.L  A3, LVLEIPOS
 
-            CMPI.W  #4*4, D0
-            BHI     .END                    ; CHECK IF IT'S A SPECIAL LEVEL
+            CMPI.W  #LVLLAST*4, D0          ; IF LEVEL IS SPECIAL
+            BHI     .END                    ; DO NOT READ ENEMIES
 
         ; READ ENEMY BTM FILES:
             
-            LSL.W   #1, D0                  ; EVERY LEVEL HAS 2 ENEMIES: 2 LONGS
+            LSL.W   #1, D0                  ; EVERY LEVEL HAS 2 ENEMIES: D0 * 2
             LEA     ENMLIST, A2
             MOVE.L  (A2, D0), A1            ; GET ENEMY 1 ADDRESS FROM MEMORY
 
-            JSR     BTMREAD
+            JSR     BTMREAD                 ; READ ENEMY 1
             MOVE.L  A3, ENMEIPOS
 
             MOVE.L  4(A2, D0), A1           ; GET ENEMY 2 ADDRESS FROM MEMORY
 
-            JSR     BTMREAD
-            MOVE.L  A3, ENMEIPOS+4
+            JSR     BTMREAD                 ; READ ENEMY 2
+            MOVE.L  A3, ENMEIPOS+4          ; PUT EI INTO 2ND ITEM IN ARRAY
                         
 .END        RTS
 
@@ -58,7 +94,7 @@ LVLUPD
 ; 8 -> TUTORIAL
 ; INPUT    : NONE
 ; OUTPUT   : NONE
-; MODIFIES : D0, A1, A2, A3
+; MODIFIES : D0, A1-A3
 ; ------------------------------------------------------------------------------
 
             MOVE.B  LVLINDEX, D0
@@ -142,7 +178,7 @@ LVLTEXT
 ; 8 -> TUTORIAL
 ; INPUT    : NONE
 ; OUTPUT   : NONE
-; MODIFIES : D0-D2, A0-A2
+; MODIFIES : D0, D1, D2, A0, A1, A2
 ; ------------------------------------------------------------------------------
 
             MOVE.B  LVLINDEX, D0
@@ -197,3 +233,42 @@ LVLTEXT
             DBRA    D2, .TUTLOOP
 
             BRA     .TITLE                  ; THEY BOTH SHARE 'PRESS ENTER'
+
+; ------------------------------------------------------------------------------
+LVLTRANS
+; SETS UP AND PLAYS A TRANSITION ANIMATION FOR LEVEL SWITCHING.
+; INPUT    : NONE
+; OUTPUT   : NONE
+; MODIFIES : D0-D2, A1
+; ------------------------------------------------------------------------------
+            
+            JSR     TIMSTOP                 ; STOP CURRENT TIMERS
+
+            MOVEQ   #21, D0
+            MOVE.L  #TXTCOLOR, D1
+            MOVE.L  #TXTFONTB, D2           ; SET FONT TO BIG
+            TRAP    #15
+
+            MOVEQ   #11, D0
+            MOVE.W  TXTNLVLP, D1            ; SET TEXT POSITION
+            TRAP    #15
+
+            MOVEQ   #17, D0
+            CLR.L   D1
+            MOVE.B  LVLINDEX, D1
+            ADDQ.W  #1, D1
+            LEA     TXTNLVL, A1             
+            TRAP    #15                     ; WRITE NEW LEVEL STRING + LVL INDEX
+
+            MOVEQ   #94, D0
+            TRAP    #15                     ; REPAINT SCREEN (DOUBLE BUFFER)
+
+            MOVEQ   #23, D0
+            MOVE.L  #150, D1
+            TRAP    #15                     ; SLEEP FOR 1.5 SECONDS
+
+            CLR.B   LVLCHANG                ; LEVEL IS NO LONGER CHANGING
+
+            JSR     TIMINIT                 ; RE-ENABLE TIMERS
+            
+            RTS

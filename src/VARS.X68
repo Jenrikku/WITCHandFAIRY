@@ -46,6 +46,7 @@ ENMHP       DS.B    ENMMAXNO                ; ENEMIES HEALTH POINTS
 
 LVLEIPOS    DS.L    1                       ; MAP ENTITY INFORMATION ADDRESS
 LVLINDEX    DS.B    1                       ; CURRENT LEVEL
+LVLCHANG    DS.B    1                       ; SET WHEN THE LEVEL IS CHANGING
 
 ; --- TEXT VARIABLES -----------------------------------------------------------
 
@@ -56,6 +57,7 @@ TXTTUT3     DC.B    'DODGE ENEMIES FOR SOME TIME', 0
 TXTTUT4     DC.B    'AND YOU WILL BECOME INVINCIBLE', 0
 TXTTUT5     DC.B    'CHASE THE ENEMIES ONCE THAT HAPPENS', 0
 TXTTUT6     DC.B    'TO CLEAR THE LEVEL', 0
+TXTNLVL     DC.B    'LEVEL ', 0
 
             DS.W    0
 
@@ -68,6 +70,7 @@ TXTTUT3P    DC.W    3*$100+8                ; TUTORIAL LINE 3 POSITION
 TXTTUT4P    DC.W    3*$100+9                ; TUTORIAL LINE 4 POSITION
 TXTTUT5P    DC.W    3*$100+11               ; TUTORIAL LINE 5 POSITION
 TXTTUT6P    DC.W    3*$100+12               ; TUTORIAL LINE 6 POSITION
+TXTNLVLP    DC.W    13*$100+6               ; NEXT LEVEL TEXT POSITION
 
 ; --- TEXT JUMP LIST -----------------------------------------------------------
 
@@ -78,3 +81,4 @@ TXTLIST     DC.L    TXTCONT
             DC.L    TXTTUT4
             DC.L    TXTTUT5
             DC.L    TXTTUT6
+            DC.L    TXTNLVL

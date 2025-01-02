@@ -177,6 +177,21 @@ TIMINIT
             RTS
 
 ; ------------------------------------------------------------------------------
+TIMSTOP
+; STOPS THE TIMED INTERRUPTION.
+; INPUT    : NONE
+; OUTPUT   : NONE
+; MODIFIES : D0-D2
+; ------------------------------------------------------------------------------
+
+            MOVEQ   #32, D0
+            MOVEQ   #6, D1
+            MOVEQ   #$01, D2                ; DISABLE IRQ 1
+            TRAP    #15
+
+            RTS
+
+; ------------------------------------------------------------------------------
 TIMIRQ
 ; TIMED IRQ THAT IS TRIGGERED BY THE SIMULATED CLOCK.
 ; USED TO CONTROL FRAME SYNCRONIZATION AS WELL AS FRAME SKIPPING. 

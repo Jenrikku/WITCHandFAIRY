@@ -31,7 +31,7 @@ START
             MOVE.B  #1, BUFFMODE            ; SET BUFFER MODE TO LEVEL
 
             MOVEQ   #6, D0                  ; SET LEVEL INDEX TO TITLE SCREEN
-            JSR     LVLSWTCH                ; SWITCH TO LEVEL IN D0
+            JSR     LVLINIT                 ; SWITCH TO LEVEL IN D0
 
             JSR     PLYRESET                ; PLAYER RESET (LEVEL-DEPENDENT)
 
@@ -65,12 +65,17 @@ START
 
             JSR     SCRCLEAR                ; CLEAR THE SCREEN WITH COLOR
 
-            JSR     LVLTEXT                 ; DRAW TEXT DEPENDING ON THE LEVEL
+            TST.B   LVLCHANG                ; CHECK IF LEVEL IS CHANGING
+            BEQ     .NOTRANS
+
+            JSR     LVLTRANS                ; SHOW TRANSITION ANIMATION
+
+.NOTRANS    JSR     LVLTEXT                 ; DRAW TEXT DEPENDING ON THE LEVEL
 
             MOVEQ   #1, D4                  ; ENABLE OPTIMIZED GFX
             MOVE.W  #SPNWIDTH/2, D6         ; MAP X DISPLACEMENT
 
-            CMPI.B  #4, LVLINDEX
+            CMPI.B  #LVLLAST, LVLINDEX
             BHI     .SPECIAL                ; CHECK IF LEVEL IS SPECIAL
 
             JSR     SPNPLOT                 ; DRAW SIDE PANEL

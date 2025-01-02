@@ -29,7 +29,7 @@ PLYRESET
 
             CLR.B   PLYMOVE                 ; FORBID PLAYER FROM MOVING
 
-            CMPI.W  #4, D0
+            CMPI.W  #LVLLAST, D0
             BHI     .NOMOVE                 ; CHECK IF IT'S A SPECIAL LEVEL
 
             MOVE.B  #1, PLYMOVE             ; ALLOW PLAYER TO MOVE

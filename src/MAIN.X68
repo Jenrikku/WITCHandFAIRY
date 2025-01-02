@@ -71,7 +71,7 @@ START
             MOVE.W  #SPNWIDTH/2, D6         ; MAP X DISPLACEMENT
 
             CMPI.B  #4, LVLINDEX
-            BGT     .SPECIAL                ; CHECK IF LEVEL IS SPECIAL
+            BHI     .SPECIAL                ; CHECK IF LEVEL IS SPECIAL
 
             JSR     SPNPLOT                 ; DRAW SIDE PANEL
             CLR.W   D4                      ; DISABLE OPTIMIZED GFX

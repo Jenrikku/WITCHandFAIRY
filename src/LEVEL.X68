@@ -20,7 +20,7 @@ LVLSWTCH
             CLR.W   LVLEICNT
 
             CMPI.B  #7, D0                  ; IF THE INDEX OVERFLOWS
-            BGT     .END                    ; NO LEVEL IS READ
+            BHI     .END                    ; NO LEVEL IS READ
 
         ; READ MAP BTM FILE:
         
@@ -32,7 +32,7 @@ LVLSWTCH
             MOVE.L  A3, LVLEIPOS
 
             CMPI.W  #4*4, D0
-            BGT     .END                    ; CHECK IF IT'S A SPECIAL LEVEL
+            BHI     .END                    ; CHECK IF IT'S A SPECIAL LEVEL
 
         ; READ ENEMY BTM FILES:
             

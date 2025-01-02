@@ -269,6 +269,7 @@ LVLTRANS
 
             CLR.B   LVLCHANG                ; LEVEL IS NO LONGER CHANGING
 
+            JSR     TXTRESET                ; RESET TO DEFAULT FONT
             JSR     TIMINIT                 ; RE-ENABLE TIMERS
             
             RTS

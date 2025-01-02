@@ -12,15 +12,15 @@ LVLSWTCH
 
             MOVE.B  D0, LVLINDEX
 
+            CMPI.B  #LVLMAX, D0             ; IF THE INDEX OVERFLOWS
+            BHI     .END                    ; NO LEVEL IS READ
+
         ; RESET COUNTERS:
 
             CLR.W   LVLCLCNT
             CLR.W   LVLTSCNT
             CLR.W   LVLMPCNT
             CLR.W   LVLEICNT
-
-            CMPI.B  #7, D0                  ; IF THE INDEX OVERFLOWS
-            BHI     .END                    ; NO LEVEL IS READ
 
         ; READ MAP BTM FILE:
         
@@ -51,6 +51,53 @@ LVLSWTCH
 .END        RTS
 
 ; ------------------------------------------------------------------------------
+LVLUPD
+; DEPENDING ON THE LEVEL, WAITS FOR INPUT AND CHANGES THE LEVEL.
+; 6 -> TITLE
+; 7 -> GAME OVER
+; 8 -> TUTORIAL
+; INPUT    : NONE
+; OUTPUT   : NONE
+; MODIFIES : D0, A1, A2, A3
+; ------------------------------------------------------------------------------
+
+            MOVE.B  LVLINDEX, D0
+
+            CMPI.B  #6, D0
+            BEQ     .TITLE
+            CMPI.B  #7, D0
+            BEQ     .GAMOVER
+            CMPI.B  #8, D0
+            BEQ     .TUT
+
+.END        RTS
+
+.TITLE      ; TITLE SCREEN
+
+            BTST.B   #KBTCONT, KBDEDGE
+            BEQ     .END
+
+            MOVEQ   #8, D0                  ; GO TO TUTORIAL SCREEN
+            JSR     LVLSWTCH
+            JSR     PLYRESET
+
+            RTS
+
+.GAMOVER    ; GAME OVER (HP DEPLEATED)
+            RTS
+
+.TUT        ; TUTORIAL
+
+            BTST.B   #KBTCONT, KBDEDGE
+            BEQ     .END
+
+            CLR.W   D0                      ; GO TO FIRST LEVEL
+            JSR     LVLSWTCH
+            JSR     PLYRESET
+            
+            RTS
+
+; ------------------------------------------------------------------------------
 LVLPLOT
 ; PLOTS THE CURRENT LEVEL MAP.
 ; INPUT    : D6 = X DISPLACEMENT, D7 = Y DISPLACEMENT
@@ -58,6 +105,9 @@ LVLPLOT
 ; MODIFIES : D0, D1, D2, D3, D6, D7, A1, A3
 ; ------------------------------------------------------------------------------
             
+            CMPI.B  #LVLMAX, LVLINDEX       ; IF THE INDEX OVERFLOWS
+            BHI     .END                    ; NO LEVEL IS DRAWN
+
             MOVEQ   #LVLWIDTH-1, D0
             MOVEQ   #LVLHEIGH-1, D1
 
@@ -81,7 +131,7 @@ LVLPLOT
             ADD.W   #$10*3, D7              ; GO DOWN (+Y)
             DBRA    D1, .LOOP
             
-            RTS
+.END        RTS
 
 ; ------------------------------------------------------------------------------
 LVLTEXT
@@ -90,13 +140,15 @@ LVLTEXT
 ; 6 -> TITLE
 ; 7 -> GAME OVER
 ; 8 -> TUTORIAL
-; INPUT    : D0.B = LVLINDEX
+; INPUT    : NONE
 ; OUTPUT   : NONE
 ; MODIFIES : D0, D1, A1
 ; ------------------------------------------------------------------------------
 
+            MOVE.B  LVLINDEX, D0
+
             CMPI.B  #5, D0
-            BEQ     .END
+            BEQ     .FINAL
             CMPI.B  #6, D0
             BEQ     .TITLE
             CMPI.B  #7, D0
@@ -106,17 +158,17 @@ LVLTEXT
 
             RTS
 
-.END        ; FINAL SCREEN (GAME CLEARED)
+.FINAL      ; FINAL SCREEN (GAME CLEARED)
             RTS
 
 .TITLE      ; TITLE SCREEN
 
             MOVEQ   #11, D0
-            MOVE.W  #TXTANYKP, D1
+            MOVE.W  #TXTCONTP, D1           ; SET TEXT POSITION
             TRAP    #15
 
             MOVEQ   #14, D0
-            LEA     TXTANYK, A1
+            LEA     TXTCONT, A1             ; DISPLAY 'PRESS ENTER'
             TRAP    #15
 
             RTS
@@ -125,4 +177,4 @@ LVLTEXT
             RTS
 
 .TUT        ; TUTORIAL
-            BRA     .TITLE                  ; THEY BOTH SHARE 'PRESS ANY KEY'
+            BRA     .TITLE                  ; THEY BOTH SHARE 'PRESS ENTER'

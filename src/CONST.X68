@@ -11,12 +11,16 @@ ENMMAXTP    EQU     2                       ; MAXIMUM ENEMY TYPES IN A LEVEL
 
 PXLX        EQU     3                       ; AMOUNT OF DRAWS PER PIXEL IN X
 PXLY        EQU     3                       ; AMOUNT OF DRAWS PER PIXEL IN Y
+
+; --- LEVEL RELATED CONSTANS ---------------------------------------------------
+
 LVLWIDTH    EQU     10                      ; WIDTH IN TILES OF THE LEVEL
 LVLHEIGH    EQU     10                      ; HEIGHT IN TILES OF THE LEVEL
+LVLMAX      EQU     7                       ; INDEX OF THE LAST MAP
 
 ; --- TEXT RELATED CONSTANTS ---------------------------------------------------
 
-TXTANYKP    EQU     10*$100+15              ; PRESS ANY KEY TEXT POSITION
+TXTCONTP    EQU     10*$100+15              ; PRESS ENTER TEXT POSITION
 
 ; --- SIDE PANEL RELATED CONSTANTS ---------------------------------------------
 

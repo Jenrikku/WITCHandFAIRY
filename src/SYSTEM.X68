@@ -90,45 +90,58 @@ KBDINIT
 ; ------------------------------------------------------------------------------
 KBDUPD 
 ; UPDATE KEYBOARD INFORMATION.
-; 7 -> PL1 UP
-; 6 -> PL1 DOWN
-; 5 -> PL1 LEFT
-; 4 -> PL1 RIGHT
-; 3 -> PL2 UP
-; 2 -> PL2 DOWN
-; 1 -> PL2 LEFT
-; 0 -> PL2 RIGHT
+; 10 -> CONTINUE
+; 9  -> OPTION YES
+; 8  -> OPTION NO
+; 7  -> PL1 UP
+; 6  -> PL1 DOWN
+; 5  -> PL1 LEFT
+; 4  -> PL1 RIGHT
+; 3  -> PL2 UP
+; 2  -> PL2 DOWN
+; 1  -> PL2 LEFT
+; 0  -> PL2 RIGHT
 ; INPUT    : NONE
 ; OUTPUT   : NONE
 ; MODIFIES : NONE
 ; ------------------------------------------------------------------------------
-            
+
             MOVEM.L D0-D3, -(SP)
-            
-            ; READ FIRST PART (PL1 MOVEMENT)
+
+            CLR.W   D2
+
+        ; READ FIRST PART (CONTINUE + YES / NO OPTION)
+
+            MOVEQ   #19, D0
+            MOVE.L  #KBDCONT<<16|KBDOPTYE<<8|KBDOPTNO, D1
+            TRAP    #15
+
+            JSR     .PACK                   ; CONVERT TO DESIRED FORMAT
+
+        ; READ SECOND PART (PL1 MOVEMENT)
+
             MOVEQ   #19, D0
             MOVE.L  #KBDPL1UP<<24|KBDPL1DW<<16|KBDPL1LF<<8|KBDPL1RG, D1
             TRAP    #15
 
-            ; CONVERT TO DESIRED FORMAT
-            JSR     .PACK
+            JSR     .PACK                   ; CONVERT TO DESIRED FORMAT
 
-            ; READ SECOND PART (PL2 MOVEMENT)
+        ; READ THIRD PART (PL2 MOVEMENT)
+
             MOVEQ   #19, D0
             MOVE.L  #KBDPL2UP<<24|KBDPL2DW<<16|KBDPL2LF<<8|KBDPL2RG, D1
             TRAP    #15
  
-            ; CONVERT TO DESIRED FORMAT
-            JSR     .PACK
+            JSR     .PACK                   ; CONVERT TO DESIRED FORMAT
 
-            ; COMPUTER KBDEDGE
-            MOVE.B  KBDVAL, D0
-            NOT.B   D0
-            AND.B   D2, D0
-            MOVE.B  D0, KBDEDGE
+        ; COMPUTE KBDEDGE
 
-            ; STORE KBDVAL
-            MOVE.B  D2, KBDVAL
+.NOKEY      MOVE.W  KBDVAL, D0
+            NOT.W   D0
+            AND.W   D2, D0
+            MOVE.W  D0, KBDEDGE
+
+            MOVE.W  D2, KBDVAL              ; STORE KBDVAL
 
             MOVEM.L (SP)+, D0-D3
 
@@ -136,10 +149,10 @@ KBDUPD
 
 .PACK       ; SUBROUTINE CONVERT TO DESIRED FORMAT
             
-            MOVE.W  #3, D3
+            MOVEQ   #3, D3
 
 .LOOP       LSL.L   #8, D1
-            ROXL.B  #1, D2
+            ROXL.W  #1, D2
             DBRA    D3, .LOOP
 
             RTS

@@ -55,22 +55,22 @@ PL1UPD
             MOVE.W  PL1POSX, D0             ; GET VALUE OF CURRENT X POS
             MOVE.W  PL1POSY, D1             ; GET VALUE OF CURRENT Y POS
 
-            BTST.B  #KBTPL1UP, KBDVAL       ; CHECK UP
+            BTST.B  #KBTPL1UP, KBDVAL+1     ; CHECK UP
             BNE     .NOUP
 
             ADD.W   #PL1SPEED, D1
 
-.NOUP       BTST.B  #KBTPL1DW, KBDVAL       ; CHECK DOWN
+.NOUP       BTST.B  #KBTPL1DW, KBDVAL+1     ; CHECK DOWN
             BNE     .NODOWN
             
             SUB.W   #PL1SPEED, D1
 
-.NODOWN     BTST.B  #KBTPL1LF, KBDVAL       ; CHECK LEFT
+.NODOWN     BTST.B  #KBTPL1LF, KBDVAL+1     ; CHECK LEFT
             BNE     .NOLEFT
             
             ADD.W   #PL1SPEED, D0
 
-.NOLEFT     BTST.B  #KBTPL1RG, KBDVAL       ; CHECK RIGHT
+.NOLEFT     BTST.B  #KBTPL1RG, KBDVAL+1     ; CHECK RIGHT
             BNE     .NORIGHT
             
             SUB.W   #PL1SPEED, D0

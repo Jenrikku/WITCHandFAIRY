@@ -4,8 +4,8 @@
 
 ; --- KEYBOARD RELATED VARIABLES -----------------------------------------------
 
-KBDVAL      DS.B    1                       ; KEY STATE
-KBDEDGE     DS.B    1                       ; KEY EDGE
+KBDVAL      DS.W    1                       ; KEY STATE (KEYS DOWN)
+KBDEDGE     DS.W    1                       ; KEY EDGE  (KEYS PRESSED)
 
 ; --- FRAME RELATED VARIABLES --------------------------------------------------
 

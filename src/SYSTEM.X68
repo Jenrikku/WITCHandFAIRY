@@ -196,6 +196,8 @@ TXTRESET
             MOVE.L  #$03120001, D2          ; COURIER NEW, 12 POINTS, BOLD
             TRAP    #15
 
+            RTS
+
 ; ------------------------------------------------------------------------------
 TXTBIG
 ; SETS DISPLAY TEXT FONT TO A BIG ONE. 
@@ -208,3 +210,5 @@ TXTBIG
             MOVE.L  #$00FFFFFF, D1          ; WHITE
             MOVE.L  #$03140001, D2          ; COURIER NEW, 14 POINTS, BOLD
             TRAP    #15
+
+            RTS

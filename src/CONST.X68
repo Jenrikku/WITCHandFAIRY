@@ -18,10 +18,6 @@ LVLWIDTH    EQU     10                      ; WIDTH IN TILES OF THE LEVEL
 LVLHEIGH    EQU     10                      ; HEIGHT IN TILES OF THE LEVEL
 LVLMAX      EQU     7                       ; INDEX OF THE LAST MAP
 
-; --- TEXT RELATED CONSTANTS ---------------------------------------------------
-
-TXTCONTP    EQU     10*$100+15              ; PRESS ENTER TEXT POSITION
-
 ; --- SIDE PANEL RELATED CONSTANTS ---------------------------------------------
 
 SPNSTART    EQU     LVLWIDTH*16*3           ; SIDE PANEL START X POSITION
@@ -33,8 +29,7 @@ SPNMARGN    EQU     6*3                     ; SIDE PANEL OUTER MARGIN
 PL1SPEED    EQU     7                       ; WITCH SPEED WHEN MOVING
 PL1REGX     EQU     (LVLWIDTH*16*3)/2-68    ; WITCH STARTING X (REGULAR)
 PL1TITX     EQU     SPNWIDTH/2+6*16*3       ; WITCH STARTING X (TITLE)
-PL1TUTX     EQU     0                       ; WITCH STARTING X (TUTORIAL)
-PL1TUTY     EQU     0                       ; WITCH STARTING Y (TUTORIAL)
+PL1TUTY     EQU     70                      ; WITCH STARTING Y (TUTORIAL)
 
 
 ; --- FAIRY RELATED CONSTANTS --------------------------------------------------
@@ -42,12 +37,12 @@ PL1TUTY     EQU     0                       ; WITCH STARTING Y (TUTORIAL)
 PL2SPEED    EQU     7                       ; FAIRY SPEED WHEN MOVING
 PL2REGX     EQU     (LVLWIDTH*16*3)/2+20    ; FAIRY STARTING X (REGULAR)
 PL2TITX     EQU     SPNWIDTH/2+7*16*3       ; FAIRY STARTING X (TITLE)
-PL2TUTX     EQU     0                       ; FAIRY STARTING X (TUTORIAL)
-PL1TUTY     EQU     0                       ; FAIRY STARTING Y (TUTORIAL)
+PL2TUTY     EQU     125                     ; FAIRY STARTING Y (TUTORIAL)
 
 ; --- BOTH PLAYERS RELATED CONSTANTS -------------------------------------------
 
 PLYREGY     EQU     LVLHEIGH*16*3-100       ; BOTH PLAYERS STARTING Y (REGULAR)
 PLYTITY     EQU     4*16*3                  ; BOTH PLAYERS STARTING Y (TITLE)
+PLYTUTX     EQU     50                      ; BOTH PLAYERS STARTING X (TUTORIAL)
 PLYINIHP    EQU     7                       ; INITIAL PLAYERS HP
 PLYESYHP    EQU     255                     ; INITIAL PLAYERS HP (EASY MODE)

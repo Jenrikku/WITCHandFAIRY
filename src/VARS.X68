@@ -52,8 +52,29 @@ LVLINDEX    DS.B    1                       ; CURRENT LEVEL
 TXTCONT     DC.B    'PRESS ENTER TO CONTINUE', 0
 TXTTUT1     DC.B    'MOVE THE WITCH USING WASD', 0
 TXTTUT2     DC.B    'MOVE THE FAIRY USING THE ARROW KEYS', 0
-TXTTUT3     DC.B    'DODGE ENEMIES FOR SOME TIME AND YOU WILL BECOME INVINCIBLE'
-            DC.B    0
-TXTTUT4     DC.B    'CHASE THE ENEMIES ONCE THAT HAPPENS TO CLEAR THE LEVEL', 0
+TXTTUT3     DC.B    'DODGE ENEMIES FOR SOME TIME', 0
+TXTTUT4     DC.B    'AND YOU WILL BECOME INVINCIBLE', 0
+TXTTUT5     DC.B    'CHASE THE ENEMIES ONCE THAT HAPPENS', 0
+TXTTUT6     DC.B    'TO CLEAR THE LEVEL', 0
 
             DS.W    0
+
+; --- TEXT POSITIONS -----------------------------------------------------------
+
+TXTCONTP    DC.W    11*$100+15              ; PRESS ENTER TEXT POSITION
+TXTTUT1P    DC.W    8*$100+3                ; TUTORIAL LINE 1 POSITION
+TXTTUT2P    DC.W    8*$100+5                ; TUTORIAL LINE 2 POSITION
+TXTTUT3P    DC.W    3*$100+8                ; TUTORIAL LINE 3 POSITION
+TXTTUT4P    DC.W    3*$100+9                ; TUTORIAL LINE 4 POSITION
+TXTTUT5P    DC.W    3*$100+11               ; TUTORIAL LINE 5 POSITION
+TXTTUT6P    DC.W    3*$100+12               ; TUTORIAL LINE 6 POSITION
+
+; --- TEXT JUMP LIST -----------------------------------------------------------
+
+TXTLIST     DC.L    TXTCONT
+            DC.L    TXTTUT1
+            DC.L    TXTTUT2
+            DC.L    TXTTUT3
+            DC.L    TXTTUT4
+            DC.L    TXTTUT5
+            DC.L    TXTTUT6

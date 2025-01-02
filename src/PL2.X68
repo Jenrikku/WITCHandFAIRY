@@ -29,14 +29,27 @@ PL2RESET
 
             CMPI.B  #6, D0
             BEQ     .TITLE
+            CMPI.B  #8, D0
+            BEQ     .TUT
             
-            MOVE.W  #PL2REGX, PL2POSX       ; RESET COORDINATE X (REGULAR)
-            MOVE.W  #PLYREGY, PL2POSY       ; RESET COORDINATE Y (REGULAR)
+            ; REGULAR LEVEL
+
+            MOVE.W  #PL2REGX, PL2POSX       ; RESET COORDINATE X
+            MOVE.W  #PLYREGY, PL2POSY       ; RESET COORDINATE Y
             MOVE.B  #3, PL2TILE             ; RESET SPRITE NUMBER
             BRA     .COMMON
 
-.TITLE      MOVE.W  #PL2TITX, PL2POSX       ; RESET COORDINATE X (TITLE)
-            MOVE.W  #PLYTITY, PL2POSY       ; RESET COORDINATE Y (TITLE)
+.TITLE      ; TITLE SCREEN
+
+            MOVE.W  #PL2TITX, PL2POSX       ; RESET COORDINATE X
+            MOVE.W  #PLYTITY, PL2POSY       ; RESET COORDINATE Y
+            CLR.B   PL2TILE                 ; RESET SPRITE NUMBER
+            BRA     .COMMON
+
+.TUT        ; TUTORIAL
+
+            MOVE.W  #PLYTUTX, PL2POSX       ; RESET COORDINATE X
+            MOVE.W  #PL2TUTY, PL2POSY       ; RESET COORDINATE Y
             CLR.B   PL2TILE                 ; RESET SPRITE NUMBER
             BRA     .COMMON
 

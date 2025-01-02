@@ -142,7 +142,7 @@ LVLTEXT
 ; 8 -> TUTORIAL
 ; INPUT    : NONE
 ; OUTPUT   : NONE
-; MODIFIES : D0, D1, A1
+; MODIFIES : D0-D2, A0-A2
 ; ------------------------------------------------------------------------------
 
             MOVE.B  LVLINDEX, D0
@@ -164,7 +164,7 @@ LVLTEXT
 .TITLE      ; TITLE SCREEN
 
             MOVEQ   #11, D0
-            MOVE.W  #TXTCONTP, D1           ; SET TEXT POSITION
+            MOVE.W  TXTCONTP, D1            ; SET TEXT POSITION
             TRAP    #15
 
             MOVEQ   #14, D0
@@ -177,4 +177,23 @@ LVLTEXT
             RTS
 
 .TUT        ; TUTORIAL
+
+            MOVEQ   #5, D2                  ; USED FOR DBRA
+
+            LEA     TXTTUT1P, A0            ; GET FIRST TEXT POS ADDRESS
+            LEA     TXTLIST+4, A2           ; GET TEXT LIST (FIRST INDEX)
+
+.TUTLOOP    MOVEQ   #11, D0
+            MOVE.W  (A0), D1
+            TRAP    #15                     ; SET TEXT POSITION
+
+            MOVEQ   #14, D0
+            MOVE.L  (A2), A1
+            TRAP    #15                     ; DISPLAY TEXT
+
+            ADDQ.L  #2, A0
+            ADDQ.L  #4, A2
+
+            DBRA    D2, .TUTLOOP
+
             BRA     .TITLE                  ; THEY BOTH SHARE 'PRESS ENTER'

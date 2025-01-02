@@ -29,7 +29,7 @@ BTMLV5E2    DC.B    'BTM/SNAKE2.BTM', 0     ; LVL 5, ENEMY 2: SAND SNAKE
 
             DC.W    0
 
-; --- LEVEL JUMP TABLE ---------------------------------------------------------
+; --- LEVEL JUMP LIST ----------------------------------------------------------
 
 LVLLIST     DC.L    BTMLVL1
             DC.L    BTMLVL2
@@ -40,7 +40,7 @@ LVLLIST     DC.L    BTMLVL1
             DC.L    BTMLVLS2
             DC.L    BTMLVLS3
 
-; --- ENEMY JUMP TABLE ---------------------------------------------------------
+; --- ENEMY JUMP LIST ----------------------------------------------------------
 
 ENMLIST     DC.L    BTMLV1E1
             DC.L    BTMLV1E2

@@ -27,7 +27,6 @@ PL1REGX     EQU     (LVLWIDTH*16*PXLX)/2-68 ; WITCH STARTING X (REGULAR)
 PL1TITX     EQU     SPNWIDTH/2+6*16*PXLX    ; WITCH STARTING X (TITLE)
 PL1TUTY     EQU     70                      ; WITCH STARTING Y (TUTORIAL)
 
-
 ; --- FAIRY RELATED CONSTANTS --------------------------------------------------
 
 PL2SPEED    EQU     7                       ; FAIRY SPEED WHEN MOVING

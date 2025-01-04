@@ -13,6 +13,7 @@ LVLWIDTH    EQU     10                      ; WIDTH IN TILES OF THE LEVEL
 LVLHEIGH    EQU     10                      ; HEIGHT IN TILES OF THE LEVEL
 LVLMAX      EQU     7                       ; INDEX OF THE LAST MAP
 LVLLAST     EQU     4                       ; INDEX OF THE LAST REGULAR LEVEL
+LVLTIME     EQU     100                     ; TIMER STARTS AT THIS TIME (SECS)
 
 ; --- SIDE PANEL RELATED CONSTANTS ---------------------------------------------
 

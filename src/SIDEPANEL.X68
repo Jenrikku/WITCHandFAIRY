@@ -19,14 +19,15 @@ SPNPLOT
 ; MODIFIES : D0-D4
 ; ------------------------------------------------------------------------------
             
-        ; FILL PANEL AREA WITH BLACK
+        ; FILL PANEL AREA WITH CLEAR COLOR
+        ; THIS IS DONE TO PREVENT ENEMIES FROM SHOWING BEHIND
         
-            CLR.L   D1
+            MOVE.L  #SCRBACK, D1
             
-            MOVEQ   #80, D0                 ; PEN COLOR TO BLACK
+            MOVEQ   #80, D0                 ; PEN COLOR TO CLEAR COLOR
             TRAP    #15
 
-            MOVEQ   #81, D0                 ; FILL COLOR TO BLACK
+            MOVEQ   #81, D0                 ; FILL COLOR TO CLEAR COLOR
             TRAP    #15
 
             MOVEQ   #87, D0
@@ -52,6 +53,15 @@ SPNPLOT
             SUB.W   #SPNMARGN, D3           ; X1
             SUB.W   #SPNMARGN, D4           ; Y1
             TRAP #15
+
+        ; DISPLAY TIMER
+
+            ; TO-DO ADD 'TIMER:\n' TEXT
+
+            MOVEQ   #3, D0
+            CLR.L   D1
+            MOVE.B  LVLTIMER, D1
+            TRAP    #15
 
         ; RESTORE PEN WIDTH
 

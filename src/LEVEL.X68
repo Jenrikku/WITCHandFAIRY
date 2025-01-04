@@ -11,6 +11,7 @@ LVLSWTCH
 ; ------------------------------------------------------------------------------
 
             CLR.B   LVLCHANG                ; USED TO TELL IF LEVEL IS CHANGING
+            MOVE.B  #LVLTIME, LVLTIMER      ; RESET TIMER COUNTDOWN
             MOVE.B  D0, LVLINDEX
 
             CMPI.B  #LVLMAX, D0             ; IF THE INDEX OVERFLOWS

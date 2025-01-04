@@ -49,6 +49,7 @@ ENMHP       DS.B    ENMMAXNO                ; ENEMIES HEALTH POINTS
 LVLEIPOS    DS.L    1                       ; MAP ENTITY INFORMATION ADDRESS
 LVLINDEX    DS.B    1                       ; CURRENT LEVEL
 LVLCHANG    DS.B    1                       ; SET WHEN THE LEVEL IS CHANGING
+LVLTIMER    DS.B    1                       ; TIMER THAT COUNTS DOWN
 
 ; --- TEXT VARIABLES -----------------------------------------------------------
 

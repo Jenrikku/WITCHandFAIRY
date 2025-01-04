@@ -19,7 +19,8 @@ SYSINIT
             JSR     TXTRESET            ; SET DEFAULT FONT
 
             MOVE.L  #KBDUPD, $84        ; INSTALL TO TRAP 1
-            MOVE.L  #TIMIRQ, $64        ; INSTALL TO IRQ 1
+            MOVE.L  #TIMIRQ1, $64       ; INSTALL TO IRQ 1
+            MOVE.L  #TIMIRQ2, $68       ; INSTALL TO IRQ 2
 
             MOVE.W  SR, -(SP)            
             ANDI.W  #$D8FF, (SP)        ; SET USER MODE, ENABLE INTERRUPTIONS
@@ -170,8 +171,12 @@ TIMINIT
 
             MOVEQ   #32, D0
             MOVEQ   #6, D1
-            MOVEQ   #$81, D2                ; ENABLE IRQ 1
+            MOVEQ   #$81, D2                ; ENABLE AUTO IRQ 1
             MOVEQ   #SCRDELTA, D3
+            TRAP    #15
+
+            MOVEQ   #$82, D2                ; ENABLE AUTO IRQ 2
+            MOVE.W  #1000, D3               ; 1000 MS = 1 SECOND
             TRAP    #15
 
             RTS
@@ -186,15 +191,18 @@ TIMSTOP
 
             MOVEQ   #32, D0
             MOVEQ   #6, D1
-            MOVEQ   #$01, D2                ; DISABLE IRQ 1
+            MOVEQ   #$01, D2                ; DISABLE AUTO IRQ 1
+            TRAP    #15
+
+            MOVEQ   #$02, D2                ; DISABLE AUTO IRQ 2
             TRAP    #15
 
             RTS
 
 ; ------------------------------------------------------------------------------
-TIMIRQ
-; TIMED IRQ THAT IS TRIGGERED BY THE SIMULATED CLOCK.
-; USED TO CONTROL FRAME SYNCRONIZATION AS WELL AS FRAME SKIPPING. 
+TIMIRQ1
+; TIMED IRQ THAT IS TRIGGERED BY A SIMULATED CLOCK.
+; USED TO CONTROL FRAME SYNCRONIZATION AS WELL AS FRAME SKIPPING.
 ; INPUT    : NONE
 ; OUTPUT   : NONE
 ; MODIFIES : NONE
@@ -209,6 +217,18 @@ TIMIRQ
             RTE
 
 .READY      BSET.B  #1, FRMSTATE            ; ALLOW NEXT FRAME TO BE DRAWN
+            RTE
+
+; ------------------------------------------------------------------------------
+TIMIRQ2
+; TIMED IRQ THAT IS TRIGGERED BY A SIMULATED CLOCK.
+; USED TO COUNT SECONDS.
+; INPUT    : NONE
+; OUTPUT   : NONE
+; MODIFIES : NONE
+; ------------------------------------------------------------------------------
+
+            SUBQ.B  #1, LVLTIMER
             RTE
 
 ; ------------------------------------------------------------------------------

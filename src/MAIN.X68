@@ -48,7 +48,7 @@ START
             JSR     PLYUPD                  ; PLAYER UPDATE
             JSR     LVLUPD                  ; SPECIAL LEVEL WAIT FOR INPUT
 
-; --- SYNC ---------------------------------------------------------------------
+; --- SYNC & FRAME SKIP --------------------------------------------------------
 
 .SKIP       TST.W   FRMSKIP
             BEQ     .NOSKIP                 ; DO NOT SKIP NEXT FRAME
@@ -78,22 +78,30 @@ START
             CMPI.B  #LVLLAST, LVLINDEX
             BHI     .SPECIAL                ; CHECK IF LEVEL IS SPECIAL
 
-            JSR     SPNPLOT                 ; DRAW SIDE PANEL
             CLR.W   D4                      ; DISABLE OPTIMIZED GFX
             CLR.W   D6                      ; SET MAP X DISPLACEMENT TO 0
 
 .SPECIAL    CLR.W   D7                      ; SET MAP Y DISPLACEMENT TO 0
+
+            MOVE.B  #1, BUFFMODE            ; SET BUFFER MODE TO LEVEL
             JSR     LVLPLOT                 ; DRAW MAP
 
-            MOVE.B  #0, BUFFMODE            ; SET BUFFER MODE TO STATIC
+            CLR.B   BUFFMODE                ; SET BUFFER MODE TO STATIC
 
 ; DRAW ENTITIES
 
             JSR     PLYPLOT                 ; DRAW PLAYERS
 
             MOVE.B  #1, BUFFMODE            ; SET BUFFER MODE TO LEVEL
+
+            CMPI.B  #LVLLAST, LVLINDEX      ; CHECK AGAIN IF LEVEL IS SPECIAL
+            BHI     .SKIPENM                ; AND SKIP ENEMIES AND SIDE PANEL
+
+            ; TO-DO: DRAW ENEMIES HERE
+
+            JSR     SPNPLOT                 ; DRAW SIDE PANEL
             
-            MOVEQ   #94, D0
+.SKIPENM    MOVEQ   #94, D0
             TRAP    #15                     ; REPAINT SCREEN (DOUBLE BUFFER)
 
             MOVE.B  #1, FRMSTATE            ; TELL THAT FRAME IS READY

@@ -26,7 +26,7 @@ ENMRESET
             LEA     ENMTILE, A0
             CLR.B   (A0, D0.W)
 
-            LEA     ENMTYPE, A            
+            LEA     ENMTYPE, A0           
             MOVE.B  D1, (A0, D0.W)
 
             LEA     ENMHP, A0               ; ENEMY HP IS INITIALLY 1.

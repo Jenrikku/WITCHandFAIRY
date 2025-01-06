@@ -204,15 +204,12 @@ LVLTEXT
             LEA     TXTLIST+4, A2           ; GET TEXT LIST (FIRST INDEX)
 
 .TUTLOOP    MOVEQ   #11, D0
-            MOVE.W  (A0), D1
+            MOVE.W  (A0)+, D1
             TRAP    #15                     ; SET TEXT POSITION
 
             MOVEQ   #14, D0
-            MOVE.L  (A2), A1
+            MOVEA.L (A2)+, A1
             TRAP    #15                     ; DISPLAY TEXT
-
-            ADDQ.L  #2, A0
-            ADDQ.L  #4, A2
 
             DBRA    D2, .TUTLOOP
 
@@ -240,9 +237,9 @@ LVLTRANS
             MOVEQ   #17, D0
             CLR.L   D1
             MOVE.B  LVLINDEX, D1
-            ADDQ.W  #1, D1
-            LEA     TXTNLVL, A1             
-            TRAP    #15                     ; WRITE NEW LEVEL STRING + LVL INDEX
+            ADDQ.W  #1, D1                  ; LEVEL INDEXES START AT 0
+            LEA     TXTLVL, A1             
+            TRAP    #15                     ; DRAW NEW LEVEL STRING + LVL INDEX
 
             MOVEQ   #94, D0
             TRAP    #15                     ; REPAINT SCREEN (DOUBLE BUFFER)

@@ -13,13 +13,13 @@ LVLWIDTH    EQU     10                      ; WIDTH IN TILES OF THE LEVEL
 LVLHEIGH    EQU     10                      ; HEIGHT IN TILES OF THE LEVEL
 LVLMAX      EQU     7                       ; INDEX OF THE LAST MAP
 LVLLAST     EQU     4                       ; INDEX OF THE LAST REGULAR LEVEL
-LVLTIME     EQU     100                     ; TIMER STARTS AT THIS TIME (SECS)
+LVLTIME     EQU     60                      ; TIMER STARTS AT THIS TIME (SECS)
 
 ; --- SIDE PANEL RELATED CONSTANTS ---------------------------------------------
 
 SPNSTART    EQU     LVLWIDTH*16*PXLX        ; SIDE PANEL START X POSITION
 SPNWIDTH    EQU     SCRWIDTH-SPNSTART       ; SIDE PANEL WIDTH
-SPNMARGN    EQU     6*PXLX                  ; SIDE PANEL OUTER MARGIN
+SPNMARGN    EQU     4*PXLX                  ; SIDE PANEL OUTER MARGIN
 
 ; --- WITCH RELATED CONSTANTS --------------------------------------------------
 

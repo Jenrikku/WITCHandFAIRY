@@ -60,7 +60,9 @@ TXTTUT3     DC.B    'DODGE ENEMIES FOR SOME TIME', 0
 TXTTUT4     DC.B    'AND YOU WILL BECOME INVINCIBLE', 0
 TXTTUT5     DC.B    'CHASE THE ENEMIES ONCE THAT HAPPENS', 0
 TXTTUT6     DC.B    'TO CLEAR THE LEVEL', 0
-TXTNLVL     DC.B    'LEVEL ', 0
+TXTLVL      DC.B    'LEVEL ', 0
+TXTTIM      DC.B    'TIME: ', 0
+TXTHP       DC.B    'HP: ', 0
 
             DS.W    0
 
@@ -74,6 +76,9 @@ TXTTUT4P    DC.W    3*$100+9                ; TUTORIAL LINE 4 POSITION
 TXTTUT5P    DC.W    3*$100+11               ; TUTORIAL LINE 5 POSITION
 TXTTUT6P    DC.W    3*$100+12               ; TUTORIAL LINE 6 POSITION
 TXTNLVLP    DC.W    13*$100+6               ; NEXT LEVEL TEXT POSITION
+TXTLVLP     DC.W    36*$100+2               ; CURRENT LEVEL TEXT POSITION
+TXTTIMP     DC.W    36*$100+4               ; TIMER TEXT POSITION
+TXTHPP      DC.W    36*$100+6               ; HP TEXT POSITION
 
 ; --- TEXT JUMP LIST -----------------------------------------------------------
 
@@ -84,4 +89,6 @@ TXTLIST     DC.L    TXTCONT
             DC.L    TXTTUT4
             DC.L    TXTTUT5
             DC.L    TXTTUT6
-            DC.L    TXTNLVL
+            DC.L    TXTLVL
+            DC.L    TXTTIM
+            DC.L    TXTHP

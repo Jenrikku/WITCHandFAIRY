@@ -38,21 +38,24 @@ PL1RESET
 
             MOVE.W  #PL1REGX, PL1POSX       ; RESET COORDINATE X
             MOVE.W  #PLYREGY, PL1POSY       ; RESET COORDINATE Y
-            MOVE.B  #3, PL1TILE             ; RESET SPRITE NUMBER
+            MOVE.B  #3, PL1TILE             ; RESET SPRITE NUMBER (UP STOPPED)
+            MOVE.B  #1, PL1DIR              ; RESET LOOKING AT DIRECTION (UP)
             BRA     .COMMON
 
 .TITLE      ; TITLE SCREEN
 
             MOVE.W  #PL1TITX, PL1POSX       ; RESET COORDINATE X
             MOVE.W  #PLYTITY, PL1POSY       ; RESET COORDINATE Y
-            CLR.B   PL1TILE                 ; RESET SPRITE NUMBER
+            CLR.B   PL1TILE                 ; RESET SPRITE NUMBER (DOWN STOPPED)
+            CLR.B   PL1DIR                  ; RESET LOOKING AT DIRECTION (DOWN)
             BRA     .COMMON
 
 .TUT        ; TUTORIAL
 
             MOVE.W  #PLYTUTX, PL1POSX       ; RESET COORDINATE X
             MOVE.W  #PL1TUTY, PL1POSY       ; RESET COORDINATE Y
-            CLR.B   PL1TILE                 ; RESET SPRITE NUMBER
+            CLR.B   PL1TILE                 ; RESET SPRITE NUMBER (DOWN STOPPED)
+            CLR.B   PL1DIR                  ; RESET LOOKING AT DIRECTION (DOWN)
             BRA     .COMMON
 
 .COMMON     CLR.W   PL1VELXY                ; RESET SPEED
@@ -64,33 +67,44 @@ PL1UPD
 ; UPDATE WITCH.
 ; INPUT    : NONE 
 ; OUTPUT   : NONE
-; MODIFIES : D0, D1
+; MODIFIES : D0, D1, D2, D3
 ; ------------------------------------------------------------------------------
 
             MOVE.W  PL1POSX, D0             ; GET VALUE OF CURRENT X POS
             MOVE.W  PL1POSY, D1             ; GET VALUE OF CURRENT Y POS
+            MOVE.B  PL1DIR, D2              ; GET DIRECTION LOOKING AT
+            CLR.B   D3                      ; USED TO TELL IF PLAYER IS MOVING
 
             BTST.B  #KBTPL1UP, KBDVAL+1     ; CHECK UP
-            BNE     .NOUP
+            BEQ     .NOUP
 
-            ADD.W   #PL1SPEED, D1
+            SUB.W   #PL1SPEED, D1
+            MOVE.B  #1, D2                  ; SET D2 = LOOKING UP
+            MOVE.B  #1, D3                  ; SET D3 = MOVING
 
 .NOUP       BTST.B  #KBTPL1DW, KBDVAL+1     ; CHECK DOWN
-            BNE     .NODOWN
+            BEQ     .NODOWN
             
-            SUB.W   #PL1SPEED, D1
+            ADD.W   #PL1SPEED, D1
+            CLR.B   D2                      ; CLEAR D2 = LOOKING DOWN
+            MOVE.B  #1, D3                  ; SET D3 = MOVING
 
 .NODOWN     BTST.B  #KBTPL1LF, KBDVAL+1     ; CHECK LEFT
-            BNE     .NOLEFT
-            
-            ADD.W   #PL1SPEED, D0
-
-.NOLEFT     BTST.B  #KBTPL1RG, KBDVAL+1     ; CHECK RIGHT
-            BNE     .NORIGHT
+            BEQ     .NOLEFT
             
             SUB.W   #PL1SPEED, D0
+            MOVE.B  #1, D3                  ; SET D3 = MOVING
+
+.NOLEFT     BTST.B  #KBTPL1RG, KBDVAL+1     ; CHECK RIGHT
+            BEQ     .NORIGHT
+            
+            ADD.W   #PL1SPEED, D0
+            MOVE.B  #1, D3                  ; SET D3 = MOVING
 
 .NORIGHT
+
+            TST.B   D3
+            BEQ     .NOMOVE                 ; NO MOVEMENT IF D3 IS CLEARED
 
         ; CHECK IF OUT OF BOUNDS AND CORRECT POSITION
 
@@ -100,6 +114,32 @@ PL1UPD
             MOVE.W  D0, PL1POSX             ; SET VALUE OF X POS
             MOVE.W  D1, PL1POSY             ; SET VALUE OF Y POS
 
+        ; ANIMATE
+
+            TST.B   D2
+            BEQ    .ANIMDW
+
+            MOVE.B  #4, D3                  ; TILE = 4: ANIMATED UP FIRST
+            BRA     .ANIMTIM
+
+.ANIMDW     MOVE.B  #1, D3                  ; TILE = 1: ANIMATED DOWN FIRST
+
+.ANIMTIM    BTST.B  #2, FRMCNT
+            BEQ     .ANIMEND
+
+            ADDQ.B  #1, D3                  ; SECOND FRAME
+
+.ANIMEND    MOVE.B  D3, PL1TILE             ; SET TILE
+            MOVE.B  D2, PL1DIR              ; SAVE DIRECTION
+            RTS
+
+.NOMOVE     TST.B   D2
+            BEQ     .STATDW
+
+            MOVE.B  #3, PL1TILE             ; TILE = 3: LOOK UP NO MOVEMENT
+            RTS
+
+.STATDW     CLR.B   PL1TILE                 ; TILE = 0: LOOK DOWN NO MOVEMENT
             RTS
 
 ; ------------------------------------------------------------------------------

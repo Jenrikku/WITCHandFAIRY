@@ -38,21 +38,24 @@ PL2RESET
 
             MOVE.W  #PL2REGX, PL2POSX       ; RESET COORDINATE X
             MOVE.W  #PLYREGY, PL2POSY       ; RESET COORDINATE Y
-            MOVE.B  #3, PL2TILE             ; RESET SPRITE NUMBER
+            MOVE.B  #3, PL2TILE             ; RESET SPRITE NUMBER (UP STOPPED)
+            MOVE.B  #1, PL2DIR              ; RESET LOOKING AT DIRECTION (UP)
             BRA     .COMMON
 
 .TITLE      ; TITLE SCREEN
 
             MOVE.W  #PL2TITX, PL2POSX       ; RESET COORDINATE X
             MOVE.W  #PLYTITY, PL2POSY       ; RESET COORDINATE Y
-            CLR.B   PL2TILE                 ; RESET SPRITE NUMBER
+            CLR.B   PL2TILE                 ; RESET SPRITE NUMBER (DOWN STOPPED)
+            CLR.B   PL2DIR                  ; RESET LOOKING AT DIRECTION (DOWN)
             BRA     .COMMON
 
 .TUT        ; TUTORIAL
 
             MOVE.W  #PLYTUTX, PL2POSX       ; RESET COORDINATE X
             MOVE.W  #PL2TUTY, PL2POSY       ; RESET COORDINATE Y
-            CLR.B   PL2TILE                 ; RESET SPRITE NUMBER
+            CLR.B   PL2TILE                 ; RESET SPRITE NUMBER (DOWN STOPPED)
+            CLR.B   PL2DIR                  ; RESET LOOKING AT DIRECTION (DOWN)
             BRA     .COMMON
 
 .COMMON     CLR.W   PL2VELXY                ; RESET SPEED
@@ -69,28 +72,39 @@ PL2UPD
 
             MOVE.W  PL2POSX, D0             ; GET VALUE OF CURRENT X POS
             MOVE.W  PL2POSY, D1             ; GET VALUE OF CURRENT Y POS
+            MOVE.B  PL2DIR, D2              ; GET DIRECTION LOOKING AT
+            CLR.B   D3                      ; USED TO TELL IF PLAYER IS MOVING
 
             BTST.B  #KBTPL2UP, KBDVAL+1     ; CHECK UP
-            BNE     .NOUP
+            BEQ     .NOUP
 
-            ADD.W   #PL2SPEED, D1
+            SUB.W   #PL2SPEED, D1
+            MOVE.B  #1, D2                  ; SET D2 = LOOKING UP
+            MOVE.B  #1, D3                  ; SET D3 = MOVING
 
 .NOUP       BTST.B  #KBTPL2DW, KBDVAL+1     ; CHECK DOWN
-            BNE     .NODOWN
+            BEQ     .NODOWN
             
-            SUB.W   #PL2SPEED, D1
+            ADD.W   #PL2SPEED, D1
+            CLR.B   D2                      ; CLEAR D2 = LOOKING DOWN
+            MOVE.B  #1, D3                  ; SET D3 = MOVING
 
 .NODOWN     BTST.B  #KBTPL2LF, KBDVAL+1     ; CHECK LEFT
-            BNE     .NOLEFT
-            
-            ADD.W   #PL2SPEED, D0
-
-.NOLEFT     BTST.B  #KBTPL2RG, KBDVAL+1     ; CHECK RIGHT
-            BNE     .NORIGHT
+            BEQ     .NOLEFT
             
             SUB.W   #PL2SPEED, D0
+            MOVE.B  #1, D3                  ; SET D3 = MOVING
 
-.NORIGHT    
+.NOLEFT     BTST.B  #KBTPL2RG, KBDVAL+1     ; CHECK RIGHT
+            BEQ     .NORIGHT
+            
+            ADD.W   #PL2SPEED, D0
+            MOVE.B  #1, D3                  ; SET D3 = MOVING
+
+.NORIGHT
+
+            TST.B   D3
+            BEQ     .NOMOVE                 ; NO MOVEMENT IF D3 IS CLEARED
 
         ; CHECK IF OUT OF BOUNDS AND CORRECT POSITION
 
@@ -100,6 +114,32 @@ PL2UPD
             MOVE.W  D0, PL2POSX             ; SET VALUE OF X POS
             MOVE.W  D1, PL2POSY             ; SET VALUE OF Y POS
 
+        ; ANIMATE
+
+            TST.B   D2
+            BEQ    .ANIMDW
+
+            MOVE.B  #4, D3                  ; TILE = 4: ANIMATED UP FIRST
+            BRA     .ANIMTIM
+
+.ANIMDW     MOVE.B  #1, D3                  ; TILE = 1: ANIMATED DOWN FIRST
+
+.ANIMTIM    BTST.B  #2, FRMCNT
+            BEQ     .ANIMEND
+
+            ADDQ.B  #1, D3                  ; SECOND FRAME
+
+.ANIMEND    MOVE.B  D3, PL2TILE             ; SET TILE
+            MOVE.B  D2, PL2DIR              ; SAVE DIRECTION
+            RTS
+
+.NOMOVE     TST.B   D2
+            BEQ     .STATDW
+
+            MOVE.B  #3, PL2TILE             ; TILE = 3: LOOK UP NO MOVEMENT
+            RTS
+
+.STATDW     CLR.B   PL2TILE                 ; TILE = 0: LOOK DOWN NO MOVEMENT
             RTS
             
 ; ------------------------------------------------------------------------------

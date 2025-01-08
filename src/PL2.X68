@@ -67,7 +67,7 @@ PL2UPD
 ; UPDATES FAIRY.
 ; INPUT    : NONE 
 ; OUTPUT   : NONE
-; MODIFIES : D0, D1
+; MODIFIES : D0, D1, D2, D3
 ; ------------------------------------------------------------------------------
 
             MOVE.W  PL2POSX, D0             ; GET VALUE OF CURRENT X POS

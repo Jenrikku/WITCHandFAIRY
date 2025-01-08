@@ -48,7 +48,7 @@ PLYUPD
 ; UPDATES THE PLAYERS
 ; INPUT    : NONE
 ; OUTPUT   : NONE
-; MODIFIES : D0, D1
+; MODIFIES : D0, D1, D2, D3
 ; ------------------------------------------------------------------------------
             
             TST.B   PLYMOVE                 ; CHECK IF PLAYER CAN MOVE

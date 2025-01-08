@@ -19,8 +19,8 @@ SYSINIT
             JSR     TXTRESET            ; SET DEFAULT FONT
 
             MOVE.L  #KBDUPD, $84        ; INSTALL TO TRAP 1
-            MOVE.L  #TIMIRQ1, $64       ; INSTALL TO IRQ 1
-            MOVE.L  #TIMIRQ2, $68       ; INSTALL TO IRQ 2
+            MOVE.L  #TIMISR1, $64       ; INSTALL TO IRQ 1
+            MOVE.L  #TIMISR2, $68       ; INSTALL TO IRQ 2
 
             MOVE.W  SR, -(SP)            
             ANDI.W  #$D8FF, (SP)        ; SET USER MODE, ENABLE INTERRUPTIONS
@@ -200,7 +200,7 @@ TIMSTOP
             RTS
 
 ; ------------------------------------------------------------------------------
-TIMIRQ1
+TIMISR1
 ; TIMED IRQ THAT IS TRIGGERED BY A SIMULATED CLOCK.
 ; USED TO CONTROL FRAME SYNCRONIZATION AS WELL AS FRAME SKIPPING.
 ; INPUT    : NONE
@@ -220,7 +220,7 @@ TIMIRQ1
             RTE
 
 ; ------------------------------------------------------------------------------
-TIMIRQ2
+TIMISR2
 ; TIMED IRQ THAT IS TRIGGERED BY A SIMULATED CLOCK.
 ; USED TO COUNT SECONDS.
 ; INPUT    : NONE

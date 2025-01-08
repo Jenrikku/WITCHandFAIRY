@@ -13,6 +13,7 @@ PL1POSY     DS.W    1                       ; WITCH Y COORDINATE
 PL1VELXY    DS.W    1                       ; WITCH VELOCITY
 PL1TILE     DS.B    1                       ; WITCH CURRENT TILE (SPRITE)
 PL1DIR      DS.B    1                       ; WITCH DIRECTION (LOOKING AT)
+PL1DMGCD    DS.B    1                       ; WITCH DAMAGE COOLDOWN
 
             DS.W    0
 
@@ -24,6 +25,7 @@ PL2POSY     DS.W    1                       ; FAIRY Y COORDINATE
 PL2VELXY    DS.W    1                       ; FAIRY VELOCITY
 PL2TILE     DS.B    1                       ; FAIRY CURRENT TILE (SPRITE)
 PL2DIR      DS.B    1                       ; FAIRY DIRECTION (LOOKING AT)
+PL2DMGCD    DS.B    1                       ; FAIRY DAMAGE COOLDOWN
 
 ; --- SHARED PLAYER VARIABLES --------------------------------------------------
 

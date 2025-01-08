@@ -59,6 +59,7 @@ PL1RESET
             BRA     .COMMON
 
 .COMMON     CLR.W   PL1VELXY                ; RESET SPEED
+            MOVE.W  #PLYDMGCD, PL1DMGCD     ; DAMAGE COOLDOWN
 
             RTS
             

@@ -229,7 +229,20 @@ TIMIRQ2
 ; ------------------------------------------------------------------------------
 
             SUBQ.B  #1, LVLTIMER
-            RTE
+
+        ; DAMAGE COOLDOWNS (TIME BEFORE MORE DAMAGE IS TAKEN)
+
+            TST.B   PL1DMGCD
+            BEQ     .NOPL1CD                ; CANNOT GO DOWN AFTER 0
+
+            SUBQ.B  #1, PL1DMGCD
+
+.NOPL1CD    TST.B   PL2DMGCD
+            BEQ     .NOPL2CD                ; CANNOT GO DOWN AFTER 0
+
+            SUBQ.B  #1, PL2DMGCD
+
+.NOPL2CD    RTE
 
 ; ------------------------------------------------------------------------------
 TXTRESET

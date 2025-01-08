@@ -40,5 +40,6 @@ PL2TUTY     EQU     125                     ; FAIRY STARTING Y (TUTORIAL)
 PLYREGY     EQU     LVLHEIGH*16*PXLY-100    ; BOTH PLAYERS STARTING Y (REGULAR)
 PLYTITY     EQU     4*16*PXLY               ; BOTH PLAYERS STARTING Y (TITLE)
 PLYTUTX     EQU     50                      ; BOTH PLAYERS STARTING X (TUTORIAL)
-PLYINIHP    EQU     7                       ; INITIAL PLAYERS HP
+PLYINIHP    EQU     8                       ; INITIAL PLAYERS HP
 PLYESYHP    EQU     255                     ; INITIAL PLAYERS HP (EASY MODE)
+PLYDMGCD    EQU     2                       ; SECONDS BEFORE NEXT DAMAGE TAKEN

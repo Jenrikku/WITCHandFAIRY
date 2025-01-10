@@ -83,6 +83,8 @@ LVLUPD
 
             MOVE.B  LVLINDEX, D0
 
+            CMPI.B  #5, D0
+            BEQ     .WIN
             CMPI.B  #6, D0
             BEQ     .TITLE
             CMPI.B  #7, D0
@@ -110,19 +112,42 @@ LVLUPD
             JSR     LVLSWTCH                ; GO TO NEXT LEVEL
 
             RTS
+            
+.WIN        ; WIN MAP (YOU WIN)
+
+            MOVEQ   #70, D0
+            MOVE.B  SNDREF+3, D1            ; PLAY WIN SOUND
+            TRAP    #15
+
+            RTS
 
 .TITLE      ; TITLE SCREEN
 
             BTST.B   #KBTCONT, KBDEDGE
             BEQ     .END
 
+            MOVEQ   #70, D0
+            MOVE.B  SNDREF, D1              ; PLAY ENTER SOUND
+            TRAP    #15
+
             MOVEQ   #8, D0                  ; GO TO TUTORIAL SCREEN
             JSR     LVLSWTCH
-            JSR     PLYRESET
 
             RTS
 
 .GAMOVER    ; GAME OVER (HP DEPLEATED)
+
+            MOVEQ   #70, D0
+            MOVE.B  SNDREF+2, D1            ; PLAY LOSE SOUND
+            TRAP    #15
+
+            MOVEQ   #23, D0
+            MOVE.L  #150, D1
+            TRAP    #15                     ; SLEEP FOR 1.5 SECONDS
+
+            MOVEQ   #6, D0                  ; GO TO TITLE SCREEN
+            JSR     LVLSWTCH
+
             RTS
 
 .TUT        ; TUTORIAL
@@ -130,9 +155,12 @@ LVLUPD
             BTST.B   #KBTCONT, KBDEDGE
             BEQ     .END
 
+            MOVEQ   #70, D0
+            MOVE.B  SNDREF, D1              ; PLAY ENTER SOUND
+            TRAP    #15
+
             CLR.W   D0                      ; GO TO FIRST LEVEL
             JSR     LVLSWTCH
-            JSR     PLYRESET
             
             RTS
 
@@ -186,18 +214,11 @@ LVLTEXT
 
             MOVE.B  LVLINDEX, D0
 
-            CMPI.B  #5, D0
-            BEQ     .FINAL
             CMPI.B  #6, D0
             BEQ     .TITLE
-            CMPI.B  #7, D0
-            BEQ     .GAMOVER
             CMPI.B  #8, D0
             BEQ     .TUT
 
-            RTS
-
-.FINAL      ; FINAL SCREEN (GAME CLEARED)
             RTS
 
 .TITLE      ; TITLE SCREEN
@@ -210,9 +231,6 @@ LVLTEXT
             LEA     TXTCONT, A1             ; DISPLAY 'PRESS ENTER'
             TRAP    #15
 
-            RTS
-
-.GAMOVER    ; GAME OVER (HP DEPLEATED)
             RTS
 
 .TUT        ; TUTORIAL

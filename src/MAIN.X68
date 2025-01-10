@@ -44,7 +44,6 @@ START
 
             JSR     PLYUPD                  ; PLAYER UPDATE
             JSR     SPNUPD                  ; SIDE PANEL UPDATE
-            JSR     LVLUPD                  ; WAIT FOR INPUT OR LEVEL WON
 
             CMPI.B  #LVLLAST, LVLINDEX
             BGT     .SKIP                   ; NO ENEMIES ON SPECIAL LEVELS
@@ -55,6 +54,8 @@ START
 
 .ENMUPDL    JSR     ENMUPD                  ; UPDATE ENEMY IN INDEX D0
             DBRA    D0, .ENMUPDL
+
+            JSR     LVLUPD                  ; WAIT FOR INPUT OR LEVEL WON
 
             CLR.B   TIMEDGE                 ; CLEAR SECONDS TIMER EDGE
 

@@ -7,7 +7,7 @@ SYSINIT
 ; INITIALIZE SYSTEM.
 ; INPUT    : NONE
 ; OUTPUT   : NONE
-; MODIFIES : D0-D3
+; MODIFIES : D0-D3, A0-A2
 ; ------------------------------------------------------------------------------
             
             ORI.W   #$0700, SR          ; DISABLE INTERRUPTIONS
@@ -15,6 +15,7 @@ SYSINIT
             JSR     SCRINIT             ; SCREEN INITIALIZATION
             JSR     KBDINIT             ; KEYBOARD INITIALIZATION
             JSR     TIMINIT             ; TIMER INITIALIZATION
+            JSR     SNDINIT             ; SOUND INITIALIZATION
 
             JSR     TXTRESET            ; SET DEFAULT FONT
 
@@ -266,5 +267,27 @@ TXTRESET
             MOVE.L  #TXTCOLOR, D1
             MOVE.L  #TXTFONT, D2
             TRAP    #15
+
+            RTS
+
+; ------------------------------------------------------------------------------
+SNDINIT
+; INITIALIZE SOUND.
+; INPUT    : NONE
+; OUTPUT   : NONE
+; MODIFIES : D0, D1, D2, A0, A1, A2
+; ------------------------------------------------------------------------------
+
+            MOVE.W  #3, D2
+            LEA     SNDLIST, A0
+            LEA     SNDREF, A2
+
+.LOOP       MOVEQ   #71, D0
+            MOVEA.L (A0)+, A1
+            TRAP    #15                     ; LOAD SOUND
+
+            MOVE.B  D1, (A2)+               ; STORE REF IN MEMORY
+
+            DBRA    D2, .LOOP
 
             RTS

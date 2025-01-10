@@ -279,6 +279,7 @@ SNDINIT
 ; ------------------------------------------------------------------------------
 
             MOVE.W  #3, D2
+            CLR.W   D1
             LEA     SNDLIST, A0
             LEA     SNDREF, A2
 
@@ -286,8 +287,7 @@ SNDINIT
             MOVEA.L (A0)+, A1
             TRAP    #15                     ; LOAD SOUND
 
-            MOVE.B  D1, (A2)+               ; STORE REF IN MEMORY
-
+            ADDQ.B  #1, D1
             DBRA    D2, .LOOP
 
             RTS

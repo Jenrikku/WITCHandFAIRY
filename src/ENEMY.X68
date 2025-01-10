@@ -226,8 +226,8 @@ ENMUPD
             SUBQ.B  #1, PLYHP
             MOVE.B  #PLYDMGCD, PL1DMGCD
 
-            MOVEQ   #70, D0
-            MOVE.B  SNDREF+1, D1            ; PLAY HURT SOUND
+            MOVEQ   #72, D0
+            MOVE.B  #1, D1                  ; PLAY HURT SOUND
             TRAP    #15
 
         ; CHECK COLLISION OF ENEMY AND FAIRY
@@ -253,8 +253,8 @@ ENMUPD
             SUBQ.B  #1, PLYHP
             MOVE.B  #PLYDMGCD, PL2DMGCD
 
-            MOVEQ   #70, D0
-            MOVE.B  SNDREF+1, D1            ; PLAY HURT SOUND
+            MOVEQ   #72, D0
+            MOVE.B  #1, D1                  ; PLAY HURT SOUND
             TRAP    #15
 
 .END        MOVE.W  (SP)+, D0               ; RESTORE VALUE IN D0

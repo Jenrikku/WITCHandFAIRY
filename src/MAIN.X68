@@ -46,7 +46,7 @@ START
             JSR     SPNUPD                  ; SIDE PANEL UPDATE
 
             CMPI.B  #LVLLAST, LVLINDEX
-            BGT     .SKIP                   ; NO ENEMIES ON SPECIAL LEVELS
+            BGT     .NOENM                  ; NO ENEMIES ON SPECIAL LEVELS
 
             JSR     ENMSPAWN                ; SPAWN LEVEL ENEMIES WHEN NEEDED
 
@@ -55,7 +55,7 @@ START
 .ENMUPDL    JSR     ENMUPD                  ; UPDATE ENEMY IN INDEX D0
             DBRA    D0, .ENMUPDL
 
-            JSR     LVLUPD                  ; WAIT FOR INPUT OR LEVEL WON
+.NOENM      JSR     LVLUPD                  ; WAIT FOR INPUT OR LEVEL WON
 
             CLR.B   TIMEDGE                 ; CLEAR SECONDS TIMER EDGE
 

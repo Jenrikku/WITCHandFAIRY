@@ -81,6 +81,7 @@ LVLUPD
 ; MODIFIES : D0, A1-A3
 ; ------------------------------------------------------------------------------
 
+            CLR.W   D0
             MOVE.B  LVLINDEX, D0
 
             CMPI.B  #5, D0
@@ -115,8 +116,8 @@ LVLUPD
             
 .WIN        ; WIN MAP (YOU WIN)
 
-            MOVEQ   #70, D0
-            MOVE.B  SNDREF+3, D1            ; PLAY WIN SOUND
+            MOVEQ   #72, D0
+            MOVE.B  #3, D1                  ; PLAY WIN SOUND
             TRAP    #15
 
             RTS
@@ -126,8 +127,8 @@ LVLUPD
             BTST.B   #KBTCONT, KBDEDGE
             BEQ     .END
 
-            MOVEQ   #70, D0
-            MOVE.B  SNDREF, D1              ; PLAY ENTER SOUND
+            MOVEQ   #72, D0
+            MOVE.B  #0, D1                  ; PLAY ENTER SOUND
             TRAP    #15
 
             MOVEQ   #8, D0                  ; GO TO TUTORIAL SCREEN
@@ -137,8 +138,8 @@ LVLUPD
 
 .GAMOVER    ; GAME OVER (HP DEPLEATED)
 
-            MOVEQ   #70, D0
-            MOVE.B  SNDREF+2, D1            ; PLAY LOSE SOUND
+            MOVEQ   #72, D0
+            MOVE.B  #2, D1                  ; PLAY LOSE SOUND
             TRAP    #15
 
             MOVEQ   #23, D0
@@ -155,8 +156,8 @@ LVLUPD
             BTST.B   #KBTCONT, KBDEDGE
             BEQ     .END
 
-            MOVEQ   #70, D0
-            MOVE.B  SNDREF, D1              ; PLAY ENTER SOUND
+            MOVEQ   #72, D0
+            MOVE.B  #0, D1                  ; PLAY ENTER SOUND
             TRAP    #15
 
             CLR.W   D0                      ; GO TO FIRST LEVEL

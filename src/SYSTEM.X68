@@ -281,7 +281,6 @@ SNDINIT
             MOVE.W  #3, D2
             CLR.W   D1
             LEA     SNDLIST, A0
-            LEA     SNDREF, A2
 
 .LOOP       MOVEQ   #71, D0
             MOVEA.L (A0)+, A1

@@ -26,7 +26,6 @@ START
 
             JSR     SYSINIT                 ; SYSTEM INIT
             JSR     PLYINIT                 ; PLAYER INIT
-            JSR     SPNINIT                 ; SIDE PANEL INIT
 
             MOVE.B  #1, BUFFMODE            ; SET BUFFER MODE TO LEVEL
 
@@ -44,7 +43,8 @@ START
 ; UPDATE GAME LOGIC
 
             JSR     PLYUPD                  ; PLAYER UPDATE
-            JSR     LVLUPD                  ; SPECIAL LEVEL WAIT FOR INPUT
+            JSR     SPNUPD                  ; SIDE PANEL UPDATE
+            JSR     LVLUPD                  ; WAIT FOR INPUT OR LEVEL WON
 
             CMPI.B  #LVLLAST, LVLINDEX
             BGT     .SKIP                   ; NO ENEMIES ON SPECIAL LEVELS

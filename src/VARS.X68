@@ -28,7 +28,9 @@ PL2DMGCD    DS.B    1                       ; FAIRY DAMAGE COOLDOWN
 ; --- SHARED PLAYER VARIABLES --------------------------------------------------
 
 PLYHP       DS.B    1                       ; WITCH AND FAIRY SHARED HEALTH
+PLYPNT      DS.B    1                       ; ENEMIES REMAING TO WIN MAP
 PLYMOVE     DS.B    1                       ; WHETHER THE PLAYER CAN MOVE
+PLYMODE     DS.B    1                       ; CLR = DODGE, SET = ATTACK
 
             DS.W    0
 
@@ -66,6 +68,9 @@ TXTTUT6     DC.B    'TO CLEAR THE LEVEL', 0
 TXTLVL      DC.B    'LEVEL ', 0
 TXTTIM      DC.B    'TIME: ', 0
 TXTHP       DC.B    'HP: ', 0
+TXTPNT      DC.B    'LEFT: ', 0
+TXTDODG     DC.B    'DODGE!', 0
+TXTATTK     DC.B    'ATTACK!', 0
 
             DS.W    0
 
@@ -81,7 +86,8 @@ TXTTUT6P    DC.W    3*$100+12               ; TUTORIAL LINE 6 POSITION
 TXTNLVLP    DC.W    13*$100+6               ; NEXT LEVEL TEXT POSITION
 TXTLVLP     DC.W    36*$100+2               ; CURRENT LEVEL TEXT POSITION
 TXTTIMP     DC.W    36*$100+4               ; TIMER TEXT POSITION
-TXTHPP      DC.W    36*$100+6               ; HP TEXT POSITION
+TXTHPP      DC.W    36*$100+6               ; HP / POINTS LEFT TEXT POSITION
+TXTDODGP    DC.W    37*$100+10              ; DODGE / ATTACK TEXT POSITION
 
 ; --- TEXT JUMP LIST -----------------------------------------------------------
 
@@ -95,3 +101,4 @@ TXTLIST     DC.L    TXTCONT
             DC.L    TXTLVL
             DC.L    TXTTIM
             DC.L    TXTHP
+            DC.L    TXTDODG

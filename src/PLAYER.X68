@@ -22,6 +22,8 @@ PLYRESET
 ; MODIFIES : D0
 ; ------------------------------------------------------------------------------
 
+            CLR.B   PLYMODE
+
             MOVE.B  LVLINDEX, D0            ; GET CURRENT LEVEL INDEX
 
             JSR     PL1RESET
@@ -31,11 +33,13 @@ PLYRESET
             SLE     PLYMOVE                 ; ONLY ALLOW MOVEMENT IN REGULAR LVL
 
             MOVE.B  #PLYINIHP, PLYHP        ; SET SHARED PLAYERS HP
+            MOVE.B  #ENMWIN, PLYPNT         ; SET POINTS NEEDED TO WIN MAP
 
             TST.B   MODEASY
             BEQ     .NOEASY                 ; CHECK IF EASY MODE IS ENABLED
 
             MOVE.B  #PLYESYHP, PLYHP        ; SET SHARED PLAYERS HP (EASY)
+            MOVE.B  #ENMWINEZ, PLYPNT       ; SET POINTS NEEDED TO WIN MP (EASY)
 
 .NOEASY     RTS
 
@@ -48,11 +52,18 @@ PLYUPD
 ; ------------------------------------------------------------------------------
             
             TST.B   PLYMOVE                 ; CHECK IF PLAYER CAN MOVE
-            BEQ     .NOMOVE                 ; PREVENTS PLAYER MOVEMENT (NO UPD)
+            BEQ     .END                    ; PREVENTS PLAYER MOVEMENT (NO UPD)
 
             JSR     PL1UPD
             JSR     PL2UPD
-.NOMOVE     RTS
+
+            TST.B   TIMEDGE
+            BEQ     .END
+            
+            CMPI.B  #LVLTIME/2, LVLTIMER    ; SET MODE DEPENDING ON CLOCK
+            SLE     PLYMODE                 ; (ATTACK - LOWER / DODGE - HIGHER)
+            
+.END        RTS
 
 ; ------------------------------------------------------------------------------
 PLYPLOT

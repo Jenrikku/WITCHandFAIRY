@@ -7,6 +7,8 @@
 ENMMAXNO    EQU     13                      ; IN-SCREEN ENEMY MAX COUNT
 ENMMAXTP    EQU     2                       ; MAXIMUM ENEMY TYPES IN A LEVEL
 ENMSPEED    EQU     3                       ; ENEMY MOVEMENT SPEED
+ENMWIN      EQU     9                       ; ENEMIES TO DEFEAT TO WIN
+ENMWINEZ    EQU     3                       ; ENEMIES TO DEFEAT TO WIN (EASY)
 
 ; --- LEVEL RELATED CONSTANS ---------------------------------------------------
 

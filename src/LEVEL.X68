@@ -22,6 +22,7 @@ LVLSWTCH
             JSR     LVLREAD                 ; READ MAP AND ENEMIES
 .NOREAD     JSR     PLYRESET                ; PLAYER RESET (LEVEL-DEPENDENT)
             JSR     ENMRESET                ; ENEMY RESET (LEVEL-INDEPENDENT)
+            JSR     SPNRESET                ; SIDE PANEL RESET
 
             RTS
 
@@ -89,7 +90,26 @@ LVLUPD
             CMPI.B  #8, D0
             BEQ     .TUT
 
+            CMPI.B  #LVLMAX, D0
+            BLO     .REGULAR
+
 .END        RTS
+
+.REGULAR    ; REGULAR LEVELS
+
+            TST.B   PLYHP
+            BNE     .HEALTHY
+
+            MOVE.B  #7, D0
+            JSR     LVLSWTCH                ; GO TO GAME OVER
+
+.HEALTHY    TST.B   PLYPNT                  ; CHECK IF THERE ARE POINTS REMAING
+            BNE     .END                    ; LEVEL NOT CLEARED YET
+
+            ADDQ.B  #1, D0
+            JSR     LVLSWTCH                ; GO TO NEXT LEVEL
+
+            RTS
 
 .TITLE      ; TITLE SCREEN
 

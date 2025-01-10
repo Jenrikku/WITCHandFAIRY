@@ -26,7 +26,7 @@ ENMSPAWN
 ; SPAWNS ENEMIES INTO THE LEVEL USING THE VALUES IN ENMSPAWN.
 ; INPUT    : NONE
 ; OUTPUT   : NONE
-; MODIFIES : D0-D2, A0-A4
+; MODIFIES : D0-D3, A0-A5
 ; ------------------------------------------------------------------------------
 
             TST.B   TIMEDGE
@@ -76,7 +76,25 @@ ENMSPAWN
             BMI     .END                    ; ABORT IF ENEMIES CANNOT FIT
             
             LEA     ENMTYPE, A4
-            MOVE.B  (A1), (A4, D2)          ; COPY TYPE
+            CLR.W   D3
+            MOVE.B  (A1), D3                ; COPY TYPE
+            MOVE.B  D3, (A4, D2)
+
+            LSL.W   #2, D3                  ; MULTIPLY BY 4 (LONG TO BYTE)
+
+            LEA     ENMEIPOS, A4
+            MOVEA.L (A4, D3), A4
+
+            LEA     ENMWIDTH, A5
+            MOVE.B  1(A4), D3               ; COPY WIDTH FROM EI
+            MULU.W  #PXLX, D3               ; ADJUST TO DISPLAY RESOLUTION
+            MOVE.B  D3, (A5, D2)
+
+            LEA     ENMHEIGH, A5
+            MOVE.B  2(A4), D3               ; COPY HEIGHT FROM EI
+            MULU.W  #PXLY, D3               ; ADJUST TO DISPLAY RESOLUTION
+            MOVE.B  D3, (A5, D2)
+
             LEA     ENMMODE, A4
             MOVE.B  (A2), (A4, D2)          ; COPY MODE
             LEA     ENMHP, A4
@@ -103,7 +121,7 @@ ENMUPD
 ; UPDATE ENEMY.
 ; INPUT    : D0 = ENEMYNO
 ; OUTPUT   : NONE
-; MODIFIES : D1-D7, A0
+; MODIFIES : D1-D7, A0, A1
 ; ------------------------------------------------------------------------------
 
             MOVE.W  D0, -(SP)
@@ -129,23 +147,42 @@ ENMUPD
 
             LSL.W   #1, D0                  ; MULTIPLY BY 2 (WORD TO BYTE)
             LEA     ENMPOSX, A0
+            LEA     ENMPOSY, A1
 
             CMPI.B  #0, D1
             BEQ     .MODE0
             CMPI.B  #1, D1
             BEQ     .MODE1
+            CMPI.B  #2, D1
+            BEQ     .MODE2
+            CMPI.B  #3, D1
+            BEQ     .MODE3
 
 .MODE0      ADDQ.W  #ENMSPEED, (A0, D0)
 
             CMPI.W  #SPNSTART+32*PXLX, (A0, D0)
-            BGT     .OUTOFB                 ; ENEMY OUT OF BOUNDS
+            BGT     .KILL                   ; ENEMY OUT OF BOUNDS
 
             BRA     .MOVDONE
 
 .MODE1      SUBQ.W  #ENMSPEED, (A0, D0)
 
             CMPI.W  #-32*PXLX, (A0, D0)
-            BLT     .OUTOFB                 ; ENEMY OUT OF BOUNDS
+            BLT     .KILL                   ; ENEMY OUT OF BOUNDS
+
+            BRA     .MOVDONE
+
+.MODE2      ADDQ.W  #ENMSPEED, (A1, D0)
+
+            CMPI.W  #SCRHEIGH+32*PXLX, (A1, D0)
+            BGT     .KILL                   ; ENEMY OUT OF BOUNDS
+
+            BRA     .MOVDONE
+
+.MODE3      SUBQ.W  #ENMSPEED, (A1, D0)
+
+            CMPI.W  #-32*PXLX, (A1, D0)
+            BLT     .KILL                   ; ENEMY OUT OF BOUNDS
 
             BRA     .MOVDONE
 
@@ -177,9 +214,21 @@ ENMUPD
 
             JSR     ENMCOL
 
+            TST.B   D0
+            BEQ     .COLSKIP                ; NO COLLISION WITH WITCH
+
+            TST.B   PLYMODE                 ; CHECK PLAYER MODE (DODGE/ATTACK)
+            BNE     .ATTACK
+
+            TST.B   PL1DMGCD                ; CANNOT DAMAGE DURING COOLDOWN
+            BNE     .COLSKIP
+
+            SUBQ.B  #1, PLYHP
+            MOVE.B  #PLYDMGCD, PL1DMGCD
+
         ; CHECK COLLISION OF ENEMY AND FAIRY
 
-            MOVE.W  PL2POSX, D0
+.COLSKIP    MOVE.W  PL2POSX, D0
             MOVE.W  PL2POSY, D1
             MOVE.W  D0, D2
             ADD.W   #16*PXLX, D2
@@ -187,16 +236,33 @@ ENMUPD
             ADD.W   #16*PXLX, D3
 
             JSR     ENMCOL
+            
+            TST.B   D0
+            BEQ     .END                    ; NO COLLISION WITH WITCH
+
+            TST.B   PLYMODE                 ; CHECK PLAYER MODE (DODGE/ATTACK)
+            BNE     .ATTACK
+
+            TST.B   PL2DMGCD                ; CANNOT DAMAGE DURING COOLDOWN
+            BNE     .END
+
+            SUBQ.B  #1, PLYHP
+            MOVE.B  #PLYDMGCD, PL2DMGCD
 
 .END        MOVE.W  (SP)+, D0               ; RESTORE VALUE IN D0
             RTS
 
-.OUTOFB     LSR.W   #1, D0                  ; DIVIDE BY 2 (BACK TO BYTE)
 .KILL   ; KILL ENEMY AND FINISH
 
+            MOVE.W  (SP)+, D0
             LEA     ENMHP, A0
             CLR.B   (A0, D0)
-            BRA     .END
+            RTS
+
+.ATTACK ; ENEMY KILLED WHEN PLAYER TOUCHES IT
+
+            SUBQ.B  #1, PLYPNT              ; DECREMENT POINTS NEEDED TO WIN
+            BRA     .KILL
 
 ; ------------------------------------------------------------------------------
 ENMCOL
@@ -205,7 +271,7 @@ ENMCOL
 ;            RECTANGLES ARE DEFINED BY X0, Y0, X1, Y1.
 ;            X0 AND Y0 ARE THE UPPER LEFT CORNER
 ;            WHILE X1 AND Y1 ARE THE LOWER RIGHT CORNER.
-; OUTPUT   : D0 SET IF COLLISION, 0 OTHERWISE.
+; OUTPUT   : D0.B SET IF COLLISION, 0 OTHERWISE.
 ; MODIFIES : NONE
 ; ------------------------------------------------------------------------------
 

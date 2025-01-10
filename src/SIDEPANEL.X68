@@ -1,19 +1,44 @@
 ; ==============================================================================
 ; SIDE PANEL MANAGEMENT
 ; ==============================================================================
-            
+
 ; ------------------------------------------------------------------------------
-SPNINIT
-; INITIALIZE SCOREBOARD
+SPNRESET
+; RESETS THE SIDE PANEL
 ; INPUT    : NONE 
 ; OUTPUT   : NONE
 ; MODIFIES : NONE
 ; ------------------------------------------------------------------------------
+
+        ; RESTORE INITIAL TEXTS
+
+            MOVE.L  #TXTHP, TXTLIST+36
+            MOVE.L  #TXTDODG, TXTLIST+40
+
             RTS
-            
+
+; ------------------------------------------------------------------------------
+SPNUPD
+; UPDATE THE SIDE PANEL
+; INPUT    : NONE 
+; OUTPUT   : NONE
+; MODIFIES : NONE
+; ------------------------------------------------------------------------------
+
+            TST.B   TIMEDGE
+            BEQ     .END                    ; ONLY UPDATE UPDATE ON TIMER EDGE
+
+            CMPI.B  #LVLTIME/2, LVLTIMER
+            BNE     .END                    ; WE ONLY CARE ABOUT MODE CHANGE
+
+            MOVE.L  #TXTPNT, TXTLIST+36
+            MOVE.L  #TXTATTK, TXTLIST+40
+
+.END        RTS
+
 ; ------------------------------------------------------------------------------
 SPNPLOT
-; PLOT THE SCOREBOARD
+; PLOT THE SIDE PANEL
 ; INPUT    : NONE 
 ; OUTPUT   : NONE
 ; MODIFIES : D0-D4, A0-A2
@@ -71,7 +96,9 @@ SPNPLOT
             CMPI.W  #1, D2
             BEQ     .TIMER
             CMPI.W  #0, D2
-            BEQ     .HP
+            BEQ     .HPPNT
+
+            BRA     .CONT
 
 .LEVEL      MOVE.B  LVLINDEX, D1
             ADDQ.W  #1, D1                  ; LEVEL INDEXES START AT 0
@@ -80,14 +107,27 @@ SPNPLOT
 .TIMER      MOVE.B  LVLTIMER, D1
             BRA     .CONT
 
-.HP         MOVE.B  PLYHP, D1
+.HPPNT      TST.B   PLYMODE
+            BNE     .PNT
+
+            MOVE.B  PLYHP, D1
             BRA     .CONT
+
+.PNT        MOVE.B  PLYPNT, D1
             
 .CONT       MOVEQ   #17, D0
             MOVEA.L (A2)+, A1             
             TRAP    #15                     ; DRAW LEVEL STRING + LVL INDEX
 
             DBRA    D2, .LOOP
+
+            MOVEQ   #11, D0
+            MOVE.W  (A0)+, D1               ; SET TEXT POSITION (DODGE / ATTACK)
+            TRAP    #15
+
+            MOVEQ   #14, D0
+            MOVEA.L (A2)+, A1               ; DISPLAY TEXT FOR DODGE / ATTACK
+            TRAP    #15
 
         ; RESTORE PEN WIDTH
 

@@ -142,9 +142,12 @@ LVLUPD
             MOVE.B  #2, D1                  ; PLAY LOSE SOUND
             TRAP    #15
 
-            MOVEQ   #23, D0
-            MOVE.L  #150, D1
-            TRAP    #15                     ; SLEEP FOR 1.5 SECONDS
+            BTST.B   #KBTCONT, KBDEDGE
+            BEQ     .END
+
+            MOVEQ   #72, D0
+            MOVE.B  #0, D1                  ; PLAY ENTER SOUND
+            TRAP    #15
 
             MOVEQ   #6, D0                  ; GO TO TITLE SCREEN
             JSR     LVLSWTCH
@@ -216,6 +219,8 @@ LVLTEXT
             MOVE.B  LVLINDEX, D0
 
             CMPI.B  #6, D0
+            BEQ     .TITLE
+            CMPI.B  #7, D0
             BEQ     .TITLE
             CMPI.B  #8, D0
             BEQ     .TUT

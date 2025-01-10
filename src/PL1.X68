@@ -33,6 +33,9 @@ PL1RESET
             BEQ     .TITLE
             CMPI.B  #8, D0
             BEQ     .TUT
+
+            CMPI.B  #LVLLAST, D0
+            BHI     .OUT
             
             ; REGULAR LEVEL
 
@@ -57,6 +60,10 @@ PL1RESET
             CLR.B   PL1TILE                 ; RESET SPRITE NUMBER (DOWN STOPPED)
             CLR.B   PL1DIR                  ; RESET LOOKING AT DIRECTION (DOWN)
             BRA     .COMMON
+
+.OUT        ; PUT IT OUT OF BOUNDS
+            MOVE.W  #-16*PXLX, PL1POSX
+            MOVE.W  #-16*PXLY, PL1POSY
 
 .COMMON     MOVE.W  #PLYDMGCD, PL1DMGCD     ; DAMAGE COOLDOWN
 

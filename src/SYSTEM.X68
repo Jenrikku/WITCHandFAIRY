@@ -167,6 +167,7 @@ TIMINIT
 ; ------------------------------------------------------------------------------
 
             CLR.B   FRMSKIP
+            CLR.B   TIMEDGE
             MOVE.B  #3, FRMSTATE            ; SET BITS 0 AND 1
 
             MOVEQ   #32, D0
@@ -209,6 +210,7 @@ TIMISR1
 ; ------------------------------------------------------------------------------
 
             ADDQ.B  #1, FRMCNT
+            CLR.B   TIMEDGE                 ; SECONDS TIMER EDGE
 
             BTST.B  #0, FRMSTATE            ; CHECK IF FRAME IS READY
             BNE     .READY
@@ -228,7 +230,15 @@ TIMISR2
 ; MODIFIES : NONE
 ; ------------------------------------------------------------------------------
 
+            MOVE.B  #1, TIMEDGE
             SUBQ.B  #1, LVLTIMER
+
+            CMPI.B  #LVLLOOP, LVLSPWTM
+            BLO     .NORESET     
+
+            MOVE.B  #-1, LVLSPWTM          ; RESET SPAWN TIMER (ENEMIES)
+
+.NORESET    ADDQ.B  #1, LVLSPWTM
 
         ; DAMAGE COOLDOWNS (TIME BEFORE MORE DAMAGE IS TAKEN)
 

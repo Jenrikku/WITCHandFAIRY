@@ -34,6 +34,7 @@ START
             JSR     LVLSWTCH                ; SWITCH TO LEVEL IN D0
 
             JSR     PLYRESET                ; PLAYER RESET (LEVEL-DEPENDENT)
+            JSR     ENMRESET                ; ENEMY RESET (LEVEL-INDEPENDENT)
 
 .LOOP
 
@@ -113,6 +114,7 @@ START
 ; --- VARIABLES ---------------------------------------------------------------
             
             INCLUDE "FILEDEF.X68"
+            INCLUDE "ENMSPAWN.X68"
             INCLUDE "VARS.X68"
             INCLUDE "SYSVARS.X68"
             INCLUDE "BUFFERS.X68"

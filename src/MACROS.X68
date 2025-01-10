@@ -230,3 +230,18 @@ RANG        MACRO
 .CHCK2\@    SUB.\0  \4, \1                  ; REMOVE WIDTH
 
             ENDM
+
+; ------------------------------------------------------------------------------
+CLRM        MACRO
+; CLEARS AN ARRAY IN MEMORY.
+; \1 IS ITS EFFECTIVE ADDRESS, \2 IS ITS SIZE, \3 IS AN ADDRESS REGISTER
+; AND \4 IS A DATA REGISTER. \3 AND \4 WILL GET MODIFIED.
+; ------------------------------------------------------------------------------
+
+            MOVE.W  #\2-1, \4
+            LEA     \1, \3
+
+.LOOP\@     CLR.\0  (\3)+
+            DBRA    \4, .LOOP\@
+
+            ENDM

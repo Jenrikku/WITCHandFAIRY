@@ -58,8 +58,7 @@ PL1RESET
             CLR.B   PL1DIR                  ; RESET LOOKING AT DIRECTION (DOWN)
             BRA     .COMMON
 
-.COMMON     CLR.W   PL1VELXY                ; RESET SPEED
-            MOVE.W  #PLYDMGCD, PL1DMGCD     ; DAMAGE COOLDOWN
+.COMMON     MOVE.W  #PLYDMGCD, PL1DMGCD     ; DAMAGE COOLDOWN
 
             RTS
             

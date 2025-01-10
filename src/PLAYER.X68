@@ -27,14 +27,10 @@ PLYRESET
             JSR     PL1RESET
             JSR     PL2RESET
 
-            CLR.B   PLYMOVE                 ; FORBID PLAYER FROM MOVING
-
             CMPI.W  #LVLLAST, D0
-            BHI     .NOMOVE                 ; CHECK IF IT'S A SPECIAL LEVEL
+            SLE     PLYMOVE                 ; ONLY ALLOW MOVEMENT IN REGULAR LVL
 
-            MOVE.B  #1, PLYMOVE             ; ALLOW PLAYER TO MOVE
-
-.NOMOVE     MOVE.B  #PLYINIHP, PLYHP        ; SET SHARED PLAYERS HP
+            MOVE.B  #PLYINIHP, PLYHP        ; SET SHARED PLAYERS HP
 
             TST.B   MODEASY
             BEQ     .NOEASY                 ; CHECK IF EASY MODE IS ENABLED

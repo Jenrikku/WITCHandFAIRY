@@ -10,7 +10,6 @@ MODEASY     DC.B    0                       ; SET TO ENABLE EASY MODE
 PL1EIPOS    DS.L    1                       ; WITCH ENTITY INFORMATION ADDRESS
 PL1POSX     DS.W    1                       ; WITCH X COORDINATE
 PL1POSY     DS.W    1                       ; WITCH Y COORDINATE
-PL1VELXY    DS.W    1                       ; WITCH VELOCITY
 PL1TILE     DS.B    1                       ; WITCH CURRENT TILE (SPRITE)
 PL1DIR      DS.B    1                       ; WITCH DIRECTION (LOOKING AT)
 PL1DMGCD    DS.B    1                       ; WITCH DAMAGE COOLDOWN
@@ -22,7 +21,6 @@ PL1DMGCD    DS.B    1                       ; WITCH DAMAGE COOLDOWN
 PL2EIPOS    DS.L    1                       ; FAIRY ENTITY INFORMATION ADDRESS
 PL2POSX     DS.W    1                       ; FAIRY X COORDINATE
 PL2POSY     DS.W    1                       ; FAIRY Y COORDINATE
-PL2VELXY    DS.W    1                       ; FAIRY VELOCITY
 PL2TILE     DS.B    1                       ; FAIRY CURRENT TILE (SPRITE)
 PL2DIR      DS.B    1                       ; FAIRY DIRECTION (LOOKING AT)
 PL2DMGCD    DS.B    1                       ; FAIRY DAMAGE COOLDOWN
@@ -39,7 +37,6 @@ PLYMOVE     DS.B    1                       ; WHETHER THE PLAYER CAN MOVE
 ENMEIPOS    DS.L    ENMMAXTP                ; ENEMIES ENTITY INFORMATION ADDRESS
 ENMPOSX     DS.W    ENMMAXNO                ; ENEMIES X COORDINATES
 ENMPOSY     DS.W    ENMMAXNO                ; ENEMIES Y COORDINATES
-ENMVELXY    DS.W    ENMMAXNO                ; ENEMIES VELOCITIES
 ENMTILE     DS.B    ENMMAXNO                ; ENEMIES CURRENT TILES (SPRITES)
 ENMTYPE     DS.B    ENMMAXNO                ; ENEMIES TYPES (WHAT EI TO USE)
 ENMMODE     DS.B    ENMMAXNO                ; ENEMIES MOVEMENT MODE
@@ -55,6 +52,7 @@ LVLEIPOS    DS.L    1                       ; MAP ENTITY INFORMATION ADDRESS
 LVLINDEX    DS.B    1                       ; CURRENT LEVEL
 LVLCHANG    DS.B    1                       ; SET WHEN THE LEVEL IS CHANGING
 LVLTIMER    DS.B    1                       ; TIMER THAT COUNTS DOWN
+LVLSPWTM    DS.B    1                       ; TIMER THAT COUNTS UP (ENEMY SPAWN)
 
 ; --- TEXT VARIABLES -----------------------------------------------------------
 

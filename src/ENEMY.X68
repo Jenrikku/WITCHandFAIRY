@@ -4,35 +4,84 @@
   
 ; ------------------------------------------------------------------------------
 ENMRESET
-; RESET ENEMIES VARIABLES.
-; INPUT    : D0 = ENEMYNO, D1 = ENEMY TYPE
+; RESET ALL ENEMY VARIABLES.
+; INPUT    : NONE
 ; OUTPUT   : NONE 
-; MODIFIES : A0
+; MODIFIES : D0, A0
 ; ------------------------------------------------------------------------------
 
-            LSL.W   #1, D0                  ; MULTIPLY BY 2 (WORD TO BYTE)
-
-            LEA     ENMPOSX, A0
-            CLR.W   (A0, D0.W)
-
-            LEA     ENMPOSY, A0
-            CLR.W   (A0, D0.W)
-
-            LEA     ENMVELXY, A0
-            CLR.W   (A0, D0.W)
-
-            LSR.W   #1, D0                  ; DIVIDE BY 2 (BACK TO BYTE)
-
-            LEA     ENMTILE, A0
-            CLR.B   (A0, D0.W)
-
-            LEA     ENMTYPE, A0           
-            MOVE.B  D1, (A0, D0.W)
-
-            LEA     ENMHP, A0               ; ENEMY HP IS INITIALLY 1.
-            MOVE.B  #1, (A0, D0.W)          ; ONCE YOU TOUCH THEM, YOU KILL THEM
+            CLRM.W  ENMPOSX, ENMMAXNO, A0, D0
+            CLRM.W  ENMPOSY, ENMMAXNO, A0, D0
+            CLRM.B  ENMTILE, ENMMAXNO, A0, D0
+            CLRM.B  ENMTYPE, ENMMAXNO, A0, D0
+            CLRM.B  ENMMODE, ENMMAXNO, A0, D0
+            CLRM.B  ENMWIDTH, ENMMAXNO, A0, D0
+            CLRM.B  ENMHEIGH, ENMMAXNO, A0, D0
+            CLRM.B  ENMHP, ENMMAXNO, A0, D0
 
             RTS
+
+; ------------------------------------------------------------------------------
+ENMSPAWN
+; SPAWNS ENEMIES INTO THE LEVEL USING THE VALUES IN ENMSPAWN.
+; INPUT    : NONE
+; OUTPUT   : NONE
+; MODIFIES : D0-D2, A0-A4
+; ------------------------------------------------------------------------------
+
+            TST.B   TIMEDGE
+            BEQ     .END                    ; ONLY SPAWN ON TIMER EDGE
+
+            MOVE.B  LVLINDEX, D0
+
+            LEA     LVLSPWC, A0
+            MOVE.B  (A0, D0), D1            ; GET CURRENT LEVEL ENEMY COUNT
+            SUBQ.B  #1, D1                  ; FOR DBRA
+
+            LSL.W   #2, D0                  ; MULTIPLY BY 4 (LONG TO BYTE)
+
+            LEA     LVLSPWD, A0
+            LEA     LVLSPWT, A1
+            LEA     LVLSPWM, A2
+            LEA     LVLSPWP, A3
+
+            MOVE.L  (A0, D0), A0            ; SET A0 AS FIRST ENEMY DELAY
+            MOVE.L  (A1, D0), A1            ; SET A1 AS FIRST ENEMY TYPE
+            MOVE.L  (A2, D0), A2            ; SET A2 AS FIRST ENEMY MODE
+            MOVE.L  (A3, D0), A3            ; SET A3 AS FIRST ENEMY POSITION
+
+            LEA     ENMHP, A4               ; TO SEARCH FOR FREE ENEMIES (HP=0)
+
+            MOVE.B  LVLSPWTM, D0            ; D0.B NOW IS LEVEL SPAWN TIMER
+
+.ENMLOOP
+            CMP     (A0)+, D0               ; COMPARE DELAY TO CURRENT TIME
+            BNE     .NOSPAWN                ; ONLY SPAWN IF IT MATCHES
+
+        ; SEARCH FOR A FREE ENTRY TO SPAWN THE ENEMY INTO
+
+            MOVE.W  #ENMMAXNO-1, D2
+
+.SCHLOOP    
+            TST.B   (A4, D2)
+            BNE     .SCHCONT                ; CONTINUE IF HP IS NOT 0
+
+            BRA     .SCHDONE                ; FOUND FREE SPACE IN INDEX D2
+
+.SCHCONT    DBRA    D2, .SCHLOOP
+
+.SCHDONE    CHK     #ENMMAXNO-1, D2         ; INTERRUPT ON D2 < 0 OR D2 OVERFLOW
+            
+            ; TO-DO: SPAWN IN INDEX D2
+
+.NOSPAWN    ADDQ    #1, A1
+            ADDQ    #1, A2
+            ADDQ    #4, A3
+
+            DBRA    D1, .ENMLOOP
+
+.END        RTS
+
 
 ; ------------------------------------------------------------------------------
 ENMUPD
@@ -42,22 +91,47 @@ ENMUPD
 ; MODIFIES : D0-D7, A0
 ; ------------------------------------------------------------------------------
 
+        ; CHECK MOVEMENT MODE
+
+            LEA     ENMMODE, A0
+            MOVE.B  (A0, D0), D1
+
             LSL.W   #1, D0                  ; MULTIPLY BY 2 (WORD TO BYTE)
+            LEA     ENMPOSX, A0
 
-        ; CHECK COLLISION OF ENEMY WITH WITCH
+            CMPI.B  #0, D1
+            BEQ     .MODE0
+            CMPI.B  #1, D1
+            BEQ     .MODE1
 
-            MOVE.W  ENMPOSX, A0
+.MODE0      ADDQ.W  #ENMSPEED, (A0, D0)
+
+            CMPI.W  #SPNSTART+32*PXLX, (A0, D0)
+            BGT     ENMKILL                 ; ENEMY OUT OF BOUNDS
+
+            BRA     .MOVDONE
+
+.MODE1      SUBQ.W  #ENMSPEED, (A0, D0)
+
+            CMPI.W  #-32*PXLX, (A0, D0)
+            BLT     ENMKILL                 ; ENEMY OUT OF BOUNDS
+
+            BRA     .MOVDONE
+
+        ; CHECK COLLISION OF ENEMY AND WITCH
+
+.MOVDONE    LEA     ENMPOSX, A0
             MOVE.W  (A0, D0), D4
-            MOVE.W  ENMPOSY, A0
+            LEA     ENMPOSY, A0
             MOVE.W  (A0, D0), D5
 
             LSR.W   #1, D0                  ; DIVIDE BY 2 (BACK TO BYTE)
 
             MOVE.W  D4, D6
-            MOVE.W  ENMWIDTH, A0
+            LEA     ENMWIDTH, A0
             ADD.W   (A0, D0), D6
             MOVE.W  D5, D7
-            MOVE.W  ENMHEIGH, A0
+            LEA     ENMHEIGH, A0
             ADD.W   (A0, D0), D7
 
             MOVE.W  PL1POSX, D0
@@ -109,6 +183,20 @@ ENMCOL
             RTS
 
 .NOCOL      CLR.B   D0
+            RTS
+
+; ------------------------------------------------------------------------------
+ENMKILL
+; KILLS AN ENEMY (SET HP TO 0)
+; INPUT    : D0 = ENEMYNO * 2
+; OUTPUT   : NONE
+; MODIFIES : A0
+; ------------------------------------------------------------------------------
+            
+            LSR.W   #2, D0                  ; DIVIDE BY 2 (BACK TO BYTE)
+            LEA     ENMHP, A0
+            CLR.B   (A0, D0)
+
             RTS
 
 ; ------------------------------------------------------------------------------

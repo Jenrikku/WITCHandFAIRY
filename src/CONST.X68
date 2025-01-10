@@ -6,6 +6,7 @@
 
 ENMMAXNO    EQU     13                      ; IN-SCREEN ENEMY MAX COUNT
 ENMMAXTP    EQU     2                       ; MAXIMUM ENEMY TYPES IN A LEVEL
+ENMSPEED    EQU     3                       ; ENEMY MOVEMENT SPEED
 
 ; --- LEVEL RELATED CONSTANS ---------------------------------------------------
 
@@ -14,6 +15,7 @@ LVLHEIGH    EQU     10                      ; HEIGHT IN TILES OF THE LEVEL
 LVLMAX      EQU     7                       ; INDEX OF THE LAST MAP
 LVLLAST     EQU     4                       ; INDEX OF THE LAST REGULAR LEVEL
 LVLTIME     EQU     60                      ; TIMER STARTS AT THIS TIME (SECS)
+LVLLOOP     EQU     10                      ; SECONDS BEFORE ENMS START LOOPING
 
 ; --- SIDE PANEL RELATED CONSTANTS ---------------------------------------------
 

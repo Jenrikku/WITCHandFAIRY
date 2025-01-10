@@ -33,9 +33,6 @@ START
             MOVEQ   #6, D0                  ; SET LEVEL INDEX TO TITLE SCREEN
             JSR     LVLSWTCH                ; SWITCH TO LEVEL IN D0
 
-            JSR     PLYRESET                ; PLAYER RESET (LEVEL-DEPENDENT)
-            JSR     ENMRESET                ; ENEMY RESET (LEVEL-INDEPENDENT)
-
 .LOOP
 
 ; --- UPDATE -------------------------------------------------------------------
@@ -48,6 +45,18 @@ START
 
             JSR     PLYUPD                  ; PLAYER UPDATE
             JSR     LVLUPD                  ; SPECIAL LEVEL WAIT FOR INPUT
+
+            CMPI.B  #LVLLAST, LVLINDEX
+            BGT     .SKIP                   ; NO ENEMIES ON SPECIAL LEVELS
+
+            JSR     ENMSPAWN                ; SPAWN LEVEL ENEMIES WHEN NEEDED
+
+            MOVE.W  #ENMMAXNO-1, D0
+
+.ENMUPDL    JSR     ENMUPD                  ; UPDATE ENEMY IN INDEX D0
+            DBRA    D0, .ENMUPDL
+
+            CLR.B   TIMEDGE                 ; CLEAR SECONDS TIMER EDGE
 
 ; --- SYNC & FRAME SKIP --------------------------------------------------------
 
@@ -98,7 +107,10 @@ START
             CMPI.B  #LVLLAST, LVLINDEX      ; CHECK AGAIN IF LEVEL IS SPECIAL
             BHI     .SKIPENM                ; AND SKIP ENEMIES AND SIDE PANEL
 
-            ; TO-DO: DRAW ENEMIES HERE
+            MOVE.W  #ENMMAXNO-1, D0
+
+.ENMPLTL    JSR     ENMPLOT                 ; PLOT ENEMY IN INDEX D0
+            DBRA    D0, .ENMPLTL
 
             JSR     SPNPLOT                 ; DRAW SIDE PANEL
             

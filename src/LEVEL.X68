@@ -10,21 +10,20 @@ LVLSWTCH
 ; MODIFIES : D0, A1, A2, A3
 ; ------------------------------------------------------------------------------
 
-            CLR.B   LVLCHANG                ; USED TO TELL IF LEVEL IS CHANGING
             MOVE.B  #LVLTIME, LVLTIMER      ; RESET TIMER COUNTDOWN
             MOVE.B  D0, LVLINDEX
 
-            CMPI.B  #LVLMAX, D0             ; IF THE INDEX OVERFLOWS
-            BHI     .END                    ; NO LEVEL IS READ
-
             CMPI.B  #LVLLAST, D0            ; IF LEVEL IS SPECIAL
-            BHI     .NOANIM                 ; DO NOT PLAY NEXT LEVEL ANIMATION
+            SLE     LVLCHANG                ; TELL THAT LEVEL IS CHANGING
 
-            MOVE.B  #1, LVLCHANG            ; TELL THAT LEVEL IS CHANGING
+            CMPI.B  #LVLMAX, D0             ; IF THE INDEX OVERFLOWS
+            BHI     .NOREAD                 ; NO LEVEL IS READ
 
-.NOANIM     JSR     LVLREAD                 ; READ MAP AND ENEMIES
+            JSR     LVLREAD                 ; READ MAP AND ENEMIES
+.NOREAD     JSR     PLYRESET                ; PLAYER RESET (LEVEL-DEPENDENT)
+            JSR     ENMRESET                ; ENEMY RESET (LEVEL-INDEPENDENT)
 
-.END        RTS
+            RTS
 
 
 ; ------------------------------------------------------------------------------

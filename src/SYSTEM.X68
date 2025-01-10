@@ -167,6 +167,7 @@ TIMINIT
 ; ------------------------------------------------------------------------------
 
             CLR.B   FRMSKIP
+            CLR.B   LVLSPWTM
             CLR.B   TIMEDGE
             MOVE.B  #3, FRMSTATE            ; SET BITS 0 AND 1
 
@@ -210,7 +211,6 @@ TIMISR1
 ; ------------------------------------------------------------------------------
 
             ADDQ.B  #1, FRMCNT
-            CLR.B   TIMEDGE                 ; SECONDS TIMER EDGE
 
             BTST.B  #0, FRMSTATE            ; CHECK IF FRAME IS READY
             BNE     .READY

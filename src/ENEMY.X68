@@ -32,6 +32,9 @@ ENMSPAWN
             TST.B   TIMEDGE
             BEQ     .END                    ; ONLY SPAWN ON TIMER EDGE
 
+            CLR.W   D0
+            CLR.W   D1
+
             MOVE.B  LVLINDEX, D0
 
             LEA     LVLSPWC, A0
@@ -50,17 +53,16 @@ ENMSPAWN
             MOVE.L  (A2, D0), A2            ; SET A2 AS FIRST ENEMY MODE
             MOVE.L  (A3, D0), A3            ; SET A3 AS FIRST ENEMY POSITION
 
-            LEA     ENMHP, A4               ; TO SEARCH FOR FREE ENEMIES (HP=0)
-
             MOVE.B  LVLSPWTM, D0            ; D0.B NOW IS LEVEL SPAWN TIMER
 
 .ENMLOOP
-            CMP     (A0)+, D0               ; COMPARE DELAY TO CURRENT TIME
+            CMP.B   (A0)+, D0               ; COMPARE DELAY TO CURRENT TIME
             BNE     .NOSPAWN                ; ONLY SPAWN IF IT MATCHES
 
         ; SEARCH FOR A FREE ENTRY TO SPAWN THE ENEMY INTO
 
             MOVE.W  #ENMMAXNO-1, D2
+            LEA     ENMHP, A4               ; TO SEARCH FOR FREE ENEMIES (HP=0)
 
 .SCHLOOP    
             TST.B   (A4, D2)
@@ -70,13 +72,26 @@ ENMSPAWN
 
 .SCHCONT    DBRA    D2, .SCHLOOP
 
-.SCHDONE    CHK     #ENMMAXNO-1, D2         ; INTERRUPT ON D2 < 0 OR D2 OVERFLOW
+.SCHDONE    TST.B   D2
+            BMI     .END                    ; ABORT IF ENEMIES CANNOT FIT
             
-            ; TO-DO: SPAWN IN INDEX D2
+            LEA     ENMTYPE, A4
+            MOVE.B  (A1), (A4, D2)          ; COPY TYPE
+            LEA     ENMMODE, A4
+            MOVE.B  (A2), (A4, D2)          ; COPY MODE
+            LEA     ENMHP, A4
+            MOVE.B  #1, (A4, D2)            ; MAKE ENEMY ALIVE (GIVE IT HP)
 
-.NOSPAWN    ADDQ    #1, A1
-            ADDQ    #1, A2
-            ADDQ    #4, A3
+            LSL.W   #1, D2                  ; MULTIPLY BY 2 (WORD TO BYTE)
+
+            LEA     ENMPOSX, A4
+            MOVE.W  (A3), (A4, D2)          ; COPY POSITION X
+            LEA     ENMPOSY, A4
+            MOVE.W  2(A3), (A4, D2)         ; COPY POSITION Y
+
+.NOSPAWN    ADDQ.L  #1, A1
+            ADDQ.L  #1, A2
+            ADDQ.L  #4, A3
 
             DBRA    D1, .ENMLOOP
 
@@ -88,12 +103,28 @@ ENMUPD
 ; UPDATE ENEMY.
 ; INPUT    : D0 = ENEMYNO
 ; OUTPUT   : NONE
-; MODIFIES : D0-D7, A0
+; MODIFIES : D1-D7, A0
 ; ------------------------------------------------------------------------------
+
+            MOVE.W  D0, -(SP)
+
+            LEA     ENMHP, A0
+            TST.B   (A0, D0)
+            BEQ     .END                    ; DO NOT UPDATE IF ENEMY IS DEAD
+
+        ; ANIMATE
+
+            LEA     ENMTILE, A0
+            MOVE.B  #1, (A0, D0)
+
+            BTST.B  #3, FRMCNT
+            BNE     .NOANIM
+
+            CLR.B   (A0, D0)
 
         ; CHECK MOVEMENT MODE
 
-            LEA     ENMMODE, A0
+.NOANIM     LEA     ENMMODE, A0
             MOVE.B  (A0, D0), D1
 
             LSL.W   #1, D0                  ; MULTIPLY BY 2 (WORD TO BYTE)
@@ -107,14 +138,14 @@ ENMUPD
 .MODE0      ADDQ.W  #ENMSPEED, (A0, D0)
 
             CMPI.W  #SPNSTART+32*PXLX, (A0, D0)
-            BGT     ENMKILL                 ; ENEMY OUT OF BOUNDS
+            BGT     .OUTOFB                 ; ENEMY OUT OF BOUNDS
 
             BRA     .MOVDONE
 
 .MODE1      SUBQ.W  #ENMSPEED, (A0, D0)
 
             CMPI.W  #-32*PXLX, (A0, D0)
-            BLT     ENMKILL                 ; ENEMY OUT OF BOUNDS
+            BLT     .OUTOFB                 ; ENEMY OUT OF BOUNDS
 
             BRA     .MOVDONE
 
@@ -127,12 +158,15 @@ ENMUPD
 
             LSR.W   #1, D0                  ; DIVIDE BY 2 (BACK TO BYTE)
 
-            MOVE.W  D4, D6
+            CLR.W   D6
             LEA     ENMWIDTH, A0
-            ADD.W   (A0, D0), D6
-            MOVE.W  D5, D7
+            MOVE.B  (A0, D0), D6
+            ADD.W   D4, D6
+
+            CLR.W   D7
             LEA     ENMHEIGH, A0
-            ADD.W   (A0, D0), D7
+            MOVE.B  (A0, D0), D7
+            ADD.W   D5, D7
 
             MOVE.W  PL1POSX, D0
             MOVE.W  PL1POSY, D1
@@ -154,7 +188,15 @@ ENMUPD
 
             JSR     ENMCOL
 
+.END        MOVE.W  (SP)+, D0               ; RESTORE VALUE IN D0
             RTS
+
+.OUTOFB     LSR.W   #1, D0                  ; DIVIDE BY 2 (BACK TO BYTE)
+.KILL   ; KILL ENEMY AND FINISH
+
+            LEA     ENMHP, A0
+            CLR.B   (A0, D0)
+            BRA     .END
 
 ; ------------------------------------------------------------------------------
 ENMCOL
@@ -186,50 +228,43 @@ ENMCOL
             RTS
 
 ; ------------------------------------------------------------------------------
-ENMKILL
-; KILLS AN ENEMY (SET HP TO 0)
-; INPUT    : D0 = ENEMYNO * 2
-; OUTPUT   : NONE
-; MODIFIES : A0
-; ------------------------------------------------------------------------------
-            
-            LSR.W   #2, D0                  ; DIVIDE BY 2 (BACK TO BYTE)
-            LEA     ENMHP, A0
-            CLR.B   (A0, D0)
-
-            RTS
-
-; ------------------------------------------------------------------------------
 ENMPLOT
 ; PLOT ENEMY.
 ; INPUT    : D0 = ENEMYNO
 ; OUTPUT   : NONE
-; MODIFIES : D0, D3, D6, D7, A3
+; MODIFIES : D3, D6, D7, A3
 ; ------------------------------------------------------------------------------
+
+            LEA     ENMHP, A3
+            TST.B   (A3, D0)
+            BEQ     .END                    ; DO NOT DRAW IF DEAD
+
+            MOVE.W  D0, -(SP)
 
             CLR.W   D3
 
             LEA     ENMTILE, A3
-            MOVE.B  (A3, D0.W), D3          ; ENEMY TILE
+            MOVE.B  (A3, D0), D3            ; ENEMY TILE
 
             LSL.W   #1, D0                  ; MULTIPLY BY 2 (WORD TO BYTE)
 
             LEA     ENMPOSX, A3
-            MOVE.W  (A3, D0.W), D6          ; ENEMY POS X
+            MOVE.W  (A3, D0), D6            ; ENEMY POS X
 
             LEA     ENMPOSY, A3
-            MOVE.W  (A3, D0.W), D7          ; ENEMY POS Y
+            MOVE.W  (A3, D0), D7            ; ENEMY POS Y
 
             LSR.W   #1, D0                  ; DIVIDE BY 2 (BACK TO BYTE)
 
             LEA     ENMTYPE, A3
-            MOVE.B  (A3, D0.W), D0          ; ENEMY TYPE
+            MOVE.B  (A3, D0), D0            ; ENEMY TYPE
 
             LSL.W   #2, D0                  ; MULTIPLY BY 4 (LONG TO BYTE)
 
             LEA     ENMEIPOS, A3
-            MOVEA.L (A3, D0.W), A3
+            MOVEA.L (A3, D0), A3
 
             JSR     GFXEIPLT
 
-            RTS
+            MOVE.W  (SP)+, D0               ; RESTORE VALUE IN D0
+.END        RTS

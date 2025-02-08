@@ -1,3 +1,0 @@
-[submodule "tools/libraries/tinyfiledialogs"]
-	path = tools/libraries/tinyfiledialogs
-	url = https://github.com/Jenrikku/TinyFileDialogsSharp

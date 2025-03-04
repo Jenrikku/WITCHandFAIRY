@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using LibBTM;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
@@ -29,10 +28,11 @@ if (image.Width % tileWidth != 0 || image.Height % tileHeight != 0)
 
 List<Image<Rgba32>> tiles = new();
 
+// Add empty tile (not added to the btm file)
+tiles.Add(new(tileWidth, tileHeight));
+
 image.ProcessPixelRows(accessor =>
 {
-    Rgba32 pixel = Color.Transparent;
-
     for (int k = 0; k < accessor.Height; k += tileHeight)
     {
         for (int l = 0; l < accessor.Width; l += tileWidth)
@@ -54,16 +54,13 @@ image.ProcessPixelRows(accessor =>
 
             if (generateMap)
             {
-                int index = tiles.FindIndex(img => img.Equals<Rgba32>(tile));
-
-                Debug.Assert(index != -1);
-
+                int index = tiles.FindIndex(img => img.Equals<Rgba32>(tile)) - 1;
                 map[k / tileHeight, l / tileWidth] = (byte)index;
             }
         }
     }
 });
 
-BTM btm = new(tiles.ToArray(), map, mapWidth, mapHeight);
+BTM btm = new(tiles.Skip(1).ToArray(), map, mapWidth, mapHeight) { IsBigEndian = false };
 
 btm.Write(output);

@@ -107,7 +107,7 @@ LVLUPD
             JSR     LVLSWTCH                ; GO TO GAME OVER
 
 .HEALTHY    TST.B   PLYPNT                  ; CHECK IF THERE ARE POINTS REMAING
-            BNE     .END                    ; LEVEL NOT CLEARED YET
+            BGT     .END                    ; LEVEL NOT CLEARED YET
 
             ADDQ.B  #1, D0
             JSR     LVLSWTCH                ; GO TO NEXT LEVEL
